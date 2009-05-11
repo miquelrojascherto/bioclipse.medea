@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MEDEA Plug-in
+Bundle-SymbolicName: net.bioclipse.medea;singleton:=true
+Bundle-Version: 1.0.1
+Bundle-Activator: net.bioclipse.plugins.Bc_MEDEAPlugin
+Bundle-Vendor: Miguel Rojas
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.tools.logging,
+ net.bioclipse,
+ net.bioclipse.cml,
+ net.bioclipse.spectrum,
+ net.bioclipse.cdk.jchempaint,
+ net.bioclipse.specmol,
+ net.bioclipse.xom,
+ net.bioclipse.compute,
+ net.bioclipse.cdk,
+ net.bioclipse.cdk.ui,
+ org.eclipse.ui.views,
+ net.bioclipse.reaction
+Eclipse-LazyStart: true
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: net.bioclipse.plugins.medea.core

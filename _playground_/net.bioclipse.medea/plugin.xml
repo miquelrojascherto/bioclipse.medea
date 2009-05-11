@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            id="bc_medea.predict"
+            targetID="net.bioclipse.views.BioResourceView">
+         <action
+               class="net.bioclipse.plugins.actions.PredictAction"
+               enablesFor="+"
+               icon="icons/MEDEA.gif"
+               id="bc_medea.predictaction"
+               label="MS from MEDEA ..."
+               menubarPath="net.bioclipse.plugins.predict.action.MenuPredict/group1"/>
+         <visibility>
+            <objectClass name="net.bioclipse.model.CDKResource"/>
+         </visibility>
+         <menu
+               id="net.bioclipse.plugins.predict.action.MenuPredict"
+               label="Spectrum Prediction"
+               path="additions">
+            <separator name="group1"/>
+         </menu>
+      </viewerContribution>
+      <viewerContribution
+            id="bc_medea.predict"
+            targetID="net.bioclipse.views.BioResourceView">
+         <visibility>
+            <objectClass name="net.bioclipse.model.CMLResource"/>
+         </visibility>
+         <action
+               class="net.bioclipse.plugins.actions.PredictAction"
+               enablesFor="+"
+               icon="icons/MEDEA.gif"
+               id="bc_medea.predictaction"
+               label="MS from MEDEA ..."
+               menubarPath="net.bioclipse.plugins.predict.action.MenuPredict/group1"/>
+         <menu
+               id="net.bioclipse.plugins.predict.action.MenuPredict"
+               label="Spectrum Prediction"
+               path="additions">
+            <separator name="group"/>
+         </menu>
+      </viewerContribution>
+      <viewerContribution
+            id="bc_medea.predict"
+            targetID="net.bioclipse.views.BioResourceView">
+         <visibility>
+            <objectClass name="net.bioclipse.model.SpecMolResource"/>
+         </visibility>
+         <action
+               class="net.bioclipse.plugins.actions.LearnAction"
+               enablesFor="+"
+               icon="icons/MEDEA.gif"
+               id="bc_medea.learnaction"
+               label="Learning MS from MEDEA ..."
+               menubarPath="additions"/>
+      </viewerContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="net.bioclipse.plugins.perspective.MedeaPerspective"
+            icon="icons/MEDEA.gif"
+            id="net.bioclipse.plugins.medea.perspective"
+            name="MEDEA"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="bc_medea.MedeaCategory"
+            name="Medea"/>
+      <wizard
+            canFinishEarly="false"
+            category="bc_medea.MedeaCategory"
+            class="net.bioclipse.plugins.wizards.NewAquisitionWizard"
+            hasPages="true"
+            icon="icons/MEDEA.gif"
+            id="bc_medea.NewAquisitionWizard"
+            name="new Aquisition Reaction Predictions"
+            project="true">
+         <description/>
+      </wizard>
+   </extension>
+   <extension
+         point="net.bioclipse.compute.computationWizards">
+      <category
+            id="net.bioclipse.compute.caseCategory"
+            name="Medea2"/>
+      <wizard
+            category="bc_medea.MedeaCategory2"
+            class="net.bioclipse.plugins.wizards.NewAquisitionWizard"
+            icon="icons/MEDEA.gif"
+            id="bc_medea.NewAquisitionWizard"
+            name="new Aquisition Reaction Predictions"/>
+   </extension>
+   <extension
+         point="net.bioclipse.bioclipseResources">
+      <itemType
+            class="net.bioclipse.plugins.model.type.ARFFResourceFactory"
+            fileExtension="arff"
+            id="bioclipse.ARFFResource"
+            level="1"
+            name="ARFF File"
+            targetClass="java.io.File"/>
+   </extension>
+
+</plugin>
