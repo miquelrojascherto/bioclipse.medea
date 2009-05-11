@@ -2,9 +2,9 @@ package net.bioclipse.plugins.extensions;
 
 import org.xmlcml.cml.base.CMLElement;
 
-import net.bioclipse.seneca.judges.IJudge;
-import net.bioclipse.seneca.judges.IJudgeFactory;
-import net.bioclipse.seneca.judges.MissingInformationException;
+import net.bioclipse.seneca.judge.IJudge;
+import net.bioclipse.seneca.judge.IJudgeFactory;
+import net.bioclipse.seneca.judge.MissingInformationException;
 
 public class WCCMedeaJudgeFactory implements IJudgeFactory {
 

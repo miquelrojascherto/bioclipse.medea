@@ -5,21 +5,23 @@ Bundle-SymbolicName: net.bioclipse.medea.case;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: net.bioclipse.plugins.Bc_MEDEA_CasePlugin
 Bundle-Vendor: Miguel Rojas
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- com.tools.logging,
- net.bioclipse,
+ net.bioclipse.ui,
  net.bioclipse.cml,
  net.bioclipse.spectrum,
  net.bioclipse.cdk.jchempaint,
  net.bioclipse.specmol,
- net.bioclipse.xom,
+ org.xmlcml.cmlxom,
  net.bioclipse.compute,
- net.bioclipse.cdk,
+ org.openscience.cdk.core,
+ org.openscience.cdk.interfaces,
+ org.openscience.cdk.standard,
+ org.openscience.cdk.smiles,
+ org.openscience.cdk.valencycheck,
  net.bioclipse.cdk.ui,
  org.eclipse.ui.views,
- net.bioclipse.reaction,
  net.bioclipse.seneca,
- net.bioclipse.medea
+ net.bioclipse.medea,
+ net.bioclipse.xom
 Eclipse-LazyStart: true

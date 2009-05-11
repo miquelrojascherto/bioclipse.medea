@@ -3,18 +3,18 @@ package net.bioclipse.plugins.extensions;
 import java.io.Serializable;
 
 import net.bioclipse.plugins.medea.core.Medea;
-import net.bioclipse.seneca.judges.IJudge;
-import net.bioclipse.seneca.judges.Judge;
-import net.bioclipse.seneca.judges.JudgeResult;
-import net.bioclipse.seneca.judges.MissingInformationException;
-import net.bioclipse.seneca.judges.WCCTool;
+import net.bioclipse.seneca.judge.IJudge;
+import net.bioclipse.seneca.judge.Judge;
+import net.bioclipse.seneca.judge.JudgeResult;
+import net.bioclipse.seneca.judge.MissingInformationException;
+import net.bioclipse.seneca.util.WCCTool;
 import nu.xom.Nodes;
 import nu.xom.XPathContext;
 
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.smiles.SmilesGenerator;
-import org.openscience.cdk.tools.HydrogenAdder;
+import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.base.CMLElements;
 import org.xmlcml.cml.element.CMLCml;
@@ -81,8 +81,9 @@ public class WCCMedeaJudge extends Judge implements IJudge, Serializable, Clonea
 		IMolecule mol = ac.getBuilder().newMolecule(ac);
 		System.out.print(count+" smi: " + new SmilesGenerator().createSMILES(mol));
 		count++;
-		HydrogenAdder adder = new HydrogenAdder();
-		adder.addExplicitHydrogensToSatisfyValency(mol);
+		// FIXME: need to do atom type perception first.
+		CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(ac.getBuilder());
+		adder.addImplicitHydrogens(mol);
 		try {
 			medeaTool.predictMS(mol);
 			System.out.println();
@@ -109,5 +110,12 @@ public class WCCMedeaJudge extends Judge implements IJudge, Serializable, Clonea
 	public void init() {
 		// nothing to do
 	}
+
+    public IJudge createJudge(String data) throws MissingInformationException {
+        // TODO Auto-generated method stub
+        
+        // no clue, we need to ask Stefan/Gilleain
+        return null;
+    }
 
 }
