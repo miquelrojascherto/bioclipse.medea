@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension
+    	point="org.eclipse.ui.editors">
+		<editor
+	        class="net.bioclipse.reaction.editor.ReactionMultiPageEditor"
+	        contributorClass="net.bioclipse.reaction.editor.ReactionMultiPageEditorContributor"
+	        icon="icons/tree.gif"
+	        id="net.bioclipse.plugins.bc_reaction.editors.ReactionMultiPageEditor"
+	        name="Reaction Editor">
+            <contentTypeBinding
+                  contentTypeId="net.bioclipse.contenttypes.cml.multipleReactions">
+            </contentTypeBinding>
+            <contentTypeBinding
+                  contentTypeId="net.bioclipse.contenttypes.cml.singleReaction">
+            </contentTypeBinding>
+            <contentTypeBinding
+                  contentTypeId="net.bioclipse.contenttypes.rxnFile">
+            </contentTypeBinding>
+    	</editor>
+   	</extension>
+     <extension
+           point="org.eclipse.ui.newWizards">
+        <category
+              id="bc_reaction.ReactionCategory"
+              name="Reaction"/>
+        <wizard
+              category="bc_reaction.ReactionCategory"
+              class="net.bioclipse.plugins.bc_reaction.wizards.NewReactionWizard"
+              icon="icons/tree.gif"
+              id="bc_reaction.NewReactionWizard"
+              name="New Reaction"
+              project="true"/>
+     </extension>
+     <extension
+           point="org.eclipse.ui.preferencePages">
+        <page
+              class="net.bioclipse.plugins.bc_reaction.perspective.ReactionPreferencePage"
+              id="bc_reaction.ReactionResourcePreferencePage"
+              name="Reaction Plugin"/>
+        <page
+              category="bc_reaction.ReactionResourcePreferencePage"
+              class="net.bioclipse.plugins.bc_reaction.perspective.LayoutPreferencePage"
+              id="bc_reaction.LayoutPreferencePage"
+              name="Layout "/>
+     </extension>
+     <extension
+           point="org.eclipse.ui.perspectives">
+        <perspective
+              class="net.bioclipse.plugins.bc_reaction.perspective.ReactionPerspective"
+              icon="icons/tree.gif"
+              id="net.bioclipse.plugins.ReactionPerspective"
+              name="Reaction"/>
+     </extension>
+</plugin>

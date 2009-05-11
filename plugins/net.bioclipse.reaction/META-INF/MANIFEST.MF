@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Reaction Plug-in
+Bundle-SymbolicName: net.bioclipse.reaction;singleton:=true
+Bundle-Version: 1.0.1
+Bundle-Activator: net.bioclipse.reaction.Activator
+Bundle-Vendor: Miguel Rojas
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.ui.views,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.console,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.jface.text,
+ net.bioclipse.cdk.business,
+ net.bioclipse.cdk.ui,
+ net.bioclipse.cdk.jchempaint,
+ net.bioclipse.cml,
+ net.bioclipse.xom
+Bundle-ActivationPolicy: lazy
+Import-Package: org.apache.commons.logging,
+ org.apache.log4j
+Bundle-ClassPath: .
