@@ -3,10 +3,10 @@
 <plugin>
    <extension
          point="org.eclipse.ui.popupMenus">
-      <viewerContribution
+      <objectContribution
             id="bc_medea.predict"
-            targetID="net.bioclipse.views.BioResourceView">
-         <action
+           objectClass="org.eclipse.core.resources.IFile">
+          <action
                class="net.bioclipse.plugins.actions.PredictAction"
                enablesFor="+"
                icon="icons/MEDEA.gif"
@@ -14,7 +14,20 @@
                label="MS from MEDEA ..."
                menubarPath="net.bioclipse.plugins.predict.action.MenuPredict/group1"/>
          <visibility>
-            <objectClass name="net.bioclipse.model.CDKResource"/>
+            <or>
+               <objectState
+                 name="contentTypeId"
+                 value="net.bioclipse.contenttypes.mdlMolFile2D"/>
+               <objectState
+                 name="contentTypeId"
+                 value="net.bioclipse.contenttypes.cml.singleMolecule3d"/>
+               <objectState
+                 name="contentTypeId"
+                 value="net.bioclipse.contenttypes.cml.singleMolecule2d"/>
+               <objectState
+                 name="contentTypeId"
+                 value="net.bioclipse.contenttypes.mdlMolFile3D"/>
+           </or>
          </visibility>
          <menu
                id="net.bioclipse.plugins.predict.action.MenuPredict"
@@ -22,33 +35,10 @@
                path="additions">
             <separator name="group1"/>
          </menu>
-      </viewerContribution>
-      <viewerContribution
+      </objectContribution>
+      <objectContribution
             id="bc_medea.predict"
-            targetID="net.bioclipse.views.BioResourceView">
-         <visibility>
-            <objectClass name="net.bioclipse.model.CMLResource"/>
-         </visibility>
-         <action
-               class="net.bioclipse.plugins.actions.PredictAction"
-               enablesFor="+"
-               icon="icons/MEDEA.gif"
-               id="bc_medea.predictaction"
-               label="MS from MEDEA ..."
-               menubarPath="net.bioclipse.plugins.predict.action.MenuPredict/group1"/>
-         <menu
-               id="net.bioclipse.plugins.predict.action.MenuPredict"
-               label="Spectrum Prediction"
-               path="additions">
-            <separator name="group"/>
-         </menu>
-      </viewerContribution>
-      <viewerContribution
-            id="bc_medea.predict"
-            targetID="net.bioclipse.views.BioResourceView">
-         <visibility>
-            <objectClass name="net.bioclipse.model.SpecMolResource"/>
-         </visibility>
+            objectClass="org.eclipse.core.resources.IFile">
          <action
                class="net.bioclipse.plugins.actions.LearnAction"
                enablesFor="+"
@@ -56,7 +46,18 @@
                id="bc_medea.learnaction"
                label="Learning MS from MEDEA ..."
                menubarPath="additions"/>
-      </viewerContribution>
+         <visibility>
+           <or>
+               <objectState
+                 name="contentTypeId"
+                 value="net.bioclipse.contenttypes.jcampdx"/>
+               <objectState
+                 name="contentTypeId"
+                 value="net.bioclipse.contenttypes.cml.singleSpectrum"/>
+           </or>
+         </visibility>
+      	 
+      </objectContribution>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
