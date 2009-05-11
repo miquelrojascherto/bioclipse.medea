@@ -1,5 +1,6 @@
 package net.bioclipse.plugins.extensions;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import net.bioclipse.plugins.medea.core.Medea;
@@ -8,18 +9,27 @@ import net.bioclipse.seneca.judge.Judge;
 import net.bioclipse.seneca.judge.JudgeResult;
 import net.bioclipse.seneca.judge.MissingInformationException;
 import net.bioclipse.seneca.util.WCCTool;
+import nu.xom.Document;
 import nu.xom.Nodes;
+import nu.xom.ParsingException;
 import nu.xom.XPathContext;
 
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
+import org.xmlcml.cml.base.CMLBuilder;
 import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.base.CMLElements;
+import org.xmlcml.cml.base.CMLUtil;
 import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLPeak;
 import org.xmlcml.cml.element.CMLSpectrum;
+
+import spok.utils.SpectrumUtils;
 
 public class WCCMedeaJudge extends Judge implements IJudge, Serializable, Cloneable {
 
@@ -112,10 +122,25 @@ public class WCCMedeaJudge extends Judge implements IJudge, Serializable, Clonea
 	}
 
     public IJudge createJudge(String data) throws MissingInformationException {
-        // TODO Auto-generated method stub
-        
-        // no clue, we need to ask Stefan/Gilleain
-        return null;
+        IJudge judge = new WCCMedeaJudge();
+        judge.setData( data );
+        CMLBuilder builder = new CMLBuilder();
+        try {
+            Document doc =  builder.buildEnsureCML(ResourcesPlugin.getWorkspace().getRoot().getFile( new Path(judge.getData())).getContents());
+            SpectrumUtils.namespaceThemAll( doc.getRootElement().getChildElements() );
+            doc.getRootElement().setNamespaceURI(CMLUtil.CML_NS);
+            CMLElement cmlElement = (CMLCml) builder.parseString(doc.toXML());
+            judge.configure(cmlElement);
+        } catch (IOException e) {
+            throw new MissingInformationException("Could not read the cmlString.");
+        } catch (ParsingException e) {
+            throw new MissingInformationException(
+                    "Could not parse the cmlString; " + e.getMessage()
+            );
+        } catch ( CoreException e ) {
+            throw new MissingInformationException(e.getMessage());
+        }
+        judge.setEnabled(super.getEnabled());
+        return judge;
     }
-
 }

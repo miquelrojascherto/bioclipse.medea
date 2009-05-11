@@ -4,23 +4,19 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
-import net.bioclipse.BioclipsePlugin;
-import net.bioclipse.interfaces.IBioclipsePlugin;
-
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import com.tools.logging.PluginLogManager;
-
 /**
  * The activator class controls the plug-in life cycle.
  * 
  * @author Miguel Rojas
  */
-public class Bc_MEDEA_CasePlugin extends BioclipsePlugin implements IBioclipsePlugin {
+public class Bc_MEDEA_CasePlugin extends AbstractUIPlugin {
 
 	public static final String OPEN_PERSP_FOR_RES = "Open Medea Perspective";
 	/**The plug-in ID*/
@@ -30,7 +26,8 @@ public class Bc_MEDEA_CasePlugin extends BioclipsePlugin implements IBioclipsePl
 	private static Bc_MEDEA_CasePlugin plugin;
 
 	private final String LOG_PROPERTIES_FILE="logger.properties";
-	private PluginLogManager logManager;
+
+    private static final Logger logger = Logger.getLogger(Bc_MEDEA_CasePlugin.class);
 	
 	/**
 	 * The constructor of the Bc_MEDEAPlugin object.
@@ -69,14 +66,6 @@ public class Bc_MEDEA_CasePlugin extends BioclipsePlugin implements IBioclipsePl
 	}
 	
 	/**
-	 * 
-	 * @return The LogMananger default
-	 */
-	public static PluginLogManager getLogManager() {
-		return getDefault().logManager; 
-	}
-
-	/**
 	 * Returns an image descriptor for the image file at the given
 	 * plug-in relative path.
 	 *
@@ -96,7 +85,6 @@ public class Bc_MEDEA_CasePlugin extends BioclipsePlugin implements IBioclipsePl
 				Properties props = new Properties();
 				props.load(propertiesInputStream);
 				propertiesInputStream.close();
-				this.logManager = new PluginLogManager(this, props);
 //				this.logManager.hookPlugin(
 //				TestPlugin.getDefault().getBundle().getSymbolicName(),
 //				TestPlugin.getDefault().getLog()); 
@@ -113,7 +101,7 @@ public class Bc_MEDEA_CasePlugin extends BioclipsePlugin implements IBioclipsePl
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeDefaultPreferences(org.eclipse.jface.preference.IPreferenceStore)
 	 */
 	protected void initializeDefaultPreferences(IPreferenceStore store) {
-		store.setDefault(OPEN_PERSP_FOR_RES, Bc_MEDEA_CasePlugin.UNSET);
+		store.setDefault(OPEN_PERSP_FOR_RES, false);
 	}
 	/*
 	 * (non-Javadoc)

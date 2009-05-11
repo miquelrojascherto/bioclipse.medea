@@ -7,6 +7,8 @@ Bundle-Activator: net.bioclipse.plugins.Bc_MEDEA_CasePlugin
 Bundle-Vendor: Miguel Rojas
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ net.bioclipse.logger,
  net.bioclipse.ui,
  net.bioclipse.cml,
  net.bioclipse.spectrum,
