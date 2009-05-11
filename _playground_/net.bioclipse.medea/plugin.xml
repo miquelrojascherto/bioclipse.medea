@@ -95,15 +95,5 @@
             id="bc_medea.NewAquisitionWizard"
             name="new Aquisition Reaction Predictions"/>
    </extension>
-   <extension
-         point="net.bioclipse.bioclipseResources">
-      <itemType
-            class="net.bioclipse.plugins.model.type.ARFFResourceFactory"
-            fileExtension="arff"
-            id="bioclipse.ARFFResource"
-            level="1"
-            name="ARFF File"
-            targetClass="java.io.File"/>
-   </extension>
 
 </plugin>
