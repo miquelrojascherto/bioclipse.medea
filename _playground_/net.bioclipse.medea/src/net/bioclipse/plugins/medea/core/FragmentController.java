@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.isomorphism.UniversalIsomorphismTester;
 import org.openscience.cdk.isomorphism.matchers.QueryAtomContainer;
 import org.openscience.cdk.isomorphism.matchers.QueryAtomContainerCreator;
-import org.openscience.cdk.tools.MFAnalyser;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 
 /**
  * class which make a controll of the fragments obtained: 
@@ -28,7 +29,8 @@ public class FragmentController {
 	 */
 	public static boolean isExistingMass(IMolecule molecule, ArrayList<Double> peaksX){
 		if(peaksX != null){
-			int mass = Math.round((new MFAnalyser(molecule)).getMass());
+			IMolecularFormula formula = MolecularFormulaManipulator.getMolecularFormula(molecule);
+			int mass = (int)MolecularFormulaManipulator.getTotalExactMass(formula);
 			if(peaksX.contains(new Double(mass))){
 				return true;
 			}
@@ -66,7 +68,8 @@ public class FragmentController {
 	 */
 	public static FragmentMolecule exists(FragmentTree fragTree, IMolecule molecule){
 
-		int mass = Math.round((new MFAnalyser(molecule)).getMass());
+		IMolecularFormula formula = MolecularFormulaManipulator.getMolecularFormula(molecule);
+		int mass = (int)MolecularFormulaManipulator.getTotalExactMass(formula);
 		FragmentTreeSub listFragments = fragTree.getFragments(mass);
 		QueryAtomContainer qAC = QueryAtomContainerCreator.createSymbolAndChargeQueryContainer(molecule);
 		int numAtoms = molecule.getAtomCount();

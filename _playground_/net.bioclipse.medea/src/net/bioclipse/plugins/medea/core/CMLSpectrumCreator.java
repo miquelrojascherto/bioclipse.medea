@@ -2,8 +2,9 @@ package net.bioclipse.plugins.medea.core;
 
 import java.util.ArrayList;
 
+import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.tools.MFAnalyser;
+import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 import org.xmlcml.cml.element.CMLPeak;
 import org.xmlcml.cml.element.CMLPeakList;
 import org.xmlcml.cml.element.CMLSpectrum;
@@ -26,8 +27,8 @@ class CMLSpectrumCreator {
 	CMLSpectrumCreator(int process, FragmentTree fragmentTree){
 		/*obtain the mass of the arrayList which contains the ionized fragments*/
 		IMolecule molecule = fragmentTree.getMolecule();
-		MFAnalyser mfAnalyser = new MFAnalyser(molecule);
-		int massI = Math.round(mfAnalyser.getMass());
+		IMolecularFormula formula = MolecularFormulaManipulator.getMolecularFormula(molecule);
+		int massI = (int)MolecularFormulaManipulator.getTotalExactMass(formula);
 		
 		cmlSpectrum = new CMLSpectrum();
 		cmlSpectrum.setType("massSpectrum");

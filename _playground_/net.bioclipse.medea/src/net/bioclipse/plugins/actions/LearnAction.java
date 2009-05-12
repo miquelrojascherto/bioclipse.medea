@@ -3,9 +3,6 @@ package net.bioclipse.plugins.actions;
 
 import java.io.ByteArrayInputStream;
 
-import net.bioclipse.model.SpecMolResource;
-import net.bioclipse.views.BioResourceView;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IActionDelegate;
@@ -57,34 +54,34 @@ public class LearnAction implements IViewActionDelegate {
 	 */
 	@SuppressWarnings("static-access")
 	public void run(IAction action) {
-		SpecMolResource smres = null;
-		if (view instanceof BioResourceView) {
-			Object first = ((BioResourceView)view).getSelectedResource();
-			/* For SpecMolResource */
-			if (first instanceof SpecMolResource){
-				smres = (SpecMolResource)first;
-				smres.getPersistedResource().load();
-				smres.parseResource();
-				CMLMolecule cmlM = smres.getMolecule();
-				String moleculestring = cmlM.toXML();
-		        CMLReader reader = new CMLReader(new ByteArrayInputStream(moleculestring.getBytes()));
-				try {
-					IChemFile file = (IChemFile)reader.read(new ChemFile());
-					IChemModel chemmodel = file.getChemSequence(0).getChemModel(0);
-					IAtomContainer ac = chemmodel.getMoleculeSet().getAtomContainer(0);
-					ac.setID(smres.getName());
-
-					CMLSpectrum cmlS = smres.getCurrentSpectrum();
-					/*extract root with name*/
-					String pathh = smres.getPath().substring(0, smres.getPath().length()-smres.getExtension().length()-1);
-					if(ac != null && cmlS != null)
-						callMedaProcess(ac, cmlS, pathh);
-
-				} catch (CDKException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+//		SpecMolResource smres = null;
+//		if (view instanceof BioResourceView) {
+//			Object first = ((BioResourceView)view).getSelectedResource();
+//			/* For SpecMolResource */
+//			if (first instanceof SpecMolResource){
+//				smres = (SpecMolResource)first;
+//				smres.getPersistedResource().load();
+//				smres.parseResource();
+//				CMLMolecule cmlM = smres.getMolecule();
+//				String moleculestring = cmlM.toXML();
+//		        CMLReader reader = new CMLReader(new ByteArrayInputStream(moleculestring.getBytes()));
+//				try {
+//					IChemFile file = (IChemFile)reader.read(new ChemFile());
+//					IChemModel chemmodel = file.getChemSequence(0).getChemModel(0);
+//					IAtomContainer ac = chemmodel.getMoleculeSet().getAtomContainer(0);
+//					ac.setID(smres.getName());
+//
+//					CMLSpectrum cmlS = smres.getCurrentSpectrum();
+//					/*extract root with name*/
+//					String pathh = smres.getPath().substring(0, smres.getPath().length()-smres.getExtension().length()-1);
+//					if(ac != null && cmlS != null)
+//						callMedaProcess(ac, cmlS, pathh);
+//
+//				} catch (CDKException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
 	}
 	/**
 	 * Selection in the workbench has been changed. 

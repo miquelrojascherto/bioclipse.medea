@@ -2,8 +2,9 @@ package net.bioclipse.plugins.medea.core;
 
 import java.util.ArrayList;
 
+import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.tools.MFAnalyser;
+import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 
 /**
  * Class which contains all information of the fragmention process and groups.
@@ -74,8 +75,8 @@ public class FragmentTree extends ArrayList<FragmentTreeSub> {
 	 * @return     The Mass value
 	 */
 	private int getMass(IMolecule mol){	
-		MFAnalyser mfAnalyser = new MFAnalyser(mol);
-		return Math.round(mfAnalyser.getMass());
+		IMolecularFormula formula = MolecularFormulaManipulator.getMolecularFormula(mol);
+		return (int)MolecularFormulaManipulator.getTotalExactMass(formula);
 	}
 	/**
 	 * get the molecule to predict 

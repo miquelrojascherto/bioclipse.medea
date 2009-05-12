@@ -3,27 +3,36 @@ package net.bioclipse.plugins.medea.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import net.bioclipse.plugins.medea.core.learning.ExtractorProbability;
-import net.bioclipse.plugins.medea.core.reaction.IPReactionsExtraction;
 
 import org.openscience.cdk.CDKConstants;
+import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IMapping;
+import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionSet;
-import org.openscience.cdk.qsar.descriptors.molecular.IPMolecularDescriptor;
+import org.openscience.cdk.reaction.IReactionProcess;
 import org.openscience.cdk.reaction.type.CarbonylEliminationReaction;
-import org.openscience.cdk.reaction.type.HydrogenRearrangementDeltaReaction;
-import org.openscience.cdk.reaction.type.HydrogenRearrangementGammaReaction;
+import org.openscience.cdk.reaction.type.ElectronImpactNBEReaction;
+import org.openscience.cdk.reaction.type.RadicalChargeSiteInitiationReaction;
+import org.openscience.cdk.reaction.type.RadicalSiteHrDeltaReaction;
+import org.openscience.cdk.reaction.type.RadicalSiteHrGammaReaction;
 import org.openscience.cdk.reaction.type.RadicalSiteInitiationHReaction;
 import org.openscience.cdk.reaction.type.RadicalSiteInitiationReaction;
+import org.openscience.cdk.reaction.type.parameters.IParameterReact;
+import org.openscience.cdk.reaction.type.parameters.SetReactionCenter;
 import org.openscience.cdk.smiles.SmilesGenerator;
-import org.openscience.cdk.tools.HydrogenAdder;
+import org.openscience.cdk.tools.CDKHydrogenAdder;
+import org.openscience.cdk.tools.IonizationPotentialTool;
 import org.openscience.cdk.tools.LonePairElectronChecker;
-import org.openscience.cdk.tools.MFAnalyser;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
+import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 
 /**
  * class which fragments the molecule and obtains fragments which are
@@ -34,8 +43,9 @@ import org.openscience.cdk.tools.MFAnalyser;
 public class Fragmenter {
 	
 	FragmentTree fragTree;
+	private LonePairElectronChecker lpcheck = new LonePairElectronChecker();
 	
-	boolean printInfo = false;
+	boolean printInfo = true;
 	
 	/** ArrayList which will be added each new obtained fragment. It is the responsible
 	 * to manage the order of the fragmentation*/
@@ -71,55 +81,96 @@ public class Fragmenter {
 				extractorP = new ExtractorProbability();
 		
 		/* make a check about hydrogens and Pair Electrons */
-		try {
-			HydrogenAdder hAdder = new HydrogenAdder();
-		    hAdder.addExplicitHydrogensToSatisfyValency(molecule);
-		    
-			LonePairElectronChecker lpChecker = new LonePairElectronChecker();
-			lpChecker.newSaturate(molecule);
-			
+			try {
+	            AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(molecule);
+	            CDKHydrogenAdder hAdder = CDKHydrogenAdder.getInstance(molecule.getBuilder());
+	            hAdder.addImplicitHydrogens(molecule);
+	            AtomContainerManipulator.convertImplicitToExplicitHydrogens(molecule);
+	    		lpcheck.saturate(molecule);
+
+	        } catch (CDKException e) {
+	        }
+
 //			printInformation(molecule);/**********************************************************/
 			
 			/*elimination of coordinates*/
-			for(Iterator it =molecule.atoms() ; it.hasNext();)
-				((IAtom)it.next()).setPoint2d(null);
+//			for(IAtom atom: molecule.atoms())
+//				atom.setPoint2d(null);
 			
 			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (CDKException e) {
-			e.printStackTrace();
-		}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (CDKException e) {
+//			e.printStackTrace();
+//		}
 		
 		/* iniziate the FragmentTree*/
 		fragTree = new FragmentTree(molecule);
 		
+		ArrayList<Double> dar = new ArrayList<Double>();
+        for(int i = 0 ; i < molecule.getAtomCount(); i++){
+            IAtom atom = molecule.getAtom(i);
+            double value = IonizationPotentialTool.predictIP(molecule,atom);
+            if(value > 0.5){
+            	System.out.println(atom.getSymbol()+" "+value);
+                IMolecule molecule_;
+				try {
+					molecule_ = (IMolecule) molecule.clone();
+					molecule_.getAtom(i).setFlag(CDKConstants.REACTIVE_CENTER,true);
+					
+					IMoleculeSet setOfReactants = DefaultChemObjectBuilder.getInstance().newMoleculeSet();
+					setOfReactants.addMolecule(molecule_);
+					IReactionProcess type  = new ElectronImpactNBEReaction();
+			        List<IParameterReact> paramList = new ArrayList<IParameterReact>();
+				    IParameterReact param = new SetReactionCenter();
+			        param.setParameter(Boolean.TRUE);
+			        paramList.add(param);
+			        type.setParameterList(paramList);
+			        
+			        IReactionSet setOfReactions = type.initiate(setOfReactants, null);
+			        
+					IMolecularFormula formula = MolecularFormulaManipulator.getMolecularFormula(molecule);
+	            	setOfFragments.add(addNewFragment(setOfReactions.getReaction(0).getProducts().getMolecule(0),
+	    					"Ionitzation", 
+	    					new Position((int)MolecularFormulaManipulator.getTotalExactMass(formula),0),
+	    					value,
+	    					null,
+	    					null));
+	            	System.out.println(setOfFragments.size());
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
+            		
+            }
+        }
+        
+		
 		/* making an ionization of the molecule to study*/
-		IPMolecularDescriptor ipDescriptor = new IPMolecularDescriptor();
-		ipDescriptor.calculate(molecule);
-		IReactionSet reactionSetIP = ipDescriptor.getReactionSet();
-		Iterator iterator = reactionSetIP.reactions();
-		IPReactionsExtraction.setCalculateRelativeProbabilites(reactionSetIP);
-		
-		/* get mass of the molecule. Important to determine the Position*/
-		int massMolecule = Math.round((new MFAnalyser(molecule)).getMass());
-		
-		int count = 0;
-		while(iterator.hasNext()){
-			IReaction reaction = (IReaction) iterator.next();
-			setOfFragments.add(addNewFragment(reaction.getProducts().getMolecule(0),
-					"Ionitzation", 
-					new Position(massMolecule,0),
-					((Double) reaction.getProperty("IonizationEnergy")).doubleValue(),
-					null,
-					null));
-			count++;
-		}
-		
-		/* process of fragmention from the obtained ionized molecules. Into of 
-		 * setOfFragment will be added all new fragment obtained */
+//		IPMolecularLearningDescriptor ipDescriptor = new IPMolecularLearningDescriptor();
+//		ipDescriptor.calculate(molecule);
+//		IReactionSet reactionSetIP = ipDescriptor.getReactionSet();
+//		Iterator iterator = reactionSetIP.reactions();
+//		IPReactionsExtraction.setCalculateRelativeProbabilites(reactionSetIP);
+//		
+//		/* get mass of the molecule. Important to determine the Position*/
+//		int massMolecule = Math.round((new MFAnalyser(molecule)).getMass());
+//		
+//		int count = 0;
+//		while(iterator.hasNext()){
+//			IReaction reaction = (IReaction) iterator.next();
+//			setOfFragments.add(addNewFragment(reaction.getProducts().getMolecule(0),
+//					"Ionitzation", 
+//					new Position(massMolecule,0),
+//					((Double) reaction.getProperty("IonizationEnergy")).doubleValue(),
+//					null,
+//					null));
+//			count++;
+//		}
+//		
+//		/* process of fragmention from the obtained ionized molecules. Into of 
+//		 * setOfFragment will be added all new fragment obtained */
 		for(int i = 0; i < setOfFragments.size() ; i++){
 			numberOfFragments = i;
 			String typeOfFragmentation = null;
@@ -129,13 +180,19 @@ public class Fragmenter {
 			System.out.println("*********************NEW:  "+i+"  ******************************************");
 			printInformation(fragmentToStudy);/**********************************************************/
 			}
-				
+			
+			List<IReactionProcess> listR = new ArrayList<IReactionProcess>();
+			
+			listR.add(new RadicalSiteInitiationReaction());
+			listR.add(new RadicalChargeSiteInitiationReaction());
+			
 			/*apply all reactions*/
-			for (int j = 0; j < 5; j++){
+			for (int j = 0; j < listR.size(); j++){
+				IReactionProcess type = listR.get(j);
 				IMoleculeSet fragments = null;
 				IReactionSet setOfReactions = null;
-				if(j == 0){/*1: radicalSiteInitiation*/
-					typeOfFragmentation = "RadicalSiteInitiation";
+//				if(j == 0){/*1: radicalSiteInitiation*/
+					typeOfFragmentation = type.getClass().getName();
 					
 					
 					if(printInfo)
@@ -146,9 +203,6 @@ public class Fragmenter {
 						IMoleculeSet setOfReactants = molecule.getBuilder().newMoleculeSet();
 						cleanFlagReactiveCenter((IMolecule)fragmentToStudy);
 						setOfReactants.addMolecule((IMolecule)fragmentToStudy);
-				        Object[] params = {Boolean.FALSE};
-				        RadicalSiteInitiationReaction type  = new RadicalSiteInitiationReaction();
-				        type.setParameters(params);
 				        setOfReactions = type.initiate(setOfReactants, null);
 				        
 				        if(printInfo)
@@ -163,126 +217,142 @@ public class Fragmenter {
 						continue;
 					}
 			        
-				}
-				if(j == 1){/*1: RadicalSiteInitiationH*/
-					typeOfFragmentation = "RadicalSiteInitiationH";
-					
-					if(printInfo)
-					System.out.println("--"+typeOfFragmentation+"--");
-					
-					try{
-					
-						IMoleculeSet setOfReactants = molecule.getBuilder().newMoleculeSet();
-						cleanFlagReactiveCenter((IMolecule)fragmentToStudy);
-						setOfReactants.addMolecule((IMolecule)fragmentToStudy);
-				        Object[] params = {Boolean.FALSE};
-				        RadicalSiteInitiationHReaction type  = new RadicalSiteInitiationHReaction();
-				        type.setParameters(params);
-				        setOfReactions = type.initiate(setOfReactants, null);
-				        
-				        if(printInfo)
-				        System.out.println("numberOfReactions: "+setOfReactions.getReactionCount());
-						
-				        if(setOfReactions.getReactionCount() == 0)
-							continue;
-				        
-					} catch (CDKException e) {
-						e.printStackTrace();
-						System.err.println("error in a fragmentation. ReactionType:"+typeOfFragmentation);
-						continue;
-					}
-				}
-				if(j == 2){/*1: carbonylElemination*/
-					typeOfFragmentation = "CarbonylElimination";
-					
-					if(printInfo)
-					System.out.println("--"+typeOfFragmentation+"--");
-					
-					try{
-						
-						IMoleculeSet setOfReactants = molecule.getBuilder().newMoleculeSet();
-						cleanFlagReactiveCenter((IMolecule)fragmentToStudy);
-						setOfReactants.addMolecule((IMolecule)fragmentToStudy);
-				        Object[] params = {Boolean.FALSE};
-				        CarbonylEliminationReaction type  = new CarbonylEliminationReaction();
-				        type.setParameters(params);
-				        setOfReactions = type.initiate(setOfReactants, null);
-				        
-				        if(printInfo)
-				        System.out.println("numberOfReactions: "+setOfReactions.getReactionCount());
-						
-				        if(setOfReactions.getReactionCount() == 0)
-							continue;
-			        
-					} catch (CDKException e) {
-						e.printStackTrace();
-						System.err.println("error in a fragmentation. ReactionType:"+typeOfFragmentation);
-						continue;
-					}
-				}
-				if(j == 3){/*1: HydrogenRearrangementDelta*/
-					typeOfFragmentation = "HydrogenRearrangementDelta";
-					
-					if(printInfo)
-					System.out.println("--"+typeOfFragmentation+"--");
-					
-					try{
-						
-						IMoleculeSet setOfReactants = molecule.getBuilder().newMoleculeSet();
-						cleanFlagReactiveCenter((IMolecule)fragmentToStudy);
-						setOfReactants.addMolecule((IMolecule)fragmentToStudy);
-				        Object[] params = {Boolean.FALSE};
-				        HydrogenRearrangementDeltaReaction type  = new HydrogenRearrangementDeltaReaction();
-				        type.setParameters(params);
-				        setOfReactions = type.initiate(setOfReactants, null);
-				        
-				        if(printInfo)
-				        System.out.println("numberOfReactions: "+setOfReactions.getReactionCount());
-						
-				        if(setOfReactions.getReactionCount() == 0)
-							continue;
-			        
-					} catch (CDKException e) {
-						e.printStackTrace();
-						System.err.println("error in a fragmentation. ReactionType:"+typeOfFragmentation);
-						continue;
-					}
-				}
-				if(j == 4){/*1: HydrogenRearrangementDelta*/
-					typeOfFragmentation = "HydrogenRearrangementGamma";
-					
-					if(printInfo)
-					System.out.println("--"+typeOfFragmentation+"--");
-					
-					try{
-						
-						IMoleculeSet setOfReactants = molecule.getBuilder().newMoleculeSet();
-						cleanFlagReactiveCenter((IMolecule)fragmentToStudy);
-						setOfReactants.addMolecule((IMolecule)fragmentToStudy);
-				        Object[] params = {Boolean.FALSE};
-				        HydrogenRearrangementGammaReaction type  = new HydrogenRearrangementGammaReaction();
-				        type.setParameters(params);
-				        setOfReactions = type.initiate(setOfReactants, null);
-				        
-				        if(printInfo)
-				        System.out.println("numberOfReactions: "+setOfReactions.getReactionCount());
-						
-				        if(setOfReactions.getReactionCount() == 0)
-							continue;
-			        
-					} catch (CDKException e) {
-						e.printStackTrace();
-						System.err.println("error in a fragmentation. ReactionType:"+typeOfFragmentation);
-						continue;
-					}
-				}
+//				}
+//				if(j == 1){/*1: RadicalSiteInitiationH*/
+//					typeOfFragmentation = "RadicalSiteInitiationH";
+//					
+//					if(printInfo)
+//					System.out.println("--"+typeOfFragmentation+"--");
+//					
+//					try{
+//					
+//						IMoleculeSet setOfReactants = molecule.getBuilder().newMoleculeSet();
+//						cleanFlagReactiveCenter((IMolecule)fragmentToStudy);
+//						setOfReactants.addMolecule((IMolecule)fragmentToStudy);
+//				        Object[] params = {Boolean.FALSE};
+//				        RadicalSiteInitiationHReaction type  = new RadicalSiteInitiationHReaction();
+//				        List<IParameterReact> paramList = new ArrayList<IParameterReact>();
+//					    IParameterReact param = new SetReactionCenter();
+//				        param.setParameter(Boolean.FALSE);
+//				        paramList.add(param);
+//				        type.setParameterList(paramList);
+//				        setOfReactions = type.initiate(setOfReactants, null);
+//				        
+//				        if(printInfo)
+//				        System.out.println("numberOfReactions: "+setOfReactions.getReactionCount());
+//						
+//				        if(setOfReactions.getReactionCount() == 0)
+//							continue;
+//				        
+//					} catch (CDKException e) {
+//						e.printStackTrace();
+//						System.err.println("error in a fragmentation. ReactionType:"+typeOfFragmentation);
+//						continue;
+//					}
+//				}
+//				if(j == 2){/*1: carbonylElemination*/
+//					typeOfFragmentation = "CarbonylElimination";
+//					
+//					if(printInfo)
+//					System.out.println("--"+typeOfFragmentation+"--");
+//					
+//					try{
+//						
+//						IMoleculeSet setOfReactants = molecule.getBuilder().newMoleculeSet();
+//						cleanFlagReactiveCenter((IMolecule)fragmentToStudy);
+//						setOfReactants.addMolecule((IMolecule)fragmentToStudy);
+//				        Object[] params = {Boolean.FALSE};
+//				        CarbonylEliminationReaction type  = new CarbonylEliminationReaction();
+//				        List<IParameterReact> paramList = new ArrayList<IParameterReact>();
+//					    IParameterReact param = new SetReactionCenter();
+//				        param.setParameter(Boolean.FALSE);
+//				        paramList.add(param);
+//				        type.setParameterList(paramList);
+//				        setOfReactions = type.initiate(setOfReactants, null);
+//				        
+//				        if(printInfo)
+//				        System.out.println("numberOfReactions: "+setOfReactions.getReactionCount());
+//						
+//				        if(setOfReactions.getReactionCount() == 0)
+//							continue;
+//			        
+//					} catch (CDKException e) {
+//						e.printStackTrace();
+//						System.err.println("error in a fragmentation. ReactionType:"+typeOfFragmentation);
+//						continue;
+//					}
+//				}
+//				if(j == 3){/*1: HydrogenRearrangementDelta*/
+//					typeOfFragmentation = "HydrogenRearrangementDelta";
+//					
+//					if(printInfo)
+//					System.out.println("--"+typeOfFragmentation+"--");
+//					
+//					try{
+//						
+//						IMoleculeSet setOfReactants = molecule.getBuilder().newMoleculeSet();
+//						cleanFlagReactiveCenter((IMolecule)fragmentToStudy);
+//						setOfReactants.addMolecule((IMolecule)fragmentToStudy);
+//				        Object[] params = {Boolean.FALSE};
+//				        RadicalSiteHrDeltaReaction type  = new RadicalSiteHrDeltaReaction();
+//				        List<IParameterReact> paramList = new ArrayList<IParameterReact>();
+//					    IParameterReact param = new SetReactionCenter();
+//				        param.setParameter(Boolean.FALSE);
+//				        paramList.add(param);
+//				        type.setParameterList(paramList);
+//				        setOfReactions = type.initiate(setOfReactants, null);
+//				        
+//				        if(printInfo)
+//				        System.out.println("numberOfReactions: "+setOfReactions.getReactionCount());
+//						
+//				        if(setOfReactions.getReactionCount() == 0)
+//							continue;
+//			        
+//					} catch (CDKException e) {
+//						e.printStackTrace();
+//						System.err.println("error in a fragmentation. ReactionType:"+typeOfFragmentation);
+//						continue;
+//					}
+//				}
+//				if(j == 4){/*1: HydrogenRearrangementDelta*/
+//					typeOfFragmentation = "HydrogenRearrangementGamma";
+//					
+//					if(printInfo)
+//					System.out.println("--"+typeOfFragmentation+"--");
+//					
+//					try{
+//						
+//						IMoleculeSet setOfReactants = molecule.getBuilder().newMoleculeSet();
+//						cleanFlagReactiveCenter((IMolecule)fragmentToStudy);
+//						setOfReactants.addMolecule((IMolecule)fragmentToStudy);
+//				        Object[] params = {Boolean.FALSE};
+//				        RadicalSiteHrGammaReaction type  = new RadicalSiteHrGammaReaction();
+//				        List<IParameterReact> paramList = new ArrayList<IParameterReact>();
+//					    IParameterReact param = new SetReactionCenter();
+//				        param.setParameter(Boolean.FALSE);
+//				        paramList.add(param);
+//				        type.setParameterList(paramList);
+//				        setOfReactions = type.initiate(setOfReactants, null);
+//				        
+//				        if(printInfo)
+//				        System.out.println("numberOfReactions: "+setOfReactions.getReactionCount());
+//						
+//				        if(setOfReactions.getReactionCount() == 0)
+//							continue;
+//			        
+//					} catch (CDKException e) {
+//						e.printStackTrace();
+//						System.err.println("error in a fragmentation. ReactionType:"+typeOfFragmentation);
+//						continue;
+//					}
+//				}
 				
 				
 				if(setOfReactions.getReactionCount() > 0){
-					Iterator sorI = setOfReactions.reactions();
+//					Iterator sorI = setOfReactions.reactions();
 					int counta = 0;
-					while(sorI.hasNext()){
-						IReaction rr = (IReaction)sorI.next();
+					for(IReaction rr:setOfReactions.reactions()){
+//						IReaction rr = (IReaction)sorI.next();
 						
 						if(printInfo)
 						System.out.println(counta+" :-------------------------------------------");
@@ -400,13 +470,14 @@ public class Fragmenter {
 	
 	private void printInformation(IMolecule fragmentToStudy) {
 		String smiles = (new SmilesGenerator()).createSMILES(fragmentToStudy);
-		MFAnalyser mfAnalyser = new MFAnalyser(fragmentToStudy);
-		System.out.println("SMILE: " + smiles+", count Atoms: " + fragmentToStudy.getAtomCount()+ ", count Bonds: " + fragmentToStudy.getBondCount() + ", imass: "+ Math.round(mfAnalyser.getMass()) );
+		IMolecularFormula formula = MolecularFormulaManipulator.getMolecularFormula(fragmentToStudy);
+		int mass = (int)MolecularFormulaManipulator.getTotalExactMass(formula);
+		System.out.println("SMILE: " + smiles+", count Atoms: " + fragmentToStudy.getAtomCount()+ ", count Bonds: " + fragmentToStudy.getBondCount() + ", imass: "+ mass );
 		
-		Iterator atomsI = fragmentToStudy.atoms();
+//		Iterator atomsI = fragmentToStudy.atoms();
 		int count = 0;
-		while(atomsI.hasNext()){
-			IAtom atom = (IAtom)atomsI.next();
+		for(IAtom atom:fragmentToStudy.atoms()){
+//			IAtom atom = (IAtom)atomsI.next();
 			int se = fragmentToStudy.getConnectedSingleElectronsCount(atom);
 			System.out.println("Atom: "
 							+ count
@@ -431,21 +502,22 @@ public class Fragmenter {
 	 * @param nameProcess  Name of the process which is obtained this molecule.
 	 * @param parent       position of the predecessor.
 	 * @param probab       The probability of obtaining this reaction.
-	 * @param mapping      The mapping of the reaction
+	 * @param iterable      The mapping of the reaction
 	 * @param fragmentNB   IMolecule represents the Neighboring
 	 * @return The MSFragments value
 	 */
-	private FragmentMolecule addNewFragment(IMolecule fragment, String nameProcess, Position parent, double probab, Iterator mapping, IMolecule fragmentNB){
-		int mass = Math.round((new MFAnalyser(fragment)).getMass());
+	private FragmentMolecule addNewFragment(IMolecule fragment, String nameProcess, Position parent, double probab, Iterable<IMapping> iterable, IMolecule fragmentNB){
+		IMolecularFormula formula = MolecularFormulaManipulator.getMolecularFormula(fragment);
+		int mass = (int)MolecularFormulaManipulator.getTotalExactMass(formula);
 		Position id = new Position(mass, fragTree.getFragments(mass).size());
 		
 		FragmentMolecule msfrag = new FragmentMolecule(fragment, id, nameProcess, parent, probab);
 		fragTree.addFragment(msfrag);
 
 		if(!nameProcess.equals("Ionitzation"))
-			fragmentToStudy.setChildren(id, nameProcess, mapping, fragmentNB,  probab);
+			fragmentToStudy.setChildren(id, nameProcess, iterable, fragmentNB,  probab);
 		else
-			fragTree.getFragment(new Position(mass, 0)).setChildren(id,nameProcess, mapping, fragmentNB, probab);
+			fragTree.getFragment(new Position(mass, 0)).setChildren(id,nameProcess, iterable, fragmentNB, probab);
 		
 		return msfrag;
 
@@ -458,20 +530,21 @@ public class Fragmenter {
 	 * @param nameProcess  Name of the process which is obtained this molecule.
 	 * @param parent       position of the predecessor.
 	 * @param probab       The probability of obtaining this reaction.
-	 * @param mapping      The mapping of the reaction
+	 * @param iterable      The mapping of the reaction
 	 * @param fragmentNB   IMolecule represents the Neighboring
 	 * @return The MSFragments value
 	 */
-	private void addFragment(FragmentMolecule fragment, String nameProcess, Position parent, double probab, Iterator mapping, IMolecule fragmentNB){
-		int mass = Math.round((new MFAnalyser(fragment)).getMass());
+	private void addFragment(FragmentMolecule fragment, String nameProcess, Position parent, double probab, Iterable<IMapping> iterable, IMolecule fragmentNB){
+		IMolecularFormula formula = MolecularFormulaManipulator.getMolecularFormula(fragment);
+		int mass = (int)MolecularFormulaManipulator.getTotalExactMass(formula);
 		Position id = fragment.getIdP();
 		
 		fragment.setParent(parent);
 
 		if(!nameProcess.equals("Ionitzation"))
-			fragmentToStudy.setChildren(id, nameProcess, mapping, fragmentNB,  probab);
+			fragmentToStudy.setChildren(id, nameProcess, iterable, fragmentNB,  probab);
 		else
-			fragTree.getFragment(new Position(mass, 0)).setChildren(id,nameProcess, mapping, fragmentNB, probab);
+			fragTree.getFragment(new Position(mass, 0)).setChildren(id,nameProcess, iterable, fragmentNB, probab);
 
 	}
 	/**

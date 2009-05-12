@@ -15,7 +15,7 @@ import net.bioclipse.plugins.medea.core.reaction.ExtractorSetQsarsRSI;
 import net.bioclipse.plugins.medea.core.reaction.ReactionKp;
 
 import org.openscience.cdk.qsar.model.QSARModelException;
-import org.openscience.cdk.qsar.model.weka.J48WModel;
+import org.openscience.chemojava.qsar.model.weka.J48WModel;
 
 public class AdministratorFilesReader {
 	

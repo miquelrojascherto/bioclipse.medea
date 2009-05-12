@@ -1,12 +1,12 @@
 package net.bioclipse.plugins.actions;
 
 
-import net.bioclipse.model.CDKResource;
-import net.bioclipse.model.CMLResource;
-import net.bioclipse.views.BioResourceView;
+import net.bioclipse.plugins.wizards.PredictWizard;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IViewActionDelegate;
@@ -41,6 +41,7 @@ public class PredictAction implements IViewActionDelegate {
 	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		view=(IViewPart) targetPart;
 	}
 	/**
 	 * The action has been activated. The argument of the
@@ -49,36 +50,39 @@ public class PredictAction implements IViewActionDelegate {
 	 * 
 	 * @see IActionDelegate#run(IAction)
 	 */
-	@SuppressWarnings("static-access")
 	public void run(IAction action) {
-		if (view instanceof BioResourceView) {
-			Object first = ((BioResourceView)view).getSelectedResource();
-			IChemFile cf = null;
-			String name = null;
-			/* For CDKResource */
-			if (first instanceof CDKResource){
-				CDKResource cdkres = (CDKResource)first;
-				cdkres.getPersistedResource().load();
-				cdkres.parseResource();
-				cf= (IChemFile)cdkres.getParsedResource();
-				name = cdkres.getName();
-			}
-			/* For CMLResource */
-			else if (first instanceof CMLResource){
-				CMLResource cmlres = (CMLResource)first;
-				cmlres.getPersistedResource().load();
-				cmlres.parseResource();
-				cf= (IChemFile)cmlres.getParsedResource();
-				name = cmlres.getName();
-			}
-			if(cf != null){
-				IAtomContainer ac = cf.getChemSequence(0).getChemModel(0).getMoleculeSet().getAtomContainer(0);
-				ac.setID(name);
-				if(ac != null)
-					callMedaProcess(ac);
-				
-			}
-		}
+//		PredictWizard predwiz = new PredictWizard(view);
+//		WizardDialog wd=new WizardDialog(new Shell(),predwiz);
+//		wd.open();		
+
+//		if (view instanceof BioResourceView) {
+//			Object first = ((BioResourceView)view).getSelectedResource();
+//			IChemFile cf = null;
+//			String name = null;
+//			/* For CDKResource */
+//			if (first instanceof CDKResource){
+//				CDKResource cdkres = (CDKResource)first;
+//				cdkres.getPersistedResource().load();
+//				cdkres.parseResource();
+//				cf= (IChemFile)cdkres.getParsedResource();
+//				name = cdkres.getName();
+//			}
+//			/* For CMLResource */
+//			else if (first instanceof CMLResource){
+//				CMLResource cmlres = (CMLResource)first;
+//				cmlres.getPersistedResource().load();
+//				cmlres.parseResource();
+//				cf= (IChemFile)cmlres.getParsedResource();
+//				name = cmlres.getName();
+//			}
+//			if(cf != null){
+//				IAtomContainer ac = cf.getChemSequence(0).getChemModel(0).getMoleculeSet().getAtomContainer(0);
+//				ac.setID(name);
+//				if(ac != null)
+//					callMedaProcess(ac);
+//				
+//			}
+//		}
 	}
 	/**
 	 * Selection in the workbench has been changed. 

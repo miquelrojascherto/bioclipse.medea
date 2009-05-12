@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.openscience.cdk.Molecule;
+import org.openscience.cdk.interfaces.IMapping;
 import org.openscience.cdk.interfaces.IMolecule;
 
 /**
@@ -68,12 +69,12 @@ public class FragmentMolecule extends Molecule {
 	 * 
 	 * @param children    The children of this fragment
 	 * @param nameProcess The name which this process is obtained
-	 * @param mapping     The mapping of the reaction
+	 * @param iterable     The mapping of the reaction
 	 */
-	public void setChildren(Position children, String nameProcess, Iterator mapping, IMolecule neighbouring, double prob){
+	public void setChildren(Position children, String nameProcess, Iterable<IMapping> iterable, IMolecule neighbouring, double prob){
 		childrenA.add(children);
 		processA.add(nameProcess);
-		mappingA.add(mapping);
+		mappingA.add((Iterator) iterable);
 		neighbouringA.add(neighbouring);
 		probabChildrenA.add(prob);
 	}

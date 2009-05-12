@@ -162,14 +162,14 @@ public class ExtractorProbability {
 	}
 	/**
 	 * get the probability for this reaction
-	 * @param mapping 
+	 * @param iterable 
 	 * 
 	 * @param fragmentToStudy
 	 * @param molecule
 	 * @param molecule2
 	 * @return
 	 */
-	public double getProbability(FragmentMolecule reactant, int nameR, IMolecule productA, IMolecule productB, Iterator mapping) {
+	public double getProbability(FragmentMolecule reactant, int nameR, IMolecule productA, IMolecule productB, Iterable<IMapping> iterable) {
 		String name = "";
 		double probability = 0.0;
 		ReactionKp reaction = new ReactionKp();
@@ -177,8 +177,8 @@ public class ExtractorProbability {
 		reaction.addProduct(productA);
 		if(productB != null)
 			reaction.addProduct(productB);
-		while(mapping.hasNext())
-			reaction.addMapping((IMapping)mapping.next());
+		for(IMapping mapping:iterable)
+			reaction.addMapping(mapping);
 		if(nameR == 0)
 			name = "RadicalSiteInitiation";
 		if(nameR == 1)

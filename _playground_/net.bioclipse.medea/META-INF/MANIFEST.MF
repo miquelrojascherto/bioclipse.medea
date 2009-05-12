@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: MEDEA Plug-in
 Bundle-SymbolicName: net.bioclipse.medea;singleton:=true
 Bundle-Version: 1.0.1
-Bundle-Activator: net.bioclipse.plugins.Bc_MEDEAPlugin
+Bundle-Activator: net.bioclipse.medea.Activator
 Bundle-Vendor: Miguel Rojas
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -21,7 +21,16 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.smiles,
  net.bioclipse.cdk.ui,
  org.eclipse.ui.views,
- org.xmlcml.cmlxom
+ org.xmlcml.cmlxom,
+ org.openscience.cdk.standard,
+ org.openscience.cdk.qsarionpot;bundle-version="1.2.2",
+ org.openscience.cdk.extra;bundle-version="1.2.2",
+ org.openscience.cdk.ionpot;bundle-version="1.2.2",
+ org.openscience.cdk.qsar;bundle-version="1.2.2",
+ org.openscience.cdk.formula;bundle-version="1.2.2",
+ org.openscience.cdk.isomorphism;bundle-version="1.2.2",
+ net.sourceforge.weka;bundle-version="3.4.6",
+ org.openscience.cdk.qsarweka;bundle-version="1.2.2"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.plugins.medea.core
 Import-Package: org.apache.log4j;version="1.2.15"
