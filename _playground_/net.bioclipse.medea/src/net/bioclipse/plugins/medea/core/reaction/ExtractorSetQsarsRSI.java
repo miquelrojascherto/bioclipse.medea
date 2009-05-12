@@ -238,7 +238,10 @@ public class ExtractorSetQsarsRSI implements ExtractorSetQsars{
 							StructureResonanceGenerator gR = new StructureResonanceGenerator();/*according G. should be integrated the breaking bonding*/
 							
 							IAtomContainerSet iSet = gR.getContainers(neighbour);
-							results.add((new Double(iSet.getAtomContainerCount())).doubleValue());
+							double 	rr = 0.0;
+							if(iSet != null)
+								rr = (new Double(iSet.getAtomContainerCount())).doubleValue();
+							results.add(rr);
 							
 							break;
 						} catch (CDKException e) {
