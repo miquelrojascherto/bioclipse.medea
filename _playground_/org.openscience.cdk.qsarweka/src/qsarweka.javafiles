@@ -1,0 +1,15 @@
+org/openscience/chemojava/qsar/model/weka/FilterUnSupervisedRandomize.java
+org/openscience/chemojava/qsar/model/weka/EMCluster.java
+org/openscience/chemojava/qsar/model/weka/SMOModel.java
+org/openscience/chemojava/qsar/model/weka/SMOregModel.java
+org/openscience/chemojava/qsar/model/weka/IWekaModel.java
+org/openscience/chemojava/qsar/model/weka/MultilayerPerceptronModel.java
+org/openscience/chemojava/qsar/model/weka/KmeansCluster.java
+org/openscience/chemojava/qsar/model/weka/J48WModel.java
+org/openscience/chemojava/qsar/model/weka/NaiveBayesModel.java
+org/openscience/chemojava/qsar/model/weka/LinearRegressionWModel.java
+org/openscience/chemojava/qsar/model/weka/FilterSupervisedResample.java
+org/openscience/chemojava/qsar/model/weka/SimpleLinearRegressionModel.java
+org/openscience/chemojava/qsar/model/weka/FilterUnSupervisedResample.java
+org/openscience/chemojava/qsar/model/weka/DensityBasedClustererModel.java
+org/openscience/chemojava/libio/weka/Weka.java
