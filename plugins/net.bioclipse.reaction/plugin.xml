@@ -7,7 +7,7 @@
 	        class="net.bioclipse.reaction.editor.ReactionMultiPageEditor"
 	        contributorClass="net.bioclipse.reaction.editor.ReactionMultiPageEditorContributor"
 	        icon="icons/tree.gif"
-	        id="net.bioclipse.plugins.bc_reaction.editors.ReactionMultiPageEditor"
+	        id="net.bioclipse.editors.ReactionMultiPageEditor"
 	        name="Reaction Editor">
             <contentTypeBinding
                   contentTypeId="net.bioclipse.contenttypes.cml.multipleReactions">
@@ -27,13 +27,13 @@
               name="Reaction"/>
         <wizard
               category="bc_reaction.ReactionCategory"
-              class="net.bioclipse.plugins.bc_reaction.wizards.NewReactionWizard"
+              class="net.bioclipse.reaction.wizards.NewReactionWizard"
               icon="icons/tree.gif"
               id="bc_reaction.NewReactionWizard"
               name="New Reaction"
               project="true"/>
      </extension>
-     <extension
+     <!--extension
            point="org.eclipse.ui.preferencePages">
         <page
               class="net.bioclipse.plugins.bc_reaction.perspective.ReactionPreferencePage"
@@ -52,5 +52,5 @@
               icon="icons/tree.gif"
               id="net.bioclipse.plugins.ReactionPerspective"
               name="Reaction"/>
-     </extension>
+     </extension-->
 </plugin>
