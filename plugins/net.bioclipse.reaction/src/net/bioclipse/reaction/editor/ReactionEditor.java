@@ -1,5 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2007-2009  Miguel Rojas, Stefan Kuhn
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * www.eclipse.org—epl-v10.html <http://www.eclipse.org/legal/epl-v10.html>
+ *
+ * Contact: http://www.bioclipse.net/
+ ******************************************************************************/
 package net.bioclipse.reaction.editor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.Iterator;
@@ -8,6 +19,7 @@ import java.util.List;
 import net.bioclipse.cdk.domain.ICDKReaction;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
+import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.reaction.editparts.MyEditPartFactory;
 import net.bioclipse.reaction.editparts.tree.TreeEditPartFactory;
 import net.bioclipse.reaction.layout.HierarchicLayer;
@@ -20,7 +32,9 @@ import net.bioclipse.reaction.model.LineConnectionModel;
 import net.bioclipse.reaction.model.ReactionObjectModel;
 import net.bioclipse.reaction.tools.FileMoveToolEntry;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.Viewport;
@@ -67,6 +81,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMolecule;
@@ -74,8 +89,7 @@ import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionSet;
 
 /**
- * 
- * @author Miguel Rojas 
+ * An editor page showing a reaction as a tree and a detailed view.
  */
 public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICDKChangeListener,IJCPEditorPart, BioResourceChangeListener {
 	private IEditorInput editorInput;
@@ -83,6 +97,8 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	private SashForm form;
 	private ContentsModel contentsModel;
 	private GraphicalViewer viewer;
+	private static final Logger logger = Logger.getLogger( ReactionEditor.class.toString());
+	
 	/**
 	 * Constructor of the ReactionEditor object
 	 * 
@@ -90,8 +106,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	 */
 	public ReactionEditor(IEditorInput editorInput){
 		this.editorInput = editorInput;
-		setEditDomain(new DefaultEditDomain(this));
-		
+		setEditDomain(new DefaultEditDomain(this));		
 	}
 	/*
 	 * (non-Javadoc)
@@ -100,22 +115,12 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	public void createPartControl(Composite parent) {
 		form = new SashForm(parent,SWT.VERTICAL);
 		form.setLayout(new FillLayout());
-		
-		
 		super.createPartControl(form);
 		try {
             child1 = new ReactMolDrawingComposite(form, SWT.PUSH, this);
-        } catch ( BioclipseException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }	
-		
-		//java.awt.Frame jcpFrame = SWT_AWT.new_Frame(child1);
-		//jcpFrame.add(child1.getDrawingPanel());
-		//jcpScrollBar = new JCPScrollBar(this, true, true);
-		//ControlListener controlListener = new JCPControlListener(this);
-		//child1.addControlListener(controlListener);
-		
+    } catch ( Exception e ) {
+        LogUtils.handleException( e, logger );
+    }	
 	}
 	
 	/* (non-Javadoc)
@@ -127,34 +132,17 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		//viewer.addDropTargetListener(new MyFileDropTargetListener(viewer));
 		//viewer.addDragSourceListener(new MyFileDragSourceListener(viewer));
 		
-		
-//		try {
-//            child1 = new ReactMolDrawingComposite(form, SWT.EMBEDDED | SWT.H_SCROLL | SWT.V_SCROLL, this);
-//        } catch ( BioclipseException e1 ) {
-//            // TODO Auto-generated catch block
-//            e1.printStackTrace();
-//        }	
-//		
-		
 		List<ICDKReaction> model;
-        try {
-            model = this.getModelFromEditorInput();
-            contentsModel = createContentsModel(model);
-            
-            @SuppressWarnings("unused")
-            HierarchicLayer hLayer = new HierarchicLayer(contentsModel);
-            viewer.setContents(contentsModel);
-        } catch ( BioclipseException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-		
-
+    try {
+        model = this.getModelFromEditorInput();
+        contentsModel = createContentsModel(model);
+        viewer.setContents(contentsModel);
+    } catch (Exception e ) {
+        LogUtils.handleException( e, logger );
+    }
 	}
 
 	private ContentsModel createContentsModel(List<ICDKReaction> model) {
-
-		
 		contentsModel = new ContentsModel();
 		int countReactions = 0;
 		int countcompounds = 0;
@@ -400,17 +388,6 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		IAction action = new DirectEditAction((IWorkbenchPart)this);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
-		
-		/*contribution for different Layouts*/
-//		action = new AlignmentAction((IWorkbenchPart) this,
-//				PositionConstants.LEFT);
-//		registry.registerAction(action);
-//		getSelectionActions().add(action.getId());
-//
-//		action = new AlignmentAction((IWorkbenchPart) this,
-//				PositionConstants.CENTER);
-//		registry.registerAction(action);
-//		getSelectionActions().add(action.getId());
 	}
 	/*
 	 * (non-Javadoc)
@@ -419,7 +396,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	public Object getAdapter(Class type) {
 		if (type == ZoomManager.class)
 			return ((ScalableRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
-
+		//TODO outline
 		/*if (type == IContentOutlinePage.class) {
 			return new MyContentOutlinePage();
 		}*/
@@ -436,15 +413,11 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	/**
 	 * Get the IChemModel from the parsedResource
 	 * @return The IChemModel necessary for ReactionEditor
-	 * @throws BioclipseException 
 	 */
-	public List<ICDKReaction> getModelFromEditorInput() throws BioclipseException{
+	public List<ICDKReaction> getModelFromEditorInput() throws BioclipseException, IOException, CDKException, CoreException{
 	    return ReactionMultiPageEditor.getModelFromEditorInput( this.editorInput);	    
 	}
-	public void stateChanged(EventObject arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+
 	/**
 	 * get the DrawingPanel object
 	 * 
