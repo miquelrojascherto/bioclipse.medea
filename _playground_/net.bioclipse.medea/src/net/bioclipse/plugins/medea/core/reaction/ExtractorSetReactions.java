@@ -9,10 +9,11 @@ import net.bioclipse.plugins.medea.core.Position;
 
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMapping;
+import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.smiles.SmilesGenerator;
-import org.openscience.cdk.tools.MFAnalyser;
+import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 
 public class ExtractorSetReactions {
 	
@@ -35,8 +36,8 @@ public class ExtractorSetReactions {
 		IReactionSet setOfReactions = DefaultChemObjectBuilder.getInstance().newReactionSet();
 		
 		IMolecule molecule = fragmentTree.getMolecule();
-		MFAnalyser mfAnalyser = new MFAnalyser(molecule);
-		int massI = Math.round(mfAnalyser.getMass());
+		IMolecularFormula formula = MolecularFormulaManipulator.getMolecularFormula(molecule);
+		int massI = (int) MolecularFormulaManipulator.getTotalExactMass(formula);
 		
 		FragmentMolecule fm = fragmentTree.getFragment(new Position(massI,0));
 		ArrayList<FragmentMolecule> al = new ArrayList<FragmentMolecule>();

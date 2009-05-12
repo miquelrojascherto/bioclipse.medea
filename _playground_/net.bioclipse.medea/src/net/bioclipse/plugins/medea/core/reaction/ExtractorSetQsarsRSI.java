@@ -1,26 +1,23 @@
 package net.bioclipse.plugins.medea.core.reaction;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
-import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMapping;
+import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.ISingleElectron;
 import org.openscience.cdk.qsar.descriptors.atomic.EffectiveAtomPolarizabilityDescriptor;
 import org.openscience.cdk.qsar.descriptors.atomic.PartialPiChargeDescriptor;
 import org.openscience.cdk.qsar.descriptors.atomic.PartialSigmaChargeDescriptor;
 import org.openscience.cdk.qsar.descriptors.atomic.SigmaElectronegativityDescriptor;
-import org.openscience.cdk.qsar.descriptors.bond.ResonancePositiveChargeDescriptor;
-import org.openscience.cdk.qsar.result.DoubleArrayResult;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.smiles.SmilesGenerator;
-import org.openscience.cdk.tools.MFAnalyser;
 import org.openscience.cdk.tools.StructureResonanceGenerator;
+import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 /**
  * Class which extract the qsar from a reactions for RadicalSiteInitiation.
  * 
@@ -31,7 +28,7 @@ public class ExtractorSetQsarsRSI implements ExtractorSetQsars{
 	private SigmaElectronegativityDescriptor descriptor1;
 	private PartialPiChargeDescriptor descriptor2;
 	private EffectiveAtomPolarizabilityDescriptor descriptor3;
-	private ResonancePositiveChargeDescriptor descriptor4;
+//	private ResonancePositiveChargeDescriptor descriptor4;
 	/**
 	 * Extractor of the ExtractorSetQsars object
 	 */
@@ -40,7 +37,7 @@ public class ExtractorSetQsarsRSI implements ExtractorSetQsars{
 		descriptor1  = new SigmaElectronegativityDescriptor();
 		descriptor2 = new PartialPiChargeDescriptor();
 		descriptor3 = new EffectiveAtomPolarizabilityDescriptor();
-		descriptor4 = new ResonancePositiveChargeDescriptor();
+//		descriptor4 = new ResonancePositiveChargeDescriptor();
 	}
 	/**
 	 * get an ArrayList with all descriptors for a this Reaction
@@ -106,14 +103,14 @@ public class ExtractorSetQsarsRSI implements ExtractorSetQsars{
 	 * @param reactant The IMolecule(reactant)
 	 * @param mapping  The Iterator with mappings
 	 */
-	private ArrayList<Double> applyDescritorsReactant(IMolecule reactant, Iterator mappingI) {
+	private ArrayList<Double> applyDescritorsReactant(IMolecule reactant, Iterable<IMapping> iterable) {
 		ArrayList<Double> results = new ArrayList<Double>();
 		Integer[] object1 = {new Integer(6)};
 		int count = 0;
 		IAtom atom2 = null;
 		IAtom atom3 = null;
-		while(mappingI.hasNext()){
-			IMapping mapping = (IMapping)mappingI.next();
+		for(IMapping mapping:iterable){
+//			IMapping mapping = (IMapping)iterable.next();
 			IChemObject object = mapping.getChemObject(0);/* 0 is reactant, 1 is product, mapping*/
 			if(object instanceof IAtom){
 				if(reactant.contains((IAtom)object)){
@@ -131,19 +128,20 @@ public class ExtractorSetQsarsRSI implements ExtractorSetQsars{
 						
 					}
 				}
-			}else if(object instanceof IBond){
-				if(reactant.contains((IBond)object)){
-					IBond bb = (IBond)object;
-					try {
-					    DoubleArrayResult dar = ((DoubleArrayResult)descriptor4.calculate(bb, reactant).getValue());
-					    double r = (dar.get(0)+dar.get(1))/2;
-					    results.add(r);
-					} catch (CDKException e) {
-						e.printStackTrace();
-					}
-					results.add(bb.getOrder());
-				}
 			}
+//			else if(object instanceof IBond){
+//				if(reactant.contains((IBond)object)){
+//					IBond bb = (IBond)object;
+//					try {
+//					    DoubleArrayResult dar = ((DoubleArrayResult)descriptor4.calculate(bb, reactant).getValue());
+//					    double r = (dar.get(0)+dar.get(1))/2;
+//					    results.add(r);
+//					} catch (CDKException e) {
+//						e.printStackTrace();
+//					}
+//					results.add(bb.getOrder());
+//				}
+//			}
 			count++;
 		}
 		
@@ -157,14 +155,14 @@ public class ExtractorSetQsarsRSI implements ExtractorSetQsars{
 	 * @param product The IMolecule(productA)
 	 * @param mapping  The Iterator with mappings
 	 */
-	private ArrayList<Double> applyDescritorsProductA(IMolecule product, Iterator mappingI) {
+	private ArrayList<Double> applyDescritorsProductA(IMolecule product, Iterable<IMapping> iterable) {
 		ArrayList<Double> results = new ArrayList<Double>();
 		Integer[] object1 = {new Integer(6)};
 		Object[] object2 = {new Integer(6),new Boolean(false)};
 		int count = 0;
-		while(mappingI.hasNext()){/* second is the atom  [A1*]-A2-A3* => A1=A2 + [A3*]*/
+		for(IMapping mapping:iterable){/* second is the atom  [A1*]-A2-A3* => A1=A2 + [A3*]*/
 			
-			IMapping mapping = (IMapping)mappingI.next();
+//			IMapping mapping = (IMapping)iterable.next();
 			if(count == 0){
 				count++;
 				continue;
@@ -187,9 +185,8 @@ public class ExtractorSetQsarsRSI implements ExtractorSetQsars{
 							result =((DoubleResult)descriptor3.calculate(aap, product).getValue()).doubleValue();
 							results.add(result);
 							int numberC = 0;
-							Iterator iter = product.atoms();
-							while(iter.hasNext()){
-								IAtom a = (IAtom)iter.next();
+							for(IAtom a:product.atoms()){
+//								IAtom a = (IAtom)iter.next();
 								if(a.getSymbol().equals("C"))
 									numberC++;
 							}
@@ -217,12 +214,12 @@ public class ExtractorSetQsarsRSI implements ExtractorSetQsars{
 	 * @param product The IMolecule(productB)
 	 * @param mapping  The Iterator with mappings
 	 */
-	private ArrayList<Double> applyDescritorsProductB(IMolecule neighbour, Iterator mappingI) {
+	private ArrayList<Double> applyDescritorsProductB(IMolecule neighbour, Iterable<IMapping> iterable) {
 		ArrayList<Double> results = new ArrayList<Double>();
 		Integer[] object1 = {new Integer(6)};
 		Object[] object2 = {new Integer(6),new Boolean(false)};
-		while(mappingI.hasNext()){
-			IMapping mapping = (IMapping)mappingI.next();
+		for(IMapping mapping:iterable){
+//			IMapping mapping = (IMapping)iterable.next();
 			IChemObject object = mapping.getChemObject(1);/* 0 is reactant, 1 is product, mapping*/
 			if(object instanceof IAtom){
 				IAtom aap = (IAtom)object;
@@ -240,7 +237,7 @@ public class ExtractorSetQsarsRSI implements ExtractorSetQsars{
 							
 							StructureResonanceGenerator gR = new StructureResonanceGenerator();/*according G. should be integrated the breaking bonding*/
 							
-							IAtomContainerSet iSet = gR.getAllStructures(neighbour);
+							IAtomContainerSet iSet = gR.getContainers(neighbour);
 							results.add((new Double(iSet.getAtomContainerCount())).doubleValue());
 							
 							break;
@@ -259,13 +256,14 @@ public class ExtractorSetQsarsRSI implements ExtractorSetQsars{
 	private void printInformation(IMolecule fragmentToStudy) {
 		System.out.println("print infom");
 		String smiles = (new SmilesGenerator()).createSMILES(fragmentToStudy);
-		MFAnalyser mfAnalyser = new MFAnalyser(fragmentToStudy);
-		System.out.println("SMILE: " + smiles+", count Atoms: " + fragmentToStudy.getAtomCount()+ ", count Bonds: " + fragmentToStudy.getBondCount() + ", imass: "+ Math.round(mfAnalyser.getMass()) );
+		IMolecularFormula formula = MolecularFormulaManipulator.getMolecularFormula(fragmentToStudy);
 		
-		Iterator atoms = fragmentToStudy.atoms();
+		System.out.println("SMILE: " + smiles+", count Atoms: " + fragmentToStudy.getAtomCount()+ ", count Bonds: " + fragmentToStudy.getBondCount() + ", imass: "+ MolecularFormulaManipulator.getTotalExactMass(formula));
+		
+//		Iterator atoms = fragmentToStudy.atoms();
 		int count = 0;
-		while(atoms.hasNext()){
-			IAtom atom = (IAtom)atoms.next();
+		for(IAtom atom:fragmentToStudy.atoms()){
+//			IAtom atom = (IAtom)atoms.next();
 			ISingleElectron[] se = (ISingleElectron[])fragmentToStudy.getConnectedSingleElectronsList(atom).toArray();
 			System.out.println("Atom: "
 							+ count

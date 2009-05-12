@@ -1,25 +1,15 @@
 package net.bioclipse.plugins.medea.core.reaction;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IAtomContainerSet;
-import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMapping;
 import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.interfaces.ISingleElectron;
 import org.openscience.cdk.qsar.descriptors.atomic.EffectiveAtomPolarizabilityDescriptor;
 import org.openscience.cdk.qsar.descriptors.atomic.PartialPiChargeDescriptor;
 import org.openscience.cdk.qsar.descriptors.atomic.PartialSigmaChargeDescriptor;
-import org.openscience.cdk.qsar.descriptors.atomic.SigmaElectronegativityDescriptor;
-import org.openscience.cdk.qsar.descriptors.bond.ResonancePositiveChargeDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
-import org.openscience.cdk.smiles.SmilesGenerator;
-import org.openscience.cdk.tools.MFAnalyser;
-import org.openscience.cdk.tools.StructureResonanceGenerator;
-import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 /**
  * Class which extract the qsar from a reactions for CarbonylElimination.
  * 
@@ -66,22 +56,21 @@ public class ExtractorSetQsarsRSH implements ExtractorSetQsars{
 	 * @param product The IMolecule(productA)
 	 * @param mapping  The Iterator with mappings
 	 */
-	private ArrayList<Double> applyDescritorsReactant(IMolecule reactant, Iterator mappingI) {
+	private ArrayList<Double> applyDescritorsReactant(IMolecule reactant, Iterable<IMapping> iterable) {
 		ArrayList<Double> results = new ArrayList<Double>();
 		Integer[] object1 = {new Integer(6)};
 		Object[] object2 = {new Integer(6),new Boolean(false)};
 		int count = 0;
 		/*problems with mapping, not valid if a product come from two different reactants.*/
 //		while(mappingI.hasNext()){/* second is the atom  [A1*]-A2-A3* => A1=A2 + [A3*]*/
-		Iterator iterator = reactant.atoms();
-		while(iterator.hasNext()){
+		for(IAtom aap:reactant.atoms()){
 //			IMapping mapping = (IMapping)mappingI.next();
 			
 //			if(count == 2){
 //				IChemObject object = mapping.getChemObject(1);/* 0 is reactant, 1 is product, mapping*/
 //				if(object instanceof IAtom){
 //					IAtom aap = (IAtom)object;
-			IAtom aap = (IAtom)iterator.next();
+//			IAtom aap = (IAtom)iterator.next();
 //					System.out.println("i_: "+product.getAtomNumber(aap)+", "+aap.getID()+", "+aap);
 					if(reactant.contains(aap) && aap.getFormalCharge() == 1){
 							try {

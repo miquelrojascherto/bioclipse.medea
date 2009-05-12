@@ -1,10 +1,10 @@
 package net.bioclipse.plugins.medea.core.reaction;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
@@ -150,16 +150,16 @@ public class IPReactionsExtraction {
 	 */
 	public static void setCalculateRelativeProbabilites(IReactionSet reactionSet) {
 		double sumT = 0.0;
-		Iterator iterator = reactionSet.reactions();
-		while(iterator.hasNext()){
-			IReaction reaction = (IReaction) iterator.next();
+//		Iterator iterator = reactionSet.reactions();
+		for(IReaction reaction:reactionSet.reactions()){
+//			IReaction reaction = (IReaction) iterator.next();
 			sumT += ((Double) reaction.getProperty("IonizationEnergy")).doubleValue();
 		}
 //		for(int i = 0; i < ipList.size() ; i++)
 //			sumT += ipList.get(i).doubleValue();
-		iterator = reactionSet.reactions();
-		while(iterator.hasNext()){
-			IReaction reaction = (IReaction) iterator.next();
+
+		for(IReaction reaction:reactionSet.reactions()){
+//			IReaction reaction = (IReaction) iterator.next();
 			double result = ((Double) reaction.getProperty("IonizationEnergy")).doubleValue();
 			result = result/sumT;
 //			System.out.println("result: "+result);
@@ -189,13 +189,13 @@ public class IPReactionsExtraction {
 	 */
 	private IMolecule cleanReactiveCenters(IMolecule ac) {
 //		IBond[] bonds = ac.getBonds();
-		Iterator<IBond> bonds = ac.bonds();
-		while (bonds.hasNext())
-			bonds.next().setFlag(CDKConstants.REACTIVE_CENTER,false);
+//		Iterator<IBond> bonds = ac.bonds();
+		for(IBond bond:ac.bonds())
+			bond.setFlag(CDKConstants.REACTIVE_CENTER,false);
 		
-		Iterator atomsI = ac.atoms();
-		while(atomsI.hasNext()){
-			IAtom atom = (IAtom) atomsI.next();
+//		Iterator atomsI = ac.atoms();
+		for(IAtom atom:ac.atoms()){
+//			IAtom atom = (IAtom) atomsI.next();
 			atom.setFlag(CDKConstants.REACTIVE_CENTER,false);
 		}
 		return ac;
@@ -206,7 +206,7 @@ public class IPReactionsExtraction {
 	 * @return The an Iterator with all molecules
 	 * @see probabilities
 	 */
-	public Iterator ionizedMolecules(){
+	public Iterable<IAtomContainer> ionizedMolecules(){
 		return setOfMolecules.molecules();
 	}
 	/**

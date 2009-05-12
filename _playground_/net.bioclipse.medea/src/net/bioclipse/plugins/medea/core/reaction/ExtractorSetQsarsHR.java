@@ -1,10 +1,10 @@
 package net.bioclipse.plugins.medea.core.reaction;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IMapping;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.qsar.descriptors.atomic.EffectiveAtomPolarizabilityDescriptor;
 import org.openscience.cdk.qsar.descriptors.atomic.PartialPiChargeDescriptor;
@@ -63,22 +63,21 @@ public class ExtractorSetQsarsHR implements ExtractorSetQsars{
 	 * @param product The IMolecule(productA)
 	 * @param mapping  The Iterator with mappings
 	 */
-	private ArrayList<Double> applyDescritorsProductA(IMolecule molecule, Iterator mappingI) {
+	private ArrayList<Double> applyDescritorsProductA(IMolecule molecule, Iterable<IMapping> iterable) {
 		ArrayList<Double> results = new ArrayList<Double>();
 		Integer[] object1 = {new Integer(6)};
 		Object[] object2 = {new Integer(6),new Boolean(false)};
 		int count = 0;
 		/*problems with mapping, not valid if a product come from two different reactants.*/
 //		while(mappingI.hasNext()){/* second is the atom  [A1*]-A2-A3* => A1=A2 + [A3*]*/
-		Iterator iterator = molecule.atoms();
-		while(iterator.hasNext()){
+		for(IAtom aap:molecule.atoms()){
 //			IMapping mapping = (IMapping)mappingI.next();
 			
 //			if(count == 2){
 //				IChemObject object = mapping.getChemObject(1);/* 0 is reactant, 1 is product, mapping*/
 //				if(object instanceof IAtom){
 //					IAtom aap = (IAtom)object;
-			IAtom aap = (IAtom)iterator.next();
+//			IAtom aap = (IAtom)iterator.next();
 			if(molecule.getConnectedSingleElectronsCount(aap) != 0){
 //					System.out.println("i_: "+product.getAtomNumber(aap)+", "+aap.getID()+", "+aap);
 							try {
