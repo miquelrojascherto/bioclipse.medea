@@ -7,7 +7,12 @@ Bundle-Vendor: The Chemistry Development Kit Project
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.openscience.cdk.qsarweka.Activator
 Bundle-ClassPath: .
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.openscience.cdk.annotation,
+ org.openscience.cdk.interfaces,
+ org.openscience.cdk.core,
+ org.openscience.cdk.standard,
+ org.openscience.cdk.qsar,
+ org.eclipse.core.runtime
 Export-Package: org.openscience.chemojava.qsar.model.weka,
  org.openscience.chemojava.libio.weka,
  org.openscience.cdk.qsarweka
