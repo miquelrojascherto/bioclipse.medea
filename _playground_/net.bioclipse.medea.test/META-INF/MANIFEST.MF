@@ -18,6 +18,9 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.valencycheck,
  org.openscience.cdk.io,
  org.openscience.cdk.data,
- org.openscience.cdk.ioformats
+ org.openscience.cdk.ioformats,
+ org.openscience.cdk.extra;bundle-version="1.2.2",
+ net.bioclipse.cml;bundle-version="2.0.0",
+ org.xmlcml.cmlxom;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.medea.test

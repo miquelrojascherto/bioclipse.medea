@@ -20,16 +20,16 @@ import org.junit.Test;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemFile;
-import org.openscience.cdk.io.CMLReader;
+import org.openscience.cdk.io.MDLV2000Reader;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
+import org.xmlcml.cml.element.CMLSpectrum;
 
 public class MedeaTest {
 
     @Test public void testGenerating() throws Exception {
-    	InputStream ins = MedeaTest.class.getResourceAsStream("/testFiles/0037.cml");
-        
-        CMLReader reader=new CMLReader(ins);
-        IChemFile chemFile = new org.openscience.cdk.ChemFile();
+    	InputStream ins = MedeaTest.class.getResourceAsStream("/testFiles/1-Hexen-3-one.mol");
+        MDLV2000Reader reader = new MDLV2000Reader(ins);		
+		IChemFile chemFile = new org.openscience.cdk.ChemFile();
         try {
             chemFile=(IChemFile)reader.read(chemFile);
         } catch (CDKException e) {
@@ -37,10 +37,10 @@ public class MedeaTest {
         }
         
         IAtomContainer container = ChemFileManipulator.getAllAtomContainers(chemFile).get(0);
-        System.out.println(container);
         
         Medea medea = new Medea();
         medea.predictMS(container);
+        CMLSpectrum cml = medea.getPredictedSpectrum();
     }
 
 }
