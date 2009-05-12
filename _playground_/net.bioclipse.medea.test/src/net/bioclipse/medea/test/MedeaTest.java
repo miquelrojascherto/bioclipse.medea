@@ -27,7 +27,7 @@ import org.xmlcml.cml.element.CMLSpectrum;
 public class MedeaTest {
 
     @Test public void testGenerating() throws Exception {
-    	InputStream ins = MedeaTest.class.getResourceAsStream("/testFiles/1-Hexen-3-one.mol");
+    	InputStream ins = MedeaTest.class.getResourceAsStream("/testFiles/30460-92-5-2d.mol");
         MDLV2000Reader reader = new MDLV2000Reader(ins);		
 		IChemFile chemFile = new org.openscience.cdk.ChemFile();
         try {
@@ -41,6 +41,7 @@ public class MedeaTest {
         Medea medea = new Medea();
         medea.predictMS(container);
         CMLSpectrum cml = medea.getPredictedSpectrum();
+        
     }
 
 }
