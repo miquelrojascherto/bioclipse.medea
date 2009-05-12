@@ -30,7 +30,8 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.formula;bundle-version="1.2.2",
  org.openscience.cdk.isomorphism;bundle-version="1.2.2",
  net.sourceforge.weka;bundle-version="3.4.6",
- org.openscience.cdk.qsarweka;bundle-version="1.2.2"
+ org.openscience.cdk.qsarweka;bundle-version="1.2.2",
+ net.bioclipse.core;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.plugins.medea.core
 Import-Package: org.apache.log4j;version="1.2.15"

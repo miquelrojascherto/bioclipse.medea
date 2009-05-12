@@ -97,4 +97,12 @@
             name="new Aquisition Reaction Predictions"/>
    </extension>
 
+   <extension
+         point="net.bioclipse.scripting.contribution">
+      <scriptContribution
+            id="net.bioclipse.medea.business.MedeaManager"
+            service="net.bioclipse.medea.business.MedeaManagerFactory">
+      </scriptContribution>
+   </extension>
+
 </plugin>
