@@ -49,10 +49,7 @@ public class ReactMolDrawingComposite extends Composite{
 		drawingPanel = new JChemPaintEditorWidget(this,SWT.NONE);
 		List<ICDKReaction> model = null;
 		model = page.getModelFromEditorInput();
-		drawingPanel.setReaction(model.get( 0 ).getReaction());
-//		jcpModel.activate();
-		//registerSpecMolController();
-		//jcpModel.getRendererModel().addCDKChangeListener(page);	
+		drawingPanel.setReaction( model.get( 0 ).getReaction());
 	}
 	
 	
@@ -65,17 +62,6 @@ public class ReactMolDrawingComposite extends Composite{
 		return drawingPanel;
 	}
 
-	/* (non-Javadoc)
-	 * @see bc_specmol.listener.SpecMolListener#selectionChanged(bc_specmol.editors.AssignmentController)
-	 */
-//	public void selectionChanged(IChemModel chemModel) {
-//		System.out.println("selectionChanged - reactionMolDrawing");
-//		jcpModel.setChemModel(chemModel);
-//		jcpModel.resetIsModified();
-//		registerSpecMolController();
-//		drawingPanel.repaint();
-//		
-//	}
 
 	/**
 	 * get the assignment editor page 
@@ -84,15 +70,6 @@ public class ReactMolDrawingComposite extends Composite{
 	 */
 	public ReactionEditor getPage() {
 		return page;
-	}
-	/**
-	 * deselect all selected atoms/bonds
-	 */
-	public void unselect() {
-//		jcpModel.getRendererModel().setExternalSelectedPart(jcpModel.getChemModel().getBuilder().newAtomContainer());		
-//		if (page.getAssignmentController().getSelectedSubstructure() != null) {
-//			page.getAssignmentController().getSelectedSubstructure().removeAllElements();
-//		}
 	}
 
 	
@@ -119,7 +96,6 @@ public class ReactMolDrawingComposite extends Composite{
 	public void loadNewMolecule(IMolecule newModel) {
 	    drawingPanel.setAtomContainer( newModel );
 		this.setSize(getSize().x,getSize().y-1);
-		//registerSpecMolController();
 	}
 
   /**
@@ -131,27 +107,5 @@ public class ReactMolDrawingComposite extends Composite{
   public void loadNewReactionSet(IReactionSet newModel) {
       drawingPanel.setReactionSet( newModel );
     this.setSize(getSize().x,getSize().y-1);
-    //registerSpecMolController();
   }
-  
-  /**
-	 * register the SpecMolController2D to the drawingPanel
-	 */
-//	private void registerSpecMolController() {
-//		Controller2DModel contrModel = new Controller2DModel();
-//		contrModel.setDrawMode(Controller2DModel.LASSO);
-//		contrModel.setMovingAllowed(false);
-////		SimpleController2D contr = new SpecMolController2D(jcpModel.getChemModel(), jcpModel.getRendererModel(), contrModel, this);
-////		contr.addCDKChangeListener(jcpModel);
-////		drawingPanel.addMouseListener(contr);
-////		drawingPanel.addMouseMotionListener(contr);
-//		
-////		TODO should not be neccessary - abstractController should work without undoRedoHandler as well...
-//		JCPBioclipseUndoRedoHandler undoRedoHandler=new JCPBioclipseUndoRedoHandler();
-//		undoRedoHandler.setDrawingPanel(drawingPanel);
-//		undoRedoHandler.setJcpm(jcpModel);
-//		undoRedoHandler.setUndoContext(new UndoContext());
-////		contr.setUndoRedoHandler(undoRedoHandler);
-//	}
-
 }

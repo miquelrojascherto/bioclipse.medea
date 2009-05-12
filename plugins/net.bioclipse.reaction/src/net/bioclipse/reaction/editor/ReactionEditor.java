@@ -104,7 +104,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		
 		super.createPartControl(form);
 		try {
-            child1 = new ReactMolDrawingComposite(form, SWT.EMBEDDED | SWT.H_SCROLL | SWT.V_SCROLL, this);
+            child1 = new ReactMolDrawingComposite(form, SWT.PUSH, this);
         } catch ( BioclipseException e ) {
             // TODO Auto-generated catch block
             e.printStackTrace();
