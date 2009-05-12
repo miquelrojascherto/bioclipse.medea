@@ -136,6 +136,8 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
     try {
         model = this.getModelFromEditorInput();
         contentsModel = createContentsModel(model);
+        @SuppressWarnings("unused")
+        HierarchicLayer hLayer = new HierarchicLayer(contentsModel);
         viewer.setContents(contentsModel);
     } catch (Exception e ) {
         LogUtils.handleException( e, logger );
