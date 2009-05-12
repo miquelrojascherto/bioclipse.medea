@@ -28,13 +28,13 @@ class CMLSpectrumCreator {
 		/*obtain the mass of the arrayList which contains the ionized fragments*/
 		IMolecule molecule = fragmentTree.getMolecule();
 		IMolecularFormula formula = MolecularFormulaManipulator.getMolecularFormula(molecule);
-		int massI = (int)MolecularFormulaManipulator.getTotalExactMass(formula);
+		double massI = MolecularFormulaManipulator.getTotalExactMass(formula);
 		
 		cmlSpectrum = new CMLSpectrum();
 		cmlSpectrum.setType("massSpectrum");
 		CMLPeakList peakList = new CMLPeakList();
 		
-		FragmentTreeSub fts = fragmentTree.getFragments(massI);
+		FragmentTreeSub fts = fragmentTree.getFragments((int)massI);
 		
 		for(int i = 0; i <= massI ; i++){
 			fts = fragmentTree.getFragments(i);
