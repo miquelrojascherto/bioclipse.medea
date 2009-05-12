@@ -1,7 +1,7 @@
 package net.bioclipse.plugins.medea.core.reaction;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 
 import net.bioclipse.plugins.medea.core.FragmentMolecule;
 import net.bioclipse.plugins.medea.core.FragmentTree;
@@ -62,9 +62,13 @@ public class ExtractorSetReactions {
 				if(al.get(i).getNeighbouring().get(j) != null)
 					reaction.addProduct(al.get(i).getNeighbouring().get(j));
 				if(al.get(i).getMapping().get(j) != null){
-					Iterator mappingI = al.get(i).getMapping().get(j);
-					while(mappingI.hasNext())
-						reaction.addMapping((IMapping) mappingI.next());
+
+//					List<Iterable> mapping = al.get(i).getMapping();
+//					for(IMapping mappingi:mapping)
+//						reaction.addMapping(mappingi);
+//					Iterable mappingI = al.get(i).getMapping().get(j);
+//					for(IMapping mappingi:mappingI)
+//						reaction.addMapping(mappingi);
 				}
 					
 				reaction.setNameReaction(al.get(i).getProcess().get(j));

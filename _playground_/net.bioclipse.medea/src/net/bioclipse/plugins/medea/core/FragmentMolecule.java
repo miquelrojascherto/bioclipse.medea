@@ -22,7 +22,7 @@ public class FragmentMolecule extends Molecule {
 	private ArrayList<Double> probabA = new ArrayList<Double>();
 	private ArrayList<Position> parentA = new ArrayList<Position>();
 	private ArrayList<Position> childrenA = new ArrayList<Position>();
-	private ArrayList<Iterator> mappingA = new ArrayList<Iterator>();
+	private ArrayList<Iterable> mappingA = new ArrayList<Iterable>();
 	private ArrayList<String> processA = new ArrayList<String>();
 	private ArrayList<IMolecule> neighbouringA = new ArrayList<IMolecule>();
 	private Position identification;
@@ -74,7 +74,7 @@ public class FragmentMolecule extends Molecule {
 	public void setChildren(Position children, String nameProcess, Iterable<IMapping> iterable, IMolecule neighbouring, double prob){
 		childrenA.add(children);
 		processA.add(nameProcess);
-		mappingA.add((Iterator) iterable);
+		mappingA.add(iterable);
 		neighbouringA.add(neighbouring);
 		probabChildrenA.add(prob);
 	}
@@ -139,7 +139,7 @@ public class FragmentMolecule extends Molecule {
 	 * get the mapping of the reaction 
 	 * @return The IMapping
 	 */
-	public ArrayList<Iterator> getMapping(){
+	public ArrayList<Iterable> getMapping(){
 		return mappingA;
 	}
 	/**

@@ -2,7 +2,6 @@ package net.bioclipse.plugins.medea.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import net.bioclipse.plugins.medea.core.learning.ExtractorProbability;
@@ -184,7 +183,11 @@ public class Fragmenter {
 			List<IReactionProcess> listR = new ArrayList<IReactionProcess>();
 			
 			listR.add(new RadicalSiteInitiationReaction());
+			listR.add(new RadicalSiteInitiationHReaction());
 			listR.add(new RadicalChargeSiteInitiationReaction());
+			listR.add(new CarbonylEliminationReaction());
+			listR.add(new RadicalSiteHrDeltaReaction());
+			listR.add(new RadicalSiteHrGammaReaction());
 			
 			/*apply all reactions*/
 			for (int j = 0; j < listR.size(); j++){
@@ -192,7 +195,7 @@ public class Fragmenter {
 				IMoleculeSet fragments = null;
 				IReactionSet setOfReactions = null;
 //				if(j == 0){/*1: radicalSiteInitiation*/
-					typeOfFragmentation = type.getClass().getName();
+					typeOfFragmentation = type.getClass().getSimpleName();
 					
 					
 					if(printInfo)
@@ -385,10 +388,10 @@ public class Fragmenter {
 									double prob = -1;
 									
 									if(process == Medea.PREDICTPROCESS || process == Medea.LEARN_PREDPROCESS){
-										prob = extractorP.getProbability(fragmentToStudy, j, fragments.getMolecule(k), fragments.getMolecule(molk),setOfReactions.getReaction(counta).mappings());
+										prob = extractorP.getProbability(type.getClass().getSimpleName(),fragmentToStudy, fragments.getMolecule(k), fragments.getMolecule(molk),setOfReactions.getReaction(counta).mappings());
 										if(printInfo)
 											System.out.println("proba: "+prob);
-										if(prob < 0.05)
+										if(prob < 0.03)
 											continue;
 									}
 									FragmentMolecule fm = addNewFragment(fragments.getMolecule(k),
@@ -433,12 +436,12 @@ public class Fragmenter {
 									if(process == Medea.PREDICTPROCESS || process == Medea.LEARN_PREDPROCESS){
 										if(printInfo)
 											System.out.print("PREDICTPROCESS& LEARN_PREDPROCESS");
-										prob = extractorP.getProbability(fragmentToStudy, j, fragments.getMolecule(k), fragments.getMolecule(molk),setOfReactions.getReaction(counta).mappings());
+										prob = extractorP.getProbability(type.getClass().getSimpleName(),fragmentToStudy, fragments.getMolecule(k), fragments.getMolecule(molk),setOfReactions.getReaction(counta).mappings());
 										if(printInfo)
 											System.out.println("proba: "+prob);
 										
-										if(prob < 0.05){
-//											System.out.println("not continue, not suficient probability");
+										if(prob < 0.03){
+											System.out.println("not continue, not suficient probability");
 											continue;
 										}
 									}

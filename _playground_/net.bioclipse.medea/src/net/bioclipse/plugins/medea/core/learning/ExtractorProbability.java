@@ -169,8 +169,8 @@ public class ExtractorProbability {
 	 * @param molecule2
 	 * @return
 	 */
-	public double getProbability(FragmentMolecule reactant, int nameR, IMolecule productA, IMolecule productB, Iterable<IMapping> iterable) {
-		String name = "";
+	public double getProbability( String nameClass, FragmentMolecule reactant, IMolecule productA, IMolecule productB, Iterable<IMapping> iterable) {
+//		String name = "";
 		double probability = 0.0;
 		ReactionKp reaction = new ReactionKp();
 		reaction.addReactant(reactant);
@@ -179,17 +179,19 @@ public class ExtractorProbability {
 			reaction.addProduct(productB);
 		for(IMapping mapping:iterable)
 			reaction.addMapping(mapping);
-		if(nameR == 0)
-			name = "RadicalSiteInitiation";
-		if(nameR == 1)
-			name = "RadicalSiteInitiationH";
-		if(nameR == 2)
-			name = "CarbonylElimination";
-		if(nameR == 3)
-			name = "HydrogenRearrangementDelta";
-		if(nameR == 4)
-			name = "HydrogenRearrangementGamma";
-		reaction.setNameReaction(name);
+		
+//		if(nameR == 0)
+//			name = "RadicalSiteInitiation";
+//		if(nameR == 1)
+//			name = "RadicalSiteInitiationH";
+//		if(nameR == 2)
+//			name = "CarbonylElimination";
+//		if(nameR == 3)
+//			name = "HydrogenRearrangementDelta";
+//		if(nameR == 4)
+//			name = "HydrogenRearrangementGamma";
+		
+		reaction.setNameReaction(nameClass);
 
 		probability = admin.getProbability(reaction);
 		

@@ -15,6 +15,7 @@ import net.bioclipse.plugins.medea.core.reaction.ExtractorSetQsarsRSI;
 import net.bioclipse.plugins.medea.core.reaction.ReactionKp;
 
 import org.openscience.cdk.qsar.model.QSARModelException;
+import org.openscience.cdk.reaction.type.RadicalSiteInitiationHReaction;
 import org.openscience.chemojava.qsar.model.weka.J48WModel;
 
 public class AdministratorFilesReader {
@@ -98,7 +99,8 @@ public class AdministratorFilesReader {
 		Double[][] results = null;
 		ArrayList<Double> resultQ = null;
 		String path = "";
-		if(reaction.getNameReaction().equals("RadicalSiteInitiation")){
+		System.out.println("getProbabilityName: "+reaction.getNameReaction());
+		if(reaction.getNameReaction().equals("RadicalSiteInitiationReaction")){
 			if(rsiFile != null)
 				if(rsiFile.exists()){
 					path = rsiFile.getAbsolutePath();
@@ -110,7 +112,7 @@ public class AdministratorFilesReader {
 //						System.out.println(i+", "+resultQ.get(i));
 				}
 			}
-		}else if(reaction.getNameReaction().equals("RadicalSiteInitiationH")){
+		}else if(reaction.getNameReaction().equals("RadicalSiteInitiationHReaction")){
 			if(rshFile != null)
 				if(rshFile.exists()){
 					path = rshFile.getAbsolutePath();
@@ -121,7 +123,7 @@ public class AdministratorFilesReader {
 //						System.out.println(i+", "+resultQ.get(i));
 				}
 			}
-		}else if(reaction.getNameReaction().equals("CarbonylElimination")){
+		}else if(reaction.getNameReaction().equals("CarbonylEliminationReaction")){
 			if(ceeFile != null)
 				if(ceeFile.exists()){
 					path = ceeFile.getAbsolutePath();
@@ -132,7 +134,7 @@ public class AdministratorFilesReader {
 //						System.out.println(i+", "+resultQ.get(i));
 				}
 			}
-		}else if(reaction.getNameReaction().equals("HydrogenRearrangementDelta")){
+		}else if(reaction.getNameReaction().equals("RadicalSiteHrDeltaReaction")){
 			if(hrdFile != null)
 				if(hrdFile.exists()){
 					path = hrdFile.getAbsolutePath();
@@ -143,7 +145,7 @@ public class AdministratorFilesReader {
 //						System.out.println(i+", "+resultQ.get(i));
 				}
 			}
-		}else if(reaction.getNameReaction().equals("HydrogenRearrangementGamma")){
+		}else if(reaction.getNameReaction().equals("RadicalSiteHrGammaReaction")){
 			if(hrgFile != null)
 				if(hrgFile.exists()){
 					path = hrgFile.getAbsolutePath();
