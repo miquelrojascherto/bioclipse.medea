@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import net.bioclipse.medea.Activator;
 import net.bioclipse.plugins.Bc_MEDEAPlugin;
 import net.bioclipse.plugins.medea.core.FragmentMolecule;
 import net.bioclipse.plugins.medea.core.FragmentTree;
@@ -18,7 +19,7 @@ import org.openscience.cdk.interfaces.IMapping;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionSet;
-import org.openscience.cdk.smiles.SmilesGenerator;
+import org.osgi.framework.Bundle;
 
 public class ExtractorProbability {
 
@@ -33,14 +34,21 @@ public class ExtractorProbability {
 	 */
 	@SuppressWarnings("deprecation")
 	public ExtractorProbability() {
-		URL url = Platform.getBundle(Bc_MEDEAPlugin.PLUGIN_ID).getEntry("/");
-		String pp ="";
-		try {
-			pp = Platform.asLocalURL(url).getPath().toString()+"data";
+//		String owlFile="/data/";
+//		
+//        Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+//        System.out.println(bundle);
+//		URL url= bundle.getEntry(owlFile);
+//		
+//		String pp ="";
+//		try {
+//			pp = Platform.asLocalURL(url).getPath().toString()+"data";
 //			System.out.println("pata: "+pp);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		
+		String pp = "/home/mrc/Development/Sourceforge/bioclipseDir/bioclipse2/net.bioclipse.medea/data";
 		admin = new AdministratorFilesReader(pp);
 	}
 	/**

@@ -6,8 +6,9 @@ import net.bioclipse.plugins.medea.core.FragmentMolecule;
 import net.bioclipse.plugins.medea.core.FragmentTree;
 import net.bioclipse.plugins.medea.core.Position;
 
+import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.tools.MFAnalyser;
+import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 
 public class ExtractorAbundance {
 
@@ -31,8 +32,10 @@ public class ExtractorAbundance {
 		double factor = 3.4;
 		
 		IMolecule molecule = fragmentTree.getMolecule();
-		MFAnalyser mfAnalyser = new MFAnalyser(molecule);
-		massI = Math.round(mfAnalyser.getMass());
+		
+//		MFAnalyser mfAnalyser = new MFAnalyser(molecule);
+		IMolecularFormula formula = MolecularFormulaManipulator.getMolecularFormula(molecule);
+		massI = (int) MolecularFormulaManipulator.getTotalExactMass(formula);
 		
 		fm = fragmentTree.getFragment(new Position(massI,0));
 		fm.setAbundance(-1.0);
