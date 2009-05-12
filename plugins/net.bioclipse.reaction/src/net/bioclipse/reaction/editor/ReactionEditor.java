@@ -51,7 +51,6 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
@@ -67,16 +66,13 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.openscience.cdk.ChemFile;
-import org.openscience.cdk.ChemSequence;
+import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionSet;
 
-//import com.sun.net.ssl.internal.ssl.TrustManagerFactoryImpl.SimpleFactory;
 /**
  * 
  * @author Miguel Rojas 
@@ -84,11 +80,7 @@ import org.openscience.cdk.interfaces.IReactionSet;
 public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICDKChangeListener,IJCPEditorPart, BioResourceChangeListener {
 	private IEditorInput editorInput;
 	private ReactMolDrawingComposite child1;
-	//private JCPScrollBar jcpScrollBar;
 	private SashForm form;
-	private IChemModel chemModel;
-	@SuppressWarnings("unused")
-	private boolean isDirty;
 	private ContentsModel contentsModel;
 	private GraphicalViewer viewer;
 	/**
@@ -259,22 +251,9 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	 * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public void doSave(IProgressMonitor monitor) {
-	    //TODO need a manager method for that
-//		BioResourceEditorInput brinp= (BioResourceEditorInput) editorInput;
-//		IChemModel chemModel = getChemModel();
-//		ChemSequence seq = new ChemSequence();
-//		seq.addChemModel(chemModel);
-//		ChemFile chemFile = new ChemFile();
-//		chemFile.addChemSequence(seq);
-//		//set the BioResouces parsedRes object to this ChemFile
-//		brinp.getBioResource().setParsedResource(chemFile);
-//		//then call save() of the BioResource 
-//		brinp.getBioResource().save();
-//		this.setDirty(false);
-//		
-//		getCommandStack().markSaveLocation();
-		
-	}
+  }
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
@@ -476,34 +455,26 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	}
 
 	/**
-	 * get the IChemModel object
-	 * 
-	 * @return The IChemModel object
-	 */
-	public IChemModel getChemModel() {
-		return updateChemModelFromContentsModel();
-	}
-	/**
 	 * update the IChemModel from ContentsModel
 	 * 
 	 * @return The IChemModel object
 	 */
 	private IChemModel updateChemModelFromContentsModel() {
-		IChemModel newChemModel = chemModel.getBuilder().newChemModel();
-		IReactionSet reactionSet = chemModel.getBuilder().newReactionSet();
+		IChemModel newChemModel = DefaultChemObjectBuilder.getInstance().newChemModel();
+		IReactionSet reactionSet = DefaultChemObjectBuilder.getInstance().newReactionSet();
 		newChemModel.setReactionSet(reactionSet);
 		for(Iterator iterator = contentsModel.getChildren().iterator(); iterator.hasNext();) {
 			AbstractObjectModel object = (AbstractObjectModel)iterator.next();
 			if(object instanceof ReactionObjectModel){
 				ReactionObjectModel reactionOM = (ReactionObjectModel)object;
 				List listS = reactionOM.getModelTargetConnections();
-				IReaction reaction = chemModel.getBuilder().newReaction();
+				IReaction reaction = DefaultChemObjectBuilder.getInstance().newReaction();
 				for(Iterator iter = listS.iterator(); iter.hasNext();){
 					AbstractConnectionModel con = (AbstractConnectionModel)iter.next();
 					CompoundObjectModel reactantOM = (CompoundObjectModel)con.getSource();
-					IMolecule reactant = chemModel.getBuilder().newMolecule(reactantOM.getIMolecule());
+					IMolecule reactant = DefaultChemObjectBuilder.getInstance().newMolecule(reactantOM.getIMolecule());
 					if(reactant == null){
-						reactant = chemModel.getBuilder().newMolecule();
+						reactant = DefaultChemObjectBuilder.getInstance().newMolecule();
 						reactant.setID(reactantOM.getText());
 					}
 					reaction.addReactant(reactant);
@@ -512,9 +483,9 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 				for(Iterator iter = listT.iterator(); iter.hasNext();){
 					AbstractConnectionModel con = (AbstractConnectionModel)iter.next();
 					CompoundObjectModel productOM = (CompoundObjectModel)con.getTarget();
-					IMolecule product = chemModel.getBuilder().newMolecule(productOM.getIMolecule());
+					IMolecule product = DefaultChemObjectBuilder.getInstance().newMolecule(productOM.getIMolecule());
 					if(product == null){
-						product = chemModel.getBuilder().newMolecule();
+						product = DefaultChemObjectBuilder.getInstance().newMolecule();
 						product.setID(productOM.getText());
 					}
 					reaction.addProduct(product);
@@ -526,28 +497,16 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		}
 		return newChemModel;
 	}
-	/**
-	 * get the Composite object
-	 * 
-	 * @return The Composite object
-	 */
-	public Composite getJcpComposite() {
-		return child1;
-	}
 
 	/*
 	 * 
 	 */
 	public void setDirty(boolean isDirty) throws BioclipseException {
-		this.isDirty = isDirty;
-		if(isDirty)
-			fireSetDirtyChanged();
+		if(!isDirty)
+		    getCommandStack().markSaveLocation();
+		firePropertyChange( IEditorPart.PROP_DIRTY );
 	}
 	
-	private void fireSetDirtyChanged() throws BioclipseException {
-		updateViewer(this.getModelFromEditorInput());
-		
-	}
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.ISaveablePart#isDirty()

@@ -79,7 +79,6 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	 * @throws BioclipseException 
 	 */
 	void createPage1() throws BioclipseException {
-	    List<ICDKReaction> resource = ReactionMultiPageEditor.getModelFromEditorInput( getEditorInput() );
 	    textEditor = new TextEditor(  );
 		
 		try{
@@ -115,18 +114,30 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	 * Saves the multi-page editor's document.
 	 */
 	public void doSave(IProgressMonitor monitor) {
-		IEditorPart editor = this.getActiveEditor();
-		editor.doSave(monitor);
-		try {
-            rEditor.setDirty(false);
-        } catch ( BioclipseException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-		textEditor.doRevertToSaved();		
-//		xmlEditor.setInput(getEditorInput());
+
+      this.showBusy( true );
+      // Synch from ReactionEditor to texteditor
+      updateTextEditor();
+      textEditor.doSave( monitor );
+  		try {
+              rEditor.setDirty(false);
+          } catch ( BioclipseException e ) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+          }
+  		textEditor.doRevertToSaved();		
+      firePropertyChange( IEditorPart.PROP_DIRTY );
+      this.showBusy( false );
 	}
-	/**
+	
+	
+	private void updateTextEditor() {
+
+        // TODO update text editor from ReactionEditor
+        
+    }
+
+    /**
 	 * Saves the multi-page editor's document as another file.
 	 * Also updates the text for page 1's tab, and updates this multi-page editor's input
 	 * to correspond to the nested editor's.
@@ -170,50 +181,20 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	 */
 	protected void pageChange(int newPageIndex) {
 		super.pageChange(newPageIndex);
-//		if (this.getPageCount() > 1) {
-//			if(newPageIndex == 1){
-//				ReactionEditor reactionEditor = (ReactionEditor)getEditor(0);
-//				IChemModel chemModel = reactionEditor.getChemModel();
-//				if(chemModel != null) {
-//					IChemObjectBuilder builder = chemModel.getBuilder();
-//					IChemSequence cs = builder.newChemSequence();
-//					cs.addChemModel(chemModel);
-//					IChemFile cf = builder.newChemFile();
-//					cf.addChemSequence(cs);
-//					
-//					ReactionResource rs = (ReactionResource)((BioResourceEditorInput)getEditorInput()).getBioResource();
-//					rs.setParsedResource(cf);
-//				}
-//				if (!reactionEditor.isDirty())
-//					textEditor.doRevertToSaved();
-//
-//				textEditor.setInput(getEditorInput());
-//			}
-//			if(newPageIndex==0){
-//				if (textEditor == null)
-//					return;
-//				
-//				IDocument doc = textEditor.getDocumentProvider().getDocument(getEditorInput());
-//				ReactionResource rs = (ReactionResource)((BioResourceEditorInput)getEditorInput()).getBioResource();
-//				rs.updateParsedResourceFromString(doc.get());
-//				if (textEditor.isDirty())
-//					rEditor.setDirty(true);
-//				else
-//					rEditor.setDirty(false);
-				
-//				ReactionEditor reactionEditor = (ReactionEditor)getEditor(0);
-//				reactionEditor.updateViewer(reactionEditor.getModelFromEditorInputReaction());
-//				if (reactionEditor.getJCPModel() != null){
-//					reactionEditor.getJcpComposite().setSize(reactionEditor.getJcpComposite().getSize().x,reactionEditor.getJcpComposite().getSize().y-1);
-//				}
-		
-//			}
-//			
-//			
-//		}
+		if(newPageIndex == 1){
+		    updateTextEditor();
+		}else{
+		    updateReactionEditor();
+		}
 	}
 
-	/*
+	private void updateReactionEditor() {
+
+        // TODO update reaction editor from text
+        
+    }
+
+    /*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
