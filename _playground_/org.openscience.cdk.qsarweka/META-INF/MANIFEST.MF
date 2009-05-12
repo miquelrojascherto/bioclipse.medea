@@ -12,7 +12,8 @@ Require-Bundle: org.openscience.cdk.annotation,
  org.openscience.cdk.core,
  org.openscience.cdk.standard,
  org.openscience.cdk.qsar,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ net.sourceforge.weka;bundle-version="[3.4.6,3.4.6]"
 Export-Package: org.openscience.chemojava.qsar.model.weka,
  org.openscience.chemojava.libio.weka,
  org.openscience.cdk.qsarweka
