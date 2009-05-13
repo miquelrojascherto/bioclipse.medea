@@ -1,7 +1,10 @@
 package net.bioclipse.medea.core.prediction;
 
-import java.io.File;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,7 +18,6 @@ import net.bioclipse.medea.core.reaction.ExtractorSetQsarsRSI;
 import net.bioclipse.medea.core.reaction.ReactionKp;
 
 import org.openscience.cdk.qsar.model.QSARModelException;
-import org.openscience.cdk.reaction.type.RadicalSiteInitiationHReaction;
 import org.openscience.chemojava.qsar.model.weka.J48WModel;
 
 public class AdministratorFilesReader {
@@ -31,11 +33,11 @@ public class AdministratorFilesReader {
 			"0_80","0_81","0_82","0_83","0_84","0_85","0_86","0_87","0_88","0_89",
 			"0_90","0_91","0_92","0_93","0_94","0_95","0_96","0_97","0_98","0_99",
 	};
-	private File rsiFile;
-	private File rshFile;
-	private File ceeFile;
-	private File hrgFile;
-	private File hrdFile;
+	private InputStream rsiFile;
+	private InputStream rshFile;
+	private InputStream ceeFile;
+	private InputStream hrgFile;
+	private InputStream hrdFile;
 	private ExtractorSetQsarsRSI extractorRSI;
 	private ExtractorSetQsarsRSH extractorRSH;
 	private ExtractorSetQsarsCE extractorCE;
@@ -45,48 +47,22 @@ public class AdministratorFilesReader {
 	 * Constructor of the AdministratorFiles
 	 *
 	 */
-	public AdministratorFilesReader(String directory) {
+	public AdministratorFilesReader() {
 		extractorRSI = new ExtractorSetQsarsRSI();
 		extractorRSH = new ExtractorSetQsarsRSH();
 		extractorCE = new ExtractorSetQsarsCE();
 		extractorHR = new ExtractorSetQsarsHR();
-		File direct = new File(directory);
-		if(direct.exists()){
-			String objects[] = direct.list();
-			for (int i = 0; i < objects.length; i++){
-				String ff = direct.getPath()+"/"+objects[i];
-				File file = new File(ff);
-				if(file.exists()){
-					String name = ff.substring(ff.length()-8, ff.length()-5);
-					if(name.equals("rsi")){
-						rsiFile = file;
-//						System.out.println("rsi-fileexist");
-					}else if(name.equals("rsh")){
-						rshFile = file;
-//						System.out.println("cee-fileexist");
-					}else if(name.equals("cee")){
-						ceeFile = file;
-//						System.out.println("cee-fileexist");
-					}else if(name.equals("hrg")){
-						hrgFile = file;
-//						System.out.println("cee-fileexist");
-					}else if(name.equals("hrd")){
-						hrdFile = file;
-//						System.out.println("cee-fileexist");
-					}
-				}
-			}
-		}else{
-			System.err.println("not exist directory: "+directory);
-		}
-		
+		rsiFile = new BufferedInputStream(this.getClass().getClassLoader().getResourceAsStream("/data/total-rsi.arff"));
+		rshFile = new BufferedInputStream(this.getClass().getClassLoader().getResourceAsStream("/data/total-rsh.arff"));
+		ceeFile = new BufferedInputStream(this.getClass().getClassLoader().getResourceAsStream("/data/total-cee.arff"));
+		hrgFile = new BufferedInputStream(this.getClass().getClassLoader().getResourceAsStream("/data/total-hrg.arff"));
+		hrdFile = new BufferedInputStream(this.getClass().getClassLoader().getResourceAsStream("/data/total-hrd.arff"));
 		hash = new HashMap<String, Double>();
 		double value = 0.005;
 		for(int i = 0 ; i < classAttrib.length ; i++){
 			hash.put(classAttrib[i],new Double(value));
 			value += 0.01;
 		}
-	      
 	}
 	/**
 	 * creates the files 
@@ -98,63 +74,60 @@ public class AdministratorFilesReader {
 	public double getProbability(ReactionKp reaction){
 		Double[][] results = null;
 		ArrayList<Double> resultQ = null;
-		String path = "";
+		InputStream table = null;
 		System.out.println("getProbabilityName: "+reaction.getNameReaction());
 		if(reaction.getNameReaction().equals("RadicalSiteInitiationReaction")){
-			if(rsiFile != null)
-				if(rsiFile.exists()){
-					path = rsiFile.getAbsolutePath();
+			if(rsiFile != null){
+					table = rsiFile;
 					resultQ = extractorRSI.getQsars(reaction);
 					results = new Double[1][resultQ.size()];
 					
 					for(int i = 0 ; i < resultQ.size(); i++){
 						results[0][i] = resultQ.get(i);
 //						System.out.println(i+", "+resultQ.get(i));
-				}
+					}
+				
 			}
 		}else if(reaction.getNameReaction().equals("RadicalSiteInitiationHReaction")){
-			if(rshFile != null)
-				if(rshFile.exists()){
-					path = rshFile.getAbsolutePath();
+			if(rshFile != null){
+				table = rshFile;
 					resultQ = extractorRSH.getQsars(reaction);
 					results = new Double[1][resultQ.size()];
 					for(int i = 0 ; i < resultQ.size(); i++){
 						results[0][i] = resultQ.get(i);
 //						System.out.println(i+", "+resultQ.get(i));
-				}
+					}
+			
 			}
 		}else if(reaction.getNameReaction().equals("CarbonylEliminationReaction")){
-			if(ceeFile != null)
-				if(ceeFile.exists()){
-					path = ceeFile.getAbsolutePath();
+			if(ceeFile != null){
+				table = ceeFile;
 					resultQ = extractorCE.getQsars(reaction);
 					results = new Double[1][resultQ.size()];
 					for(int i = 0 ; i < resultQ.size(); i++){
 						results[0][i] = resultQ.get(i);
 //						System.out.println(i+", "+resultQ.get(i));
-				}
+					}
 			}
 		}else if(reaction.getNameReaction().equals("RadicalSiteHrDeltaReaction")){
-			if(hrdFile != null)
-				if(hrdFile.exists()){
-					path = hrdFile.getAbsolutePath();
+			if(hrdFile != null){
+				table = hrdFile;
 					resultQ = extractorHR.getQsars(reaction);
 					results = new Double[1][resultQ.size()];
 					for(int i = 0 ; i < resultQ.size(); i++){
 						results[0][i] = resultQ.get(i);
 //						System.out.println(i+", "+resultQ.get(i));
-				}
+					}
 			}
 		}else if(reaction.getNameReaction().equals("RadicalSiteHrGammaReaction")){
-			if(hrgFile != null)
-				if(hrgFile.exists()){
-					path = hrgFile.getAbsolutePath();
+			if(hrgFile != null){
+				table = hrgFile;
 					resultQ = extractorHR.getQsars(reaction);
 					results = new Double[1][resultQ.size()];
 					for(int i = 0 ; i < resultQ.size(); i++){
 						results[0][i] = resultQ.get(i);
 //						System.out.println(i+", "+resultQ.get(i));
-				}
+					}
 			}
 		}
 		
@@ -166,7 +139,7 @@ public class AdministratorFilesReader {
 				return resultP;
 			}else{
 	//			System.out.println("path: "+path);
-				J48WModel j48 = new J48WModel(false,path);
+				J48WModel j48 = new J48WModel(table);
 				String[] options = new String[4];
 				options[0] = "-C";
 				options[1] = "0.25";
