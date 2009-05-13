@@ -1,4 +1,4 @@
-mol = cdk.fromSMILES("C=C1C(=O)CC2CC1C2(C)(C)");
+mol = cdk.loadMolecule("/SampleDataMedea/Medea/molecule/30460-92-5-2d.mol");
 mol = cdk.generate2dCoordinates(mol);
 ui.open(mol);
 
