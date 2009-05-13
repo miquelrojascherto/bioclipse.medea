@@ -17,7 +17,7 @@ import java.io.InputStream;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.medea.business.MedeaManager;
-import net.bioclipse.plugins.medea.core.Medea;
+import net.bioclipse.medea.core.Medea;
 import net.bioclipse.spectrum.business.SpectrumManager;
 import net.bioclipse.spectrum.domain.IJumboSpectrum;
 
@@ -74,10 +74,10 @@ public class MedeaTest {
 
         SpectrumManager spectrummanager = new SpectrumManager();
         IJumboSpectrum spectrum = (IJumboSpectrum)spectrummanager.loadSpectrum( new MockIFile(path));
-//        Medea medea = new Medea();
-//        medea.learningMS(container, spectrum.getJumboObject(), "tet");
-//        CMLSpectrum cml = medea.getPredictedSpectrum();
-//        System.out.println(cml.toXML());
+        Medea medea = new Medea();
+        medea.learningMS(container, spectrum.getJumboObject(), "tet");
+        CMLSpectrum cml = medea.getPredictedSpectrum();
+        System.out.println(cml.toXML());
         
     }
 
