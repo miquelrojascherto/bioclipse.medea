@@ -5,8 +5,8 @@
    <extension
       point = "org.eclipse.ui.newWizards">
  	<wizard
-	   id = "net.bioclipse.data.reaction.NewReactionProjectWizard"
-	   name = "Rection Sample Data Project"
+	   id = "net.bioclipse.data.medea.NewMedeaProjectWizard"
+	   name = "Medea Sample Data Project"
 	   project="true"
 	   class="net.bioclipse.data.wizards.NewDataProjectWizard"
 	   category="net.bioclipse.data"
