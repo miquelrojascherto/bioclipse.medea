@@ -58,7 +58,7 @@ public class AdministratorFilesReader {
 	public BufferedInputStream getRsiFile() {
 	    return new BufferedInputStream(
 	        this.getClass().getClassLoader().getResourceAsStream(
-	            "/data/total-rsi.arff"
+	            "data/total-rsi.arff"
 	        )
 	    );
 	}
@@ -66,7 +66,7 @@ public class AdministratorFilesReader {
     public BufferedInputStream getRshFile() {
         return new BufferedInputStream(
             this.getClass().getClassLoader().getResourceAsStream(
-                "/data/total-rsh.arff"
+                "data/total-rsh.arff"
             )
         );
     }
@@ -74,7 +74,7 @@ public class AdministratorFilesReader {
     public BufferedInputStream getCeeFile() {
         return new BufferedInputStream(
             this.getClass().getClassLoader().getResourceAsStream(
-                "/data/total-cee.arff"
+                "data/total-cee.arff"
             )
         );
     }
@@ -82,7 +82,7 @@ public class AdministratorFilesReader {
     public BufferedInputStream getHrgFile() {
         return new BufferedInputStream(
             this.getClass().getClassLoader().getResourceAsStream(
-                "/data/total-hrg.arff"
+                "data/total-hrg.arff"
             )
         );
     }
@@ -90,7 +90,7 @@ public class AdministratorFilesReader {
     public BufferedInputStream getHrdFile() {
         return new BufferedInputStream(
             this.getClass().getClassLoader().getResourceAsStream(
-                "/data/total-hrd.arff"
+                "data/total-hrd.arff"
             )
         );
     }
