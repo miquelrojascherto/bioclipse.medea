@@ -124,7 +124,10 @@ public class EMCluster {
 	 * 
 	 */
 	public void setData(String filename)throws Exception{
-		data = weka.setDataset(filename, null); 
+		data = weka.setDataset(
+	        this.getClass().getClassLoader().getResourceAsStream(filename),
+	        null
+		);
 	}
 
 	/**

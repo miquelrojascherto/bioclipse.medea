@@ -1,6 +1,7 @@
 /* $Revision: 6228 $ $Author: egonw $ $Date: 2006-05-11 18:34:42 +0200 (Thu, 11 May 2006) $
  *
  * Copyright (C) 2006-2007  Miguel Rojas-Cherto <miguelrojasch@users.sf.net>
+ *                    2009  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -20,12 +21,18 @@
  */
 package org.openscience.chemojava.libio.weka;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Vector;
+
 import weka.classifiers.Classifier;
 import weka.core.Instance;
 import weka.core.Instances;
-
-import java.io.*;
-import java.util.Vector;
 
 
 /**
@@ -67,31 +74,13 @@ public class Weka {
 	private Instances instances;
 	/**String with the attribut class*/
 	private String[] classAttrib = null;
+
 	/**
 	 * Constructor of the Weka
 	 */
 	public Weka() {
 	}
-	/**
-	 * Set the file format arff to analize which contains the dataset and the type of classifier.
-	 * The file is found into the src.
-	 *  
-	 * @param pathTable   Path of the dataset file format arff to train
-	 * @param classifier  Type of Classifier
-	 * @return            The Instances value
-	 * @throws Exception 
-	 */
-	public Instances setDatasetCDK(String pathTable, Object object) throws Exception{
-		if (object instanceof Classifier) this.classifier = (Classifier) object;
-		InputStream ins = this.getClass().getClassLoader().getResourceAsStream(pathTable);
-		BufferedReader insr = new BufferedReader(new InputStreamReader(ins));
-		this.classAttrib = extractClass(insr);
 
-		ins = this.getClass().getClassLoader().getResourceAsStream(pathTable);
-		insr = new BufferedReader(new InputStreamReader(ins));
-		return createInstance(insr);
-
-	}
 	/**
 	 * Set the file format arff to analize which contains the dataset and the type of classifier.
 	 * 
@@ -101,16 +90,32 @@ public class Weka {
 	 * @return            The Instances value
 	 * @throws Exception 
 	 */
-	public Instances setDataset(String pathTable, Object object) throws Exception{
+	public Instances setDataset(InputStream table, Object object) throws Exception{
 		if (object instanceof Classifier) this.classifier = (Classifier) object;
-		BufferedReader insr = new BufferedReader(new FileReader(pathTable));
+		// OK, a bit dirty, but we cannot be sure we can rewind, so we cache
+		// the content here locally as String
+		String tableContent = streamAsString(table);
+		BufferedReader insr = new BufferedReader(
+		    new StringReader(tableContent)
+		);
 		this.classAttrib = extractClass(insr);
-
-		insr = new BufferedReader(new FileReader(pathTable));
-		return createInstance(insr);
-
+		return createInstance(new StringReader(tableContent));
 	}
-	private Instances createInstance(BufferedReader insr) throws Exception{
+
+	private String streamAsString(InputStream input) {
+	    StringBuffer out = new StringBuffer();
+        try {
+            byte[] b = new byte[4096];
+            for (int n; (n = input.read(b)) != -1;) {
+                out.append(new String(b, 0, n));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return out.toString();
+	}
+
+	private Instances createInstance(Reader insr) throws Exception{
 		instances = new Instances(insr);
 		instances.setClassIndex(instances.numAttributes() - 1);
 		if (classifier != null) classifier.buildClassifier(instances);

@@ -89,8 +89,11 @@ public class DensityBasedClustererModel {
 	 * @throws Exception if the parameters are of the wrong type for the given modeling function
 	 * 
 	 */
-	public void setData(String filename)throws Exception{
-		data = weka.setDataset(filename, null); 
+	public void setData(String filename)throws Exception {
+		data = weka.setDataset(
+		    this.getClass().getClassLoader().getResourceAsStream(filename),
+		    null
+		);
 	}
 
 	/**

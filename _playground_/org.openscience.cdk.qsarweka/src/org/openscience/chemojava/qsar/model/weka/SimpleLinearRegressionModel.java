@@ -151,7 +151,10 @@ public class SimpleLinearRegressionModel {
 			SimpleLinearRegression slr = new SimpleLinearRegression();
 
 			if(pathTest != null){
-				weka.setDataset(pathTest, slr);
+			    weka.setDataset(
+			        this.getClass().getClassLoader().getResourceAsStream(pathTest),
+			        slr
+			    );
 			}else{
 				if (!(setAttrib)){
 					this.attrib = new String[x[0].length+1];

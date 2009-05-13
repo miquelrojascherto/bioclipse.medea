@@ -215,10 +215,10 @@ public class J48WModel implements IWekaModel{
 				j48.setOptions(options);
 
 			if(pathTest != null){
-				if(cdkResource)
-					weka.setDatasetCDK(pathTest, j48);
-				else
-					weka.setDataset(pathTest, j48);
+			    weka.setDataset(
+			        this.getClass().getClassLoader().getResourceAsStream(pathTest),
+			        j48
+			    );
 			}else{
 				if (!(setAttrib)){
 					this.attrib = new String[x[0].length];

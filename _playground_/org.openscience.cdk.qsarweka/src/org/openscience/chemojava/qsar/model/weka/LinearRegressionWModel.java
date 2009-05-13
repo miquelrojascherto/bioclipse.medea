@@ -182,7 +182,10 @@ public class LinearRegressionWModel implements IWekaModel{
 				lr.setOptions(options);
 
 			if(pathTest != null){
-				weka.setDatasetCDK(pathTest, lr);
+			    weka.setDataset(
+			        this.getClass().getClassLoader().getResourceAsStream(pathTest),
+			        lr
+			    );
 			}else{
 				if (!(setAttrib)){
 					this.attrib = new String[x[0].length+1];
