@@ -20,6 +20,8 @@
  */
 package org.openscience.chemojava.qsar.model.weka;
 
+import java.io.InputStream;
+
 import org.openscience.chemojava.libio.weka.Weka;
 import org.openscience.cdk.qsar.model.QSARModelException;
 
@@ -175,6 +177,10 @@ public class LinearRegressionWModel implements IWekaModel{
 	 * the corresponding method in subclasses of this class for further details.
 	 */
 	public void build() throws QSARModelException {
+	    build(this.getClass().getClassLoader().getResourceAsStream(pathTest));
+	}
+
+	public void build(InputStream stream) throws QSARModelException {
 		weka = new Weka();
 		try {
 			LinearRegression lr = new LinearRegression();
@@ -183,7 +189,7 @@ public class LinearRegressionWModel implements IWekaModel{
 
 			if(pathTest != null){
 			    weka.setDataset(
-			        this.getClass().getClassLoader().getResourceAsStream(pathTest),
+			        stream,
 			        lr
 			    );
 			}else{
@@ -263,6 +269,5 @@ public class LinearRegressionWModel implements IWekaModel{
 	public Object[] getPredictPredicted() {
 		return results;
 	}
-
 
 }

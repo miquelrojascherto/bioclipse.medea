@@ -20,6 +20,8 @@
  */
 package org.openscience.chemojava.qsar.model.weka;
 
+import java.io.InputStream;
+
 import org.openscience.cdk.qsar.model.IModel;
 import org.openscience.cdk.qsar.model.QSARModelException;
 
@@ -86,6 +88,8 @@ public interface IWekaModel extends IModel {
      * @return A Object[] containing the predicted values
      */
     abstract public Object[] getPredictPredicted();
+    
+    public void build(InputStream stream) throws QSARModelException;
 
     
 }

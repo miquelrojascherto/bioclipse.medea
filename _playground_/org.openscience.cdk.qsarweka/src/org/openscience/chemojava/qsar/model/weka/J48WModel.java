@@ -108,7 +108,6 @@ public class J48WModel implements IWekaModel{
 	private String[] options;
 	/**A String specifying the path of the file, format arff,
 	 * which contians the variables and attributes with whose to test.*/
-	private InputStream table = null;
 	/** results of the prediction*/
 	private String[] results = null;
 	/**A Array Object containing the independent variable*/
@@ -163,8 +162,7 @@ public class J48WModel implements IWekaModel{
 	 * @param True, if the file is found into cdk.src resource 
 	 * @param pathTest Path of the dataset file format arff to train
 	 */
-	public J48WModel(InputStream table){
-		this.table  = table;
+	public J48WModel(){
 	}
 
 	/**
@@ -207,7 +205,11 @@ public class J48WModel implements IWekaModel{
 	 * @throws QSARModelException if errors occur in data types, calls to the R session. See
 	 * the corresponding method in subclasses of this class for further details.
 	 */
-	public void build() throws QSARModelException {
+    public void build() throws QSARModelException {
+        throw new RuntimeException("Use build(InputStream) instead.");
+    }
+    
+	public void build(InputStream table) throws QSARModelException {
 		weka = new Weka();
 		try {
 			J48 j48 = new J48();

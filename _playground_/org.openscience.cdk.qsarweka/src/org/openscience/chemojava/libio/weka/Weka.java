@@ -95,6 +95,7 @@ public class Weka {
 		// OK, a bit dirty, but we cannot be sure we can rewind, so we cache
 		// the content here locally as String
 		String tableContent = streamAsString(table);
+		System.out.println("DATA FILE: " + tableContent);
 		BufferedReader insr = new BufferedReader(
 		    new StringReader(tableContent)
 		);
