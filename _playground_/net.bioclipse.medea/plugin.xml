@@ -79,7 +79,7 @@
             hasPages="true"
             icon="icons/MEDEA.gif"
             id="bc_medea.NewAquisitionWizard"
-            name="new Aquisition Reaction Predictions"
+            name="new Aquisition Medea Predictions"
             project="true">
          <description/>
       </wizard>
