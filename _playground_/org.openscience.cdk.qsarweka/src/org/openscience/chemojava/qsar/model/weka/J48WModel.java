@@ -20,8 +20,10 @@
  */
 package org.openscience.chemojava.qsar.model.weka;
 
-import org.openscience.chemojava.libio.weka.Weka;
+import java.io.InputStream;
+
 import org.openscience.cdk.qsar.model.QSARModelException;
+import org.openscience.chemojava.libio.weka.Weka;
 
 import weka.classifiers.trees.J48;
 /** 
@@ -106,7 +108,7 @@ public class J48WModel implements IWekaModel{
 	private String[] options;
 	/**A String specifying the path of the file, format arff,
 	 * which contians the variables and attributes with whose to test.*/
-	private String pathTest = null;
+	private InputStream table = null;
 	/** results of the prediction*/
 	private String[] results = null;
 	/**A Array Object containing the independent variable*/
@@ -118,7 +120,6 @@ public class J48WModel implements IWekaModel{
 	private int[] typAttrib;
 	/**String with the attribut class*/
 	private String[] classAttrib;
-	private boolean cdkResource;
 	/** String with the attributs*/
 	private String[] attrib;
 	/** Boolean if the attributs was set*/
@@ -162,9 +163,8 @@ public class J48WModel implements IWekaModel{
 	 * @param True, if the file is found into cdk.src resource 
 	 * @param pathTest Path of the dataset file format arff to train
 	 */
-	public J48WModel(boolean cdkResource, String pathTest){
-		this.pathTest  = pathTest;
-		this.cdkResource = cdkResource;
+	public J48WModel(InputStream table){
+		this.table  = table;
 	}
 
 	/**
@@ -214,9 +214,8 @@ public class J48WModel implements IWekaModel{
 			if(options != null)
 				j48.setOptions(options);
 
-			if(pathTest != null){
-			    weka.setDataset(
-			        this.getClass().getClassLoader().getResourceAsStream(pathTest),
+			if(table != null){
+			    weka.setDataset(table,
 			        j48
 			    );
 			}else{
