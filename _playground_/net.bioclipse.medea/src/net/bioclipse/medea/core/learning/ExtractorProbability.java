@@ -34,6 +34,19 @@ public class ExtractorProbability {
 //        System.out.println(bundle);
 //		URL url= bundle.getEntry(owlFile);
 //		
+//		System.out.println(url.getPath());
+//
+//		
+//		try {
+//			URL furl = FileLocator.toFileURL(url);
+//			System.out.println("fileURL: " + furl);
+//			File file = FileLocator.getBundleFile(bundle);
+//			System.out.println("file: " + file.getCanonicalPath());
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
 //		String pp ="";
 //		try {
 //			pp = Platform.asLocalURL(url).getPath().toString()+"data";
@@ -41,9 +54,8 @@ public class ExtractorProbability {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
-//		
-		String pp = "/data";
-		admin = new AdministratorFilesReader(pp);
+		
+		admin = new AdministratorFilesReader();
 	}
 	/**
 	 * Set the probability 
