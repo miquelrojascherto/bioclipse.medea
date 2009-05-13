@@ -3,7 +3,7 @@ package net.bioclipse.plugins.extensions;
 import java.io.IOException;
 import java.io.Serializable;
 
-import net.bioclipse.plugins.medea.core.Medea;
+import net.bioclipse.medea.core.Medea;
 import net.bioclipse.seneca.judge.IJudge;
 import net.bioclipse.seneca.judge.Judge;
 import net.bioclipse.seneca.judge.JudgeResult;
@@ -142,5 +142,10 @@ public class WCCMedeaJudge extends Judge implements IJudge, Serializable, Clonea
         }
         judge.setEnabled(super.getEnabled());
         return judge;
+    }
+
+    public String getDescription() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
