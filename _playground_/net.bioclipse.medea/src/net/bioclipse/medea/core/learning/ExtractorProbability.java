@@ -42,7 +42,7 @@ public class ExtractorProbability {
 //			e.printStackTrace();
 //		}
 //		
-		String pp = "/home/mrc/Development/Sourceforge/bioclipseDir/bioclipse2/net.bioclipse.medea/data";
+		String pp = "/data";
 		admin = new AdministratorFilesReader(pp);
 	}
 	/**
