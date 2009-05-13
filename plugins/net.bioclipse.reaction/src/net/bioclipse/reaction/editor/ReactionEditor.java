@@ -434,7 +434,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	 * 
 	 * @return The IChemModel object
 	 */
-	private IChemModel updateChemModelFromContentsModel() {
+	public IChemModel getChemModelFromContentsModel() {
 		IChemModel newChemModel = DefaultChemObjectBuilder.getInstance().newChemModel();
 		IReactionSet reactionSet = DefaultChemObjectBuilder.getInstance().newReactionSet();
 		newChemModel.setReactionSet(reactionSet);

@@ -11,6 +11,7 @@
 package net.bioclipse.reaction.editor;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
 
 import net.bioclipse.cdk.business.Activator;
@@ -34,6 +35,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.io.MDLRXNWriter;
 
 
 /**
@@ -52,6 +55,7 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	private TextEditor textEditor;
 	private IEditorInput editorInput;
 	private ReactionEditor rEditor;
+	protected String filetype;
 	
 	/**
 	 * constructor of the ReactionMultiPageEditor object.
@@ -95,8 +99,20 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	 * Creates the pages of the multi-page editor.
 	 */
 	protected void createPages() {
-		createPage0();
-    createPage1();
+      Object file = getEditorInput().getAdapter(IFile.class);
+      if (!(file instanceof IFile)) {
+          throw new RuntimeException(
+                  "Invalid editor input: Does not provide an IFile");
+      }
+      IFile inputFile = (IFile) file;
+      try {
+        filetype=Activator.getDefault().getCDKManager().determineFormat( inputFile.getFullPath().toOSString() );
+      } catch ( Exception e ) {
+          throw new RuntimeException(
+          "Invalid editor input: Cannot determine file format");
+      }
+  		createPage0();
+      createPage1();
 	}
 	/**
 	 * The <code>ReactionMultiPageEditor</code> implementation of this 
@@ -112,11 +128,11 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	public void doSave(IProgressMonitor monitor) {
       this.showBusy( true );
       // Synch from ReactionEditor to texteditor
-      updateTextEditor();
-      textEditor.doSave( monitor );
-  		try {
+      try {
+          updateTextEditor();
+          textEditor.doSave( monitor );
           rEditor.setDirty(false);
-      } catch ( BioclipseException e ) {
+      } catch ( Exception e ) {
           LogUtils.handleException( e, logger );
       }
   		textEditor.doRevertToSaved();		
@@ -125,10 +141,19 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	}
 	
 	
-	private void updateTextEditor() {
-
-        // TODO update text editor from ReactionEditor
-        
+	private void updateTextEditor() throws CDKException {
+	    IChemModel chemmodel=rEditor.getChemModelFromContentsModel();
+      StringWriter writer = new StringWriter();
+	    if(filetype.equals( "Chemical Markup Language" )){
+	        org.openscience.cdk.io.CMLWriter cmlwriter = new org.openscience.cdk.io.CMLWriter(writer);
+	        cmlwriter.write( chemmodel );
+	    }else if(filetype.equals( "MDL Reaction format" )){
+	        MDLRXNWriter rxnwriter = new MDLRXNWriter(writer);
+	        rxnwriter.write( chemmodel );
+	    }else{
+	        LogUtils.handleException( new BioclipseException("Unknown format in editor - totally lost here"), logger );
+	    }
+	    textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput()).set(writer.toString());
     }
 
     /**
@@ -161,12 +186,16 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	 * Calculates the contents of page 0 when the it is activated.
 	 */
 	protected void pageChange(int newPageIndex) {
-		super.pageChange(newPageIndex);
-		if(newPageIndex == 1){
-		    updateTextEditor();
-		}else{
-		    updateReactionEditor();
-		}
+	    try{
+    		super.pageChange(newPageIndex);
+    		if(newPageIndex == 1){
+    		    updateTextEditor();
+    		}else{
+    		    updateReactionEditor();
+    		}
+	    }catch(Exception ex){
+	        LogUtils.handleException( ex, logger );
+	    }
 	}
 
 	private void updateReactionEditor() {
