@@ -22,6 +22,10 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.extra;bundle-version="1.2.2",
  net.bioclipse.cml;bundle-version="2.0.0",
  org.xmlcml.cmlxom;bundle-version="2.0.0",
- net.bioclipse.xom;bundle-version="1.1.0"
+ net.bioclipse.xom;bundle-version="1.1.0",
+ net.bioclipse.spectrum;bundle-version="2.0.0",
+ net.bioclipse.specmol;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.medea.test
+Import-Package: org.apache.commons.logging;version="1.0.4",
+ org.apache.log4j
