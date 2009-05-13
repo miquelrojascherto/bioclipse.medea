@@ -33,7 +33,8 @@ Require-Bundle: org.eclipse.ui,
  org.openscience.cdk.qsarweka;bundle-version="1.2.2",
  net.bioclipse.core;bundle-version="2.0.0",
  slf4j.api;bundle-version="1.5.0",
- jcl104.over.slf4j;bundle-version="1.5.0"
+ jcl104.over.slf4j;bundle-version="1.5.0",
+ net.bioclipse.cdk.business
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.medea.business,
  net.bioclipse.medea.core
