@@ -1,4 +1,4 @@
-package net.bioclipse.plugins.medea.core.learning;
+package net.bioclipse.medea.core.learning;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -7,11 +7,11 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.bioclipse.plugins.medea.core.reaction.ExtractorSetQsarsCE;
-import net.bioclipse.plugins.medea.core.reaction.ExtractorSetQsarsHR;
-import net.bioclipse.plugins.medea.core.reaction.ExtractorSetQsarsRSH;
-import net.bioclipse.plugins.medea.core.reaction.ExtractorSetQsarsRSI;
-import net.bioclipse.plugins.medea.core.reaction.ReactionKp;
+import net.bioclipse.medea.core.reaction.ExtractorSetQsarsCE;
+import net.bioclipse.medea.core.reaction.ExtractorSetQsarsHR;
+import net.bioclipse.medea.core.reaction.ExtractorSetQsarsRSH;
+import net.bioclipse.medea.core.reaction.ExtractorSetQsarsRSI;
+import net.bioclipse.medea.core.reaction.ReactionKp;
 
 public class AdministratorFilesWriter {
 	

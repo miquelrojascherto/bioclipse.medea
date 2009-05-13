@@ -1,4 +1,4 @@
-package net.bioclipse.plugins.medea.core.reaction;
+package net.bioclipse.medea.core.reaction;
 
 import java.util.ArrayList;
 /**

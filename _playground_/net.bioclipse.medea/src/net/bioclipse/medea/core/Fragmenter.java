@@ -1,10 +1,10 @@
-package net.bioclipse.plugins.medea.core;
+package net.bioclipse.medea.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.bioclipse.plugins.medea.core.learning.ExtractorProbability;
+import net.bioclipse.medea.core.learning.ExtractorProbability;
 
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.DefaultChemObjectBuilder;

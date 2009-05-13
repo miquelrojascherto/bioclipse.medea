@@ -1,10 +1,10 @@
-package net.bioclipse.plugins.medea.core.prediction;
+package net.bioclipse.medea.core.prediction;
 
 import java.util.ArrayList;
 
-import net.bioclipse.plugins.medea.core.FragmentMolecule;
-import net.bioclipse.plugins.medea.core.FragmentTree;
-import net.bioclipse.plugins.medea.core.Position;
+import net.bioclipse.medea.core.FragmentMolecule;
+import net.bioclipse.medea.core.FragmentTree;
+import net.bioclipse.medea.core.Position;
 
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.interfaces.IMolecule;

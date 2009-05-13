@@ -7,7 +7,7 @@ import java.awt.Frame;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import net.bioclipse.plugins.medea.core.Medea;
+import net.bioclipse.medea.core.Medea;
 
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;

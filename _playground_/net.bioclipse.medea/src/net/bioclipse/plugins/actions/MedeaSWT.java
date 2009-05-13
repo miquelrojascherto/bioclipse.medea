@@ -1,6 +1,6 @@
 package net.bioclipse.plugins.actions;
 
-import net.bioclipse.plugins.medea.core.Medea;
+import net.bioclipse.medea.core.Medea;
 import net.bioclipse.plugins.wizards.PredictWizard;
 
 import org.eclipse.jface.wizard.WizardDialog;

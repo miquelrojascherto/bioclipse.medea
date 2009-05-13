@@ -1,25 +1,19 @@
-package net.bioclipse.plugins.medea.core.learning;
+package net.bioclipse.medea.core.learning;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 
-import net.bioclipse.medea.Activator;
-import net.bioclipse.plugins.Bc_MEDEAPlugin;
-import net.bioclipse.plugins.medea.core.FragmentMolecule;
-import net.bioclipse.plugins.medea.core.FragmentTree;
-import net.bioclipse.plugins.medea.core.Position;
-import net.bioclipse.plugins.medea.core.prediction.AdministratorFilesReader;
-import net.bioclipse.plugins.medea.core.reaction.ExtractorSetReactions;
-import net.bioclipse.plugins.medea.core.reaction.ReactionKp;
+import net.bioclipse.medea.core.FragmentMolecule;
+import net.bioclipse.medea.core.FragmentTree;
+import net.bioclipse.medea.core.Position;
+import net.bioclipse.medea.core.prediction.AdministratorFilesReader;
+import net.bioclipse.medea.core.reaction.ExtractorSetReactions;
+import net.bioclipse.medea.core.reaction.ReactionKp;
 
-import org.eclipse.core.runtime.Platform;
 import org.openscience.cdk.interfaces.IMapping;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionSet;
-import org.osgi.framework.Bundle;
 
 public class ExtractorProbability {
 

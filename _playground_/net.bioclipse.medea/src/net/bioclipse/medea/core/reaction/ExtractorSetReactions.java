@@ -1,11 +1,11 @@
-package net.bioclipse.plugins.medea.core.reaction;
+package net.bioclipse.medea.core.reaction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.bioclipse.plugins.medea.core.FragmentMolecule;
-import net.bioclipse.plugins.medea.core.FragmentTree;
-import net.bioclipse.plugins.medea.core.Position;
+import net.bioclipse.medea.core.FragmentMolecule;
+import net.bioclipse.medea.core.FragmentTree;
+import net.bioclipse.medea.core.Position;
 
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMapping;

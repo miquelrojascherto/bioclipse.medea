@@ -4,12 +4,12 @@ package net.bioclipse.plugins.wizards;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
+import net.bioclipse.medea.core.Medea;
 import net.bioclipse.model.BioResource;
 import net.bioclipse.model.IBioResource;
 import net.bioclipse.model.SpectrumResource;
 import net.bioclipse.plugins.actions.MedeaSWT;
 import net.bioclipse.plugins.bc_reaction.resource.ReactionResource;
-import net.bioclipse.plugins.medea.core.Medea;
 import net.bioclipse.plugins.perspective.MedeaPerspective;
 import net.bioclipse.util.folderUtils;
 import net.bioclipse.views.BioResourceView;

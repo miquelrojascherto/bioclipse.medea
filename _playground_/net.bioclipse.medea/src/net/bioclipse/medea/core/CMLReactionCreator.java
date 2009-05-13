@@ -1,6 +1,6 @@
-package net.bioclipse.plugins.medea.core;
+package net.bioclipse.medea.core;
 
-import net.bioclipse.plugins.medea.core.reaction.ExtractorSetReactions;
+import net.bioclipse.medea.core.reaction.ExtractorSetReactions;
 
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;

@@ -1,4 +1,4 @@
-package net.bioclipse.plugins.medea.core.reaction;
+package net.bioclipse.medea.core.reaction;
 
 import org.openscience.cdk.Reaction;
 

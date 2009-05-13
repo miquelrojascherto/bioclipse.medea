@@ -1,4 +1,4 @@
-package net.bioclipse.plugins.medea.core.reaction;
+package net.bioclipse.medea.core.reaction;
 
 import java.util.ArrayList;
 
@@ -10,19 +10,20 @@ import org.openscience.cdk.qsar.descriptors.atomic.EffectiveAtomPolarizabilityDe
 import org.openscience.cdk.qsar.descriptors.atomic.PartialPiChargeDescriptor;
 import org.openscience.cdk.qsar.descriptors.atomic.PartialSigmaChargeDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
+import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 /**
  * Class which extract the qsar from a reactions for CarbonylElimination.
  * 
  * @author Miguel Rojas
  */
-public class ExtractorSetQsarsRSH implements ExtractorSetQsars{
+public class ExtractorSetQsarsCE implements ExtractorSetQsars{
 	private PartialSigmaChargeDescriptor descriptor0;
 	private PartialPiChargeDescriptor descriptor2;
 	private EffectiveAtomPolarizabilityDescriptor descriptor3;
 	/**
 	 * Extractor of the ExtractorSetQsars object
 	 */
-	public ExtractorSetQsarsRSH(){
+	public ExtractorSetQsarsCE(){
 		descriptor0 = new PartialSigmaChargeDescriptor();
 		descriptor2 = new PartialPiChargeDescriptor();
 		descriptor3 = new EffectiveAtomPolarizabilityDescriptor();
@@ -36,13 +37,21 @@ public class ExtractorSetQsarsRSH implements ExtractorSetQsars{
 	public ArrayList<Double> getQsars(ReactionKp reactionKp){
 		ArrayList<Double> resultsQsars = new ArrayList<Double>();
 		
-		IMolecule reactant = reactionKp.getReactants().getMolecule(0);
+		IMolecule mol0 = reactionKp.getProducts().getMolecule(0);
+		IMolecule mol1 = reactionKp.getProducts().getMolecule(1);
+		IMolecule product = null;
+
+		if(AtomContainerManipulator.getTotalFormalCharge(mol1) == 0){
+				product = mol0;
+		}else{
+				product = mol1;
+		}
 			
 		if(reactionKp.mappings() != null ){
 			
 //			System.out.println("A");
 //			printInformation(product);
-			ArrayList<Double> results3 = applyDescritorsReactant(reactant,reactionKp.mappings());
+			ArrayList<Double> results3 = applyDescritorsProductA(product,reactionKp.mappings());
 			resultsQsars.addAll(results3);
 
 		}
@@ -51,19 +60,20 @@ public class ExtractorSetQsarsRSH implements ExtractorSetQsars{
 	}
 
 	/**
-	 * obtain an ArrayList of descriptors for the reactant.
+	 * obtain an ArrayList of descriptors for the product.
 	 * 
 	 * @param product The IMolecule(productA)
 	 * @param mapping  The Iterator with mappings
 	 */
-	private ArrayList<Double> applyDescritorsReactant(IMolecule reactant, Iterable<IMapping> iterable) {
+	private ArrayList<Double> applyDescritorsProductA(IMolecule product, Iterable<IMapping> iterable) {
 		ArrayList<Double> results = new ArrayList<Double>();
 		Integer[] object1 = {new Integer(6)};
 		Object[] object2 = {new Integer(6),new Boolean(false)};
 		int count = 0;
 		/*problems with mapping, not valid if a product come from two different reactants.*/
 //		while(mappingI.hasNext()){/* second is the atom  [A1*]-A2-A3* => A1=A2 + [A3*]*/
-		for(IAtom aap:reactant.atoms()){
+//		Iterator iterator = product.atoms();
+		for(IAtom aap:product.atoms()){
 //			IMapping mapping = (IMapping)mappingI.next();
 			
 //			if(count == 2){
@@ -71,21 +81,22 @@ public class ExtractorSetQsarsRSH implements ExtractorSetQsars{
 //				if(object instanceof IAtom){
 //					IAtom aap = (IAtom)object;
 //			IAtom aap = (IAtom)iterator.next();
+			if(aap.getFormalCharge() == 1){
 //					System.out.println("i_: "+product.getAtomNumber(aap)+", "+aap.getID()+", "+aap);
-					if(reactant.contains(aap) && aap.getFormalCharge() == 1){
+					if(product.contains(aap) && aap.getFormalCharge() == 1){
 							try {
 								descriptor0.setParameters(object1);
-								double result =((DoubleResult)descriptor0.calculate(aap, reactant).getValue()).doubleValue();
+								double result =((DoubleResult)descriptor0.calculate(aap, product).getValue()).doubleValue();
 //								System.out.println("r0: "+result);
 								results.add(result);
 								
 								descriptor2 = new PartialPiChargeDescriptor();
 								descriptor2.setParameters(object2);
-								result =((DoubleResult)descriptor2.calculate(aap, reactant).getValue()).doubleValue();
+								result =((DoubleResult)descriptor2.calculate(aap, product).getValue()).doubleValue();
 //								System.out.println("r1: "+result);
 								results.add(result);
 	
-								result =((DoubleResult)descriptor3.calculate(aap, reactant).getValue()).doubleValue();
+								result =((DoubleResult)descriptor3.calculate(aap, product).getValue()).doubleValue();
 //								System.out.println("r2: "+result);
 								results.add(result);
 	
@@ -94,6 +105,8 @@ public class ExtractorSetQsarsRSH implements ExtractorSetQsars{
 							}
 							break;
 					}
+	
+				}
 			}
 //			count++;
 //		}

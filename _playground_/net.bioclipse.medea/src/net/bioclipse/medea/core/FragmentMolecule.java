@@ -1,4 +1,4 @@
-package net.bioclipse.plugins.medea.core;
+package net.bioclipse.medea.core;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -1,18 +1,18 @@
-package net.bioclipse.plugins.medea.core.prediction;
+package net.bioclipse.medea.core.prediction;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.bioclipse.plugins.medea.core.Fragmenter;
-import net.bioclipse.plugins.medea.core.Medea;
-import net.bioclipse.plugins.medea.core.learning.AdministratorFilesWriter;
-import net.bioclipse.plugins.medea.core.reaction.ExtractorSetQsarsCE;
-import net.bioclipse.plugins.medea.core.reaction.ExtractorSetQsarsHR;
-import net.bioclipse.plugins.medea.core.reaction.ExtractorSetQsarsRSH;
-import net.bioclipse.plugins.medea.core.reaction.ExtractorSetQsarsRSI;
-import net.bioclipse.plugins.medea.core.reaction.ReactionKp;
+import net.bioclipse.medea.core.Fragmenter;
+import net.bioclipse.medea.core.Medea;
+import net.bioclipse.medea.core.learning.AdministratorFilesWriter;
+import net.bioclipse.medea.core.reaction.ExtractorSetQsarsCE;
+import net.bioclipse.medea.core.reaction.ExtractorSetQsarsHR;
+import net.bioclipse.medea.core.reaction.ExtractorSetQsarsRSH;
+import net.bioclipse.medea.core.reaction.ExtractorSetQsarsRSI;
+import net.bioclipse.medea.core.reaction.ReactionKp;
 
 import org.openscience.cdk.qsar.model.QSARModelException;
 import org.openscience.cdk.reaction.type.RadicalSiteInitiationHReaction;
