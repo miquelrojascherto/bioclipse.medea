@@ -10,14 +10,14 @@
  ******************************************************************************/
 package net.bioclipse.medea.business;
 
-import org.openscience.cdk.interfaces.IAtomContainer;
-import org.xmlcml.cml.element.CMLSpectrum;
-
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.ISpectrum;
 import net.bioclipse.medea.core.Medea;
 import net.bioclipse.spectrum.domain.JumboSpectrum;
+
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.xmlcml.cml.element.CMLSpectrum;
 
 public class MedeaManager implements IMedeaManager {
 
