@@ -28,13 +28,13 @@ class CMLSpectrumCreator {
 		/*obtain the mass of the arrayList which contains the ionized fragments*/
 		IMolecule molecule = fragmentTree.getMolecule();
 		IMolecularFormula formula = MolecularFormulaManipulator.getMolecularFormula(molecule);
-		double massI = MolecularFormulaManipulator.getTotalExactMass(formula);
+		double massI = (int)Math.round(MolecularFormulaManipulator.getTotalExactMass(formula));
 		
 		cmlSpectrum = new CMLSpectrum();
 		cmlSpectrum.setType("massSpectrum");
 		CMLPeakList peakList = new CMLPeakList();
 		
-		FragmentTreeSub fts = fragmentTree.getFragments((int)massI);
+		FragmentTreeSub fts = fragmentTree.getFragments((int)Math.round(massI));
 		
 		for(int i = 0; i <= massI ; i++){
 			fts = fragmentTree.getFragments(i);
@@ -59,17 +59,23 @@ class CMLSpectrumCreator {
 						if(i == massI )
 							if(j < numbIonized)
 								break;
-						abundance = abundance + fts.get(j).getAbundance();
+						double ab = 0.0;
+						if(!(new Double(ab)).toString().equals("NaN"))
+							ab = (double)fts.get(j).getAbundance();
+						else{
+						}
+						abundance = abundance + ab;
 					}
 				}
-				if(abundance == 0.0)
+				if(abundance == 0.0 )
 					continue;
 				
+				System.out.println(i+" "+abundance);
 				CMLPeak peak = new CMLPeak();
 				peak.setXUnits("jcampdx: m/z");
 				peak.setYUnits("jcampdx: RELATIVE ABUNDANCE");
 				peak.setXValue(i);
-				peak.setYValue(abundance*10);
+				peak.setYValue(100);
 				peakList.addPeak(peak);
 			}
 		}

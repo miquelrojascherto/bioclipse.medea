@@ -90,6 +90,7 @@ public class Medea {
 				CMLPeak peak = (CMLPeak) it.next();
 				if(peak.getXValue() != 0.0){
 					peaksX.add(peak.getXValue());
+					System.out.println(peak.getXValue());
 					peaksY[(int)peak.getXValue()] = peak.getYValue();
 				}else
 					peaksY[(int)peak.getXValue()] = -1.0;
