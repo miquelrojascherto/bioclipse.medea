@@ -16,7 +16,7 @@ import org.xmlcml.cml.element.CMLSpectrum;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.ISpectrum;
-import net.bioclipse.plugins.medea.core.Medea;
+import net.bioclipse.medea.core.Medea;
 import net.bioclipse.spectrum.domain.JumboSpectrum;
 
 public class MedeaManager implements IMedeaManager {
