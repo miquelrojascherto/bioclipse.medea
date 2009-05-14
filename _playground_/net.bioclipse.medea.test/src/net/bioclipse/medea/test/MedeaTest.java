@@ -15,7 +15,7 @@ package net.bioclipse.medea.test;
 import java.io.InputStream;
 
 import net.bioclipse.core.MockIFile;
-import net.bioclipse.core.business.IBioclipseManager;
+import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.medea.business.MedeaManager;
 import net.bioclipse.medea.core.Medea;
 import net.bioclipse.spectrum.business.SpectrumManager;
