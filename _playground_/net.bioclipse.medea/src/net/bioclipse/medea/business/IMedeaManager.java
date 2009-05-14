@@ -11,9 +11,9 @@
 package net.bioclipse.medea.business;
 
 import net.bioclipse.core.PublishedMethod;
-import net.bioclipse.core.business.IBioclipseManager;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.ISpectrum;
+import net.bioclipse.managers.business.IBioclipseManager;
 
 public interface IMedeaManager extends IBioclipseManager {
 
