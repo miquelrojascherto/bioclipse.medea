@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.bioclipse.reaction.editor;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
@@ -22,9 +23,11 @@ import net.bioclipse.core.util.LogUtils;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -32,11 +35,18 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.io.CMLWriter;
+import org.openscience.cdk.io.DefaultChemObjectWriter;
 import org.openscience.cdk.io.MDLRXNWriter;
+import org.openscience.cdk.io.formats.CMLFormat;
+import org.openscience.cdk.io.formats.IChemFormat;
+import org.openscience.cdk.io.formats.MDLRXNFormat;
 
 
 /**
@@ -106,7 +116,7 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
       }
       IFile inputFile = (IFile) file;
       try {
-        filetype=Activator.getDefault().getCDKManager().determineFormat( inputFile.getFullPath().toOSString() );
+        filetype=Activator.getDefault().getJavaCDKManager().determineFormat( inputFile.getFullPath().toOSString() );
       } catch ( Exception e ) {
           throw new RuntimeException(
           "Invalid editor input: Cannot determine file format");
@@ -144,25 +154,98 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	private void updateTextEditor() throws CDKException {
 	    IChemModel chemmodel=rEditor.getChemModelFromContentsModel();
       StringWriter writer = new StringWriter();
+      DefaultChemObjectWriter cdkwriter=null;
 	    if(filetype.equals( "Chemical Markup Language" )){
-	        org.openscience.cdk.io.CMLWriter cmlwriter = new org.openscience.cdk.io.CMLWriter(writer);
-	        cmlwriter.write( chemmodel );
+	        cdkwriter = new CMLWriter(writer);
+	        cdkwriter.write( chemmodel );
 	    }else if(filetype.equals( "MDL Reaction format" )){
-	        MDLRXNWriter rxnwriter = new MDLRXNWriter(writer);
-	        rxnwriter.write( chemmodel );
+	        cdkwriter = new MDLRXNWriter(writer);
+	        cdkwriter.write( chemmodel.getReactionSet() );
 	    }else{
 	        LogUtils.handleException( new BioclipseException("Unknown format in editor - totally lost here"), logger );
 	    }
-	    textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput()).set(writer.toString());
+	    try {
+          cdkwriter.close();
+          textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput()).set(writer.toString());
+      } catch ( IOException e ) {
+          LogUtils.handleException( e, logger );
+      }
     }
 
     /**
-	 * Saves the multi-page editor's document as another file.
-	 * Also updates the text for page 1's tab, and updates this multi-page editor's input
-	 * to correspond to the nested editor's.
-	 */
+     * Saves the multi-page editor's document as another file.
+	   **/
 	public void doSaveAs() {
-		//TODO
+      IProgressMonitor monitor = new NullProgressMonitor();
+        boolean correctfiletype = false;
+        IFile target = null;
+        int ticks = 10000;
+        while ( !correctfiletype ) {
+            SaveAsDialog saveasdialog =
+                    new SaveAsDialog( this.getSite().getShell() );
+            Object file = getEditorInput().getAdapter(IFile.class);
+            saveasdialog.setOriginalFile( (IFile) file );
+            int result = saveasdialog.open();
+            if ( result == SaveAsDialog.CANCEL ) {
+                correctfiletype = true;
+                target = null;
+            } else {
+                target =
+                        ResourcesPlugin.getWorkspace().getRoot()
+                                .getFile( saveasdialog.getResult() );
+                String filetype = saveasdialog.getResult().getFileExtension();
+                if ( filetype == null )
+                    filetype = "none";
+                if ( filetype.equals( "cml" ) || filetype.equals( "rxn" ) ) {
+                    correctfiletype = true;
+                    monitor.beginTask( "Writing file", ticks );
+                    try {
+                        if ( filetype.equals( "cml" ) )
+                            this.filetype =
+                                    CMLFormat.getInstance().getFormatName();
+                        else
+                            this.filetype =
+                                    MDLRXNFormat.getInstance().getFormatName();
+                        updateTextEditor();
+                        byte[] newtext =
+                                textEditor
+                                        .getDocumentProvider()
+                                        .getDocument(
+                                                      textEditor
+                                                              .getEditorInput() )
+                                        .get().getBytes();
+                        if ( target.exists() )
+                            target
+                                    .setContents(
+                                                  new ByteArrayInputStream(
+                                                                            newtext ),
+                                                  0, new NullProgressMonitor() );
+                        else
+                            target.create( new ByteArrayInputStream( newtext ),
+                                           true, new NullProgressMonitor() );
+                        rEditor.setDirty(false);
+                        textEditor.setInput( new FileEditorInput(target) );
+                    } catch ( Exception ex ) {
+                        MessageDialog.openError( this.getSite().getShell(),
+                                                 "Error saving",
+                                                 "Saving failed due to: "
+                                                         + ex.getMessage() );
+                        correctfiletype = false;
+                    }
+                } else {
+                    MessageDialog
+                            .openError(
+                                        this.getSite().getShell(),
+                                        "No valid file type!",
+                                        "Valid file types are "
+                                                + "rxn"
+                                                + " and "
+                                                + "cml"
+                                                + ". The file extension must be one of these!" );
+                }
+            }
+        }
+        monitor.worked( ticks );
 	}
 
 	/**
@@ -199,10 +282,23 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	}
 
 	private void updateReactionEditor() {
-
-        // TODO update reaction editor from text
-        
-    }
+	    if(textEditor==null)
+	        return;
+      ICDKManager cdkManager = Activator.getDefault().getJavaCDKManager();
+      byte[] newtext =
+          textEditor
+                  .getDocumentProvider()
+                  .getDocument(
+                                textEditor
+                                        .getEditorInput() )
+                  .get().getBytes();
+      try {
+        List<ICDKReaction> model = cdkManager.loadReactions( new ByteArrayInputStream(newtext), (IChemFormat) (filetype.equals( "Chemical Markup Language" ) ? CMLFormat.getInstance() : MDLRXNFormat.getInstance()));
+        rEditor.updateContent( model );
+      } catch ( Exception e ) {
+          LogUtils.handleException( e, logger );
+      }
+  }
 
     /*
 	 * (non-Javadoc)
@@ -219,7 +315,7 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
                   "Invalid editor input: Does not provide an IFile");
       }
       IFile inputFile = (IFile) file;
-      ICDKManager cdkManager = Activator.getDefault().getCDKManager();
-      return cdkManager.loadReactions( inputFile, new NullProgressMonitor());
+      ICDKManager cdkManager = Activator.getDefault().getJavaCDKManager();
+      return cdkManager.loadReactions( inputFile );
   }
 }

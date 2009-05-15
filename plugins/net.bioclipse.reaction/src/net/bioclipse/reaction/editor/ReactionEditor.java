@@ -133,15 +133,19 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		//viewer.addDragSourceListener(new MyFileDragSourceListener(viewer));
 		
 		List<ICDKReaction> model;
-    try {
+    try {        
         model = this.getModelFromEditorInput();
-        contentsModel = createContentsModel(model);
-        @SuppressWarnings("unused")
-        HierarchicLayer hLayer = new HierarchicLayer(contentsModel);
-        viewer.setContents(contentsModel);
+        updateContent( model );
     } catch (Exception e ) {
         LogUtils.handleException( e, logger );
     }
+	}
+	
+	public void updateContent(List<ICDKReaction> model){
+      contentsModel = createContentsModel(model);
+      @SuppressWarnings("unused")
+      HierarchicLayer hLayer = new HierarchicLayer(contentsModel);
+      viewer.setContents(contentsModel);
 	}
 
 	private ContentsModel createContentsModel(List<ICDKReaction> model) {

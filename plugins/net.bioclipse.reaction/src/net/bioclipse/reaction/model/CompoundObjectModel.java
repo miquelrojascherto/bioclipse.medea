@@ -2,6 +2,7 @@ package net.bioclipse.reaction.model;
 
 import net.bioclipse.reaction.tools.CounterObjects;
 
+import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
 
@@ -42,6 +43,8 @@ public class CompoundObjectModel extends AbstractObjectModel{
 	 * @return The IMolecule object
 	 */
 	public IAtomContainer getIMolecule(){
+	  if(molecule==null)
+	        return DefaultChemObjectBuilder.getInstance().newAtomContainer();
 		return molecule;
 	}
 	
