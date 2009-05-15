@@ -40,4 +40,17 @@ public class MedeaManager implements IMedeaManager {
         return spectrum;
     }
 
+    public ISpectrum learnMassSpectrum(IMolecule molecule, ISpectrum spectrum, String nameFile) {
+        ICDKMolecule mol = (ICDKMolecule)molecule.getAdapter(ICDKMolecule.class);
+        if (mol == null) {
+            throw new RuntimeException("Only supports ICDKMolecule for now.");
+        }
+
+        IAtomContainer container = mol.getAtomContainer();
+        predictor.learningMS(container, ((JumboSpectrum)spectrum).getJumboObject(), nameFile);
+        CMLSpectrum cmlSpectrum = predictor.getPredictedSpectrum();
+        ISpectrum spectrumL = new JumboSpectrum(cmlSpectrum);
+        return spectrumL;
+    }
+
 }
