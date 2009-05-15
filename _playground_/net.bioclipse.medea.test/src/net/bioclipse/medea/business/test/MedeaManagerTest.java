@@ -64,15 +64,15 @@ public class MedeaManagerTest extends AbstractManagerTest{
     public void testLearnMassSpectrum_IMolecule_ISpectrum_String() throws URISyntaxException, IOException, BioclipseException, CoreException{
     	
     	String pathSpectrum = getClass().getResource("/testFiles/30460-92-5.cml").getPath();
-    	ISpectrumManager sp = new SpectrumManager();
+    	SpectrumManager sp = new SpectrumManager();
     	ISpectrum spectrum = sp.loadSpectrum(pathSpectrum );
     	
     	String pathMolecule = getClass().getResource("/testFiles/30460-92-5-2d.mol").getPath();
     	CDKManager cdk = new CDKManager();
     	ICDKMolecule molecule = cdk.loadMolecule( new MockIFile(pathMolecule), new NullProgressMonitor() );
     	
-        IFile target=new MockIFile();
-        medeamanager.learnMassSpectrum(molecule,spectrum,"");
+        ISpectrum spectrumL = medeamanager.learnMassSpectrum(molecule,spectrum,null);
+    	Assert.assertEquals(1,((IJumboSpectrum)spectrumL).getJumboObject().getPeakListElements().size());
 
     }
 }

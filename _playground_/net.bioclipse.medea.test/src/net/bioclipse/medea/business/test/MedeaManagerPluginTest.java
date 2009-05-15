@@ -26,7 +26,6 @@ import net.bioclipse.core.tests.AbstractManagerTest;
 import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.medea.business.IMedeaManager;
 import net.bioclipse.medea.business.MedeaManager;
-import net.bioclipse.spectrum.business.ISpectrumManager;
 import net.bioclipse.spectrum.business.SpectrumManager;
 import net.bioclipse.spectrum.domain.IJumboSpectrum;
 
@@ -70,7 +69,7 @@ public class MedeaManagerPluginTest extends AbstractManagerTest{
         URI uri = getClass().getResource("/testFiles/30460-92-5.cml").toURI();
         URL url = FileLocator.toFileURL(uri.toURL());
         String pathSpectrum = url.getFile();
-        ISpectrumManager sp = new SpectrumManager();
+        SpectrumManager sp = new SpectrumManager();
     	ISpectrum spectrum = sp.loadSpectrum(pathSpectrum );
     	
         uri = getClass().getResource("/testFiles/30460-92-5-2d.mol").toURI();
@@ -78,9 +77,9 @@ public class MedeaManagerPluginTest extends AbstractManagerTest{
         String pathMolecule = url.getFile();
         CDKManager cdk = new CDKManager();
     	ICDKMolecule molecule = cdk.loadMolecule( new MockIFile(pathMolecule), new NullProgressMonitor() );
-    	
-        IFile target=new MockIFile();
-        medeamanager.learnMassSpectrum(molecule,spectrum,"");
+
+        ISpectrum spectrumL = medeamanager.learnMassSpectrum(molecule,spectrum,null);
+    	Assert.assertEquals(1,((IJumboSpectrum)spectrumL).getJumboObject().getPeakListElements().size());
     }
     
 }
