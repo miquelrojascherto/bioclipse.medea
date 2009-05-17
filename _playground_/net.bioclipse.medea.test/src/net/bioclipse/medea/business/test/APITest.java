@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008  Egon Willighagen <egonw@users.sf.net>
+ * Copyright (c) 2009  Egon Willighagen <egonw@users.sf.net>
  * 
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,17 +10,17 @@
  ******************************************************************************/
 package net.bioclipse.medea.business.test;
 
-import net.bioclipse.core.tests.coverage.AbstractCoverageTest;
+import net.bioclipse.core.tests.AbstractManagerTest;
 import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.medea.business.IMedeaManager;
 import net.bioclipse.medea.business.MedeaManager;
 
 /**
- * JUnit tests for checking if the tested Manager is properly tested.
+ * JUnit tests for checking if the tested Manager has an expected API.
  * 
- * @author miguelrojasch
+ * @author egonw
  */
-public class CoverageTest extends AbstractCoverageTest {
+public class APITest extends AbstractManagerTest {
     
     private static MedeaManager manager = new MedeaManager();
 
