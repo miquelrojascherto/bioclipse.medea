@@ -26,7 +26,7 @@ public class MedeaManagerFactory implements
     public void setInitializationData(IConfigurationElement config,
                                       String propertyName, 
                                       Object data) throws CoreException {
-        manager = Activator.getDefault().getManager();
+        manager = Activator.getDefault().getJavaScriptManager();
     }
     
     public Object create() throws CoreException {

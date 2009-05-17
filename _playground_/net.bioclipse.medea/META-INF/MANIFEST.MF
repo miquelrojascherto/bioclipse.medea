@@ -37,6 +37,7 @@ Require-Bundle: org.eclipse.ui,
  jcl104.over.slf4j;bundle-version="1.5.0",
  net.bioclipse.cdk.business
 Bundle-ActivationPolicy: lazy
-Export-Package: net.bioclipse.medea.business,
+Export-Package: net.bioclipse.medea,
+ net.bioclipse.medea.business,
  net.bioclipse.medea.core
 Import-Package: org.apache.log4j;version="1.2.15"

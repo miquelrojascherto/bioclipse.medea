@@ -11,11 +11,16 @@
 package net.bioclipse.medea.business;
 
 import net.bioclipse.core.PublishedMethod;
+import net.bioclipse.core.TestClasses;
 import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.ISpectrum;
 import net.bioclipse.managers.business.IBioclipseManager;
 
+@TestClasses(
+    "net.bioclipse.medea.business.test.APITest," +
+    "net.bioclipse.medea.business.test.JavaMedeaManagerPluginTest"
+)
 public interface IMedeaManager extends IBioclipseManager {
 
     @PublishedMethod(

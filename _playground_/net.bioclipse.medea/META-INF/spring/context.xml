@@ -1,55 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:osgi="http://www.springframework.org/schema/osgi"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans 
-                      http://www.springframework.org/schema/beans/spring-beans.xsd
-                      http://www.springframework.org/schema/osgi 
-                      http://www.springframework.org/schema/osgi/spring-osgi.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                      http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-  <!-- Gets the recording advice -->
-  <osgi:reference id="recordingAdvice" 
-                  interface="net.bioclipse.recording.IRecordingAdvice" />
+	<osgi:service id="javaMedeaManagerOSGI" ref="javaMedeaManager"
+		interface="net.bioclipse.medea.business.IJavaMedeaManager" />
 
-  <osgi:reference id="createJobAdvice"
-                  interface="net.bioclipse.ui.jobs.ICreateJobAdvice" />
+	<osgi:service id="javaScriptMedeaManagerOSGI" ref="javaScriptMedeaManager"
+		interface="net.bioclipse.medea.business.IJavaScriptMedeaManager" />
 
-  <!--+ 
-      | Point cut advisor that inserts the recording advice on all methods.
-      | (The class does nothing on toString() 
-      |  since a regexp for that behavior failed)
-      +-->
-  <bean id="recordingAdvisor"
-  		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
-        <property name="advice"  ref="recordingAdvice" />
-  		<property name="pattern" value=".*" />
-  </bean>
+	<osgi:reference id="recordingAdvice"
+		interface="net.bioclipse.recording.IRecordingAdvice" />
 
-  <!-- The target that later on will be proxied. Our manager class. -->
-  <bean id="medeaManagerTarget" 
-        class="net.bioclipse.medea.business.MedeaManager">
-  </bean>
-  
-  <!--+ 
-      | The proxy puts together the managerTarget, the pointcut advisor
-      | and defines which interfaces to be proxied 
-      +-->
-  <bean id="medeaManager"
-  		class="org.springframework.aop.framework.ProxyFactoryBean">
-  	<property name="target" 
-  	          ref="medeaManagerTarget" />
-  	<property name="proxyInterfaces" 
-  	          value="net.bioclipse.medea.business.IMedeaManager" />
-  	<property name="interceptorNames">
-        <list>
-           <value>recordingAdvisor</value>
-           <value>createJobAdvice</value>
-        </list>
-    </property>
-  </bean>
+	<osgi:reference id="javaManagerDispatcherAdvisor"
+		interface="net.bioclipse.managers.business.IJavaManagerDispatcherAdvisor" />
 
-  <!-- publishes the final manager (the proxy) -->
-  <osgi:service id="medeaManagerOSGI" 
-                ref="medeaManager"
-                interface="net.bioclipse.medea.business.IMedeaManager" />
+	<osgi:reference id="javaScriptManagerDispatcherAdvisor"
+		interface="net.bioclipse.managers.business.IJavaScriptManagerDispatcherAdvisor" />
+
+	<osgi:reference id="wrapInProxyAdvice"
+		interface="net.bioclipse.recording.IWrapInProxyAdvice" />
+
+	<bean id="recordingAdvisor"
+		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<property name="advice" ref="recordingAdvice" />
+		<property name="pattern" value=".*" /> <!-- See also class implementation -->
+	</bean>
+	
+	<bean id="medeaManagerTarget" 
+	      class="net.bioclipse.medea.business.MedeaManager">
+	</bean>
+
+	<bean id="javaScriptMedeaManager" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="medeaManagerTarget" />
+		<property name="proxyInterfaces"
+			value="net.bioclipse.medea.business.IJavaScriptMedeaManager" />
+		<property name="interceptorNames">
+			<list>
+				<value>recordingAdvisor</value>
+				<value>wrapInProxyAdvice</value>
+				<value>javaScriptManagerDispatcherAdvisor</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="javaMedeaManager" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="medeaManagerTarget" />
+		<property name="proxyInterfaces" value="net.bioclipse.medea.business.IJavaMedeaManager" />
+		<property name="interceptorNames">
+			<list>
+				<value>recordingAdvisor</value>
+				<value>wrapInProxyAdvice</value>
+				<value>javaManagerDispatcherAdvisor</value>
+			</list>
+		</property>
+	</bean>
+
 </beans>

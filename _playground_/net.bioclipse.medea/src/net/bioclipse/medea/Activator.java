@@ -8,7 +8,8 @@
  *******************************************************************************/
 package net.bioclipse.medea;
 
-import net.bioclipse.medea.business.IMedeaManager;
+import net.bioclipse.medea.business.IJavaMedeaManager;
+import net.bioclipse.medea.business.IJavaScriptMedeaManager;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -26,6 +27,7 @@ public class Activator extends AbstractUIPlugin {
     private static Activator plugin;
 
     private ServiceTracker finderTracker;
+    private ServiceTracker jsFinderTracker;
 
     /**
      * The constructor
@@ -44,10 +46,16 @@ public class Activator extends AbstractUIPlugin {
 
         finderTracker = new ServiceTracker(
             context,
-            IMedeaManager.class.getName(),
+            IJavaMedeaManager.class.getName(),
             null
         );
         finderTracker.open();
+        jsFinderTracker = new ServiceTracker(
+            context,
+            IJavaScriptMedeaManager.class.getName(),
+            null
+        );
+        jsFinderTracker.open();
     }
 
     /*
@@ -68,10 +76,23 @@ public class Activator extends AbstractUIPlugin {
         return plugin;
     }
     
-    public IMedeaManager getManager() {
-        IMedeaManager manager = null;
+    public IJavaMedeaManager getJavaManager() {
+        IJavaMedeaManager manager = null;
         try {
-            manager = (IMedeaManager)finderTracker.waitForService(1000*30);
+            manager = (IJavaMedeaManager)finderTracker.waitForService(1000*30);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException("Could not get medea manager", e);
+        }
+        if(manager == null) {
+            throw new IllegalStateException("Could not get medea manager");
+        }
+        return manager;
+    }
+
+    public IJavaScriptMedeaManager getJavaScriptManager() {
+        IJavaScriptMedeaManager manager = null;
+        try {
+            manager = (IJavaScriptMedeaManager)jsFinderTracker.waitForService(1000*30);
         } catch (InterruptedException e) {
             throw new IllegalStateException("Could not get medea manager", e);
         }
