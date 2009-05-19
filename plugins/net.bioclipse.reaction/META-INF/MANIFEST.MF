@@ -31,8 +31,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.openscience.cdk.data;bundle-version="1.2.2",
  org.openscience.cdk.sdg;bundle-version="1.2.2",
  org.openscience.cdk.io;bundle-version="1.2.2",
- org.openscience.cdk.libiocml;bundle-version="1.2.2",
- net.bioclipse.managers;bundle-version="1.0.0"
+ org.openscience.cdk.libiocml;bundle-version="1.2.2"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.commons.logging,
  org.apache.log4j
