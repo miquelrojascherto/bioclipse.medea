@@ -8,7 +8,6 @@ import net.bioclipse.seneca.judge.IJudge;
 import net.bioclipse.seneca.judge.Judge;
 import net.bioclipse.seneca.judge.JudgeResult;
 import net.bioclipse.seneca.judge.MissingInformationException;
-import net.bioclipse.seneca.util.WCCTool;
 import nu.xom.Document;
 import nu.xom.Nodes;
 import nu.xom.ParsingException;
