@@ -7,7 +7,6 @@ Bundle-Activator: net.bioclipse.medea.Activator
 Bundle-Vendor: Miguel Rojas
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- net.bioclipse.managers,
  net.bioclipse.ui,
  net.bioclipse.cml,
  net.bioclipse.spectrum,
