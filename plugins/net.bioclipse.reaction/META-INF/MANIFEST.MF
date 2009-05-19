@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Reaction Plug-in
 Bundle-SymbolicName: net.bioclipse.reaction;singleton:=true
-Bundle-Version: 1.0.1
+Bundle-Version: 1.0.0
 Bundle-Activator: net.bioclipse.reaction.Activator
 Bundle-Vendor: Miguel Rojas
 Require-Bundle: org.eclipse.core.runtime,
@@ -31,7 +31,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.openscience.cdk.data;bundle-version="1.2.2",
  org.openscience.cdk.sdg;bundle-version="1.2.2",
  org.openscience.cdk.io;bundle-version="1.2.2",
- org.openscience.cdk.libiocml;bundle-version="1.2.2"
+ org.openscience.cdk.libiocml;bundle-version="1.2.2",
+ net.bioclipse.managers;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.commons.logging,
  org.apache.log4j
