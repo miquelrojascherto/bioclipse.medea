@@ -16,7 +16,8 @@ import org.eclipse.draw2d.geometry.Rectangle;
  */
 public class HierarchicLayer {
 	private int[][] board = new int[300][300];
-	private int distance = 50;
+	private int distanceWidth = 100;
+	private int distanceHeight = 50;
 	private List list;
 	private int maximalHeigh = 150;
 	private int layoutPosition;
@@ -86,7 +87,7 @@ public class HierarchicLayer {
 				ID id = (ID)list.get(j);
 				if(id.getObject().getEditableValue().equals(object.getEditableValue())){
 //					System.out.println("id: "+id.column+","+id.row);
-					object.setConstraint(new Rectangle((id.column+1)*distance,(maximalHeigh-id.row+1)*distance,-1,-1));
+					object.setConstraint(new Rectangle((id.column+1)*distanceWidth,(maximalHeigh-id.row+1)*distanceHeight,-1,-1));
 					break;
 				}
 			}
