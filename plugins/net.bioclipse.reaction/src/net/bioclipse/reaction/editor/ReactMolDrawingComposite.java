@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.interfaces.IReactionSet;
+import org.openscience.cdk.interfaces.IReaction;
 
 
 /**
@@ -96,24 +96,22 @@ public class ReactMolDrawingComposite extends Composite{
 	}
 
 	/**
-	 * load a new ChemModel into the drawing panel
+	 * load a new IMolecule into the drawing panel
 	 * 
-	 * @param IChemModel model2
-	 * @param HashMap    coordenates
+	 * @param IMolecule newMolecule
 	 */
-	public void loadNewMolecule(IMolecule newModel) {
-		drawingPanel.setAtomContainer( newModel );
+	public void loadNewMolecule(IMolecule newMolecule) {
+		drawingPanel.setAtomContainer( newMolecule );
 		this.setSize(getSize().x,getSize().y-1);
 	}
 
   /**
-   * load a new ChemModel into the drawing panel
+   * load a new IReaction into the drawing panel
    * 
-   * @param IChemModel model2
-   * @param HashMap    coordenates
+   * @param IReaction newReaction
    */
-  public void loadNewReactionSet(IReactionSet newModel) {
-      drawingPanel.setReactionSet( newModel );
-    this.setSize(getSize().x,getSize().y-1);
+  public void loadNewReactionSet(IReaction newReaction) {
+	  drawingPanel.setReaction( newReaction );
+      this.setSize(getSize().x,getSize().y-1);
   }
 }

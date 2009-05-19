@@ -1,5 +1,6 @@
 package net.bioclipse.reaction.editparts;
 
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 
@@ -34,7 +35,6 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IReaction;
-import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 import org.openscience.cdk.tools.manipulator.ReactionManipulator;
 
@@ -131,35 +131,31 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 				}
 			}else if(abstractObject instanceof ReactionObjectModel){
 				IReaction reaction = ((ReactionObjectModel)this.getModel()).getIReaction();
-				IReactionSet reactionSet = reaction.getBuilder().newReactionSet();
-				IMoleculeSet moleculeSet = ReactionManipulator.getAllReactants(reaction);
-				int numbReactants = moleculeSet.getAtomContainerCount();
-				moleculeSet.add(ReactionManipulator.getAllProducts(reaction));
-				
-				int countM = 0;
-				int width = 1;
-				for(IAtomContainer ac: moleculeSet.molecules()){
-					IMolecule mol = (IMolecule)ac;
-					if(mol.getAtomCount() == 0)
-						continue;
-					
-					
-					
-					GeometryTools.translateAllPositive(mol);
+//				IMoleculeSet moleculeSet = ReactionManipulator.getAllReactants(reaction);
+//				int numbReactants = moleculeSet.getAtomContainerCount();
+//				moleculeSet.add(ReactionManipulator.getAllProducts(reaction));
+//				
+//				int countM = 0;
+//				int width = 1;
+//				for(IAtomContainer ac: moleculeSet.molecules()){
+//					IMolecule mol = (IMolecule)ac;
+//					if(mol.getAtomCount() == 0)
+//						continue;
+//					
+//					GeometryTools.translateAllPositive(mol);
 //					GeometryTools.scaleMolecule(mol, new Dimension(xsize,ysize), 0.8,coordinates);			
 //					GeometryTools.center(mol, new Dimension(xsize,ysize),coordinates);
-					
-					
-					if(countM == numbReactants - 1)
-						width += GeometryTools.get2DDimension(mol).width+100;
-					else
-						width += GeometryTools.get2DDimension(mol).width+30;
-					
-					countM++;
-				}
-				reactionSet.addReaction(reaction);
+//					
+//					
+//					if(countM == numbReactants - 1)
+//						width += GeometryTools.get2DDimension(mol).width+100;
+//					else
+//						width += GeometryTools.get2DDimension(mol).width+30;
+//					
+//					countM++;
+//				}
         ReactMolDrawingComposite jcp = abstractObject.getJCP();
-        jcp.loadNewReactionSet( reactionSet );				
+        jcp.loadNewReactionSet( reaction );				
 			}
 			this.performDirectEdit(); //-introduction text
 			
