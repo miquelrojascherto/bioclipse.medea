@@ -116,11 +116,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		form = new SashForm(parent,SWT.VERTICAL);
 		form.setLayout(new FillLayout());
 		super.createPartControl(form);
-		try {
-            child1 = new ReactMolDrawingComposite(form, SWT.PUSH, this);
-    } catch ( Exception e ) {
-        LogUtils.handleException( e, logger );
-    }	
+		
 	}
 	
 	/* (non-Javadoc)
@@ -129,8 +125,14 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	protected void initializeGraphicalViewer() {
 		viewer = getGraphicalViewer();
 
-		//viewer.addDropTargetListener(new MyFileDropTargetListener(viewer));
-		//viewer.addDragSourceListener(new MyFileDragSourceListener(viewer));
+//		viewer.addDropTargetListener(new MyFileDropTargetListener(viewer));
+//		viewer.addDragSourceListener(new MyFileDragSourceListener(viewer));
+		
+		try {
+            child1 = new ReactMolDrawingComposite(form, SWT.PUSH, this);	
+        } catch ( Exception e ) {
+			LogUtils.handleException( e, logger );
+		}
 		
 		List<ICDKReaction> model;
     try {        
@@ -142,10 +144,10 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	}
 	
 	public void updateContent(List<ICDKReaction> model){
-      contentsModel = createContentsModel(model);
-      @SuppressWarnings("unused")
-      HierarchicLayer hLayer = new HierarchicLayer(contentsModel);
-      viewer.setContents(contentsModel);
+		contentsModel = createContentsModel(model);
+		@SuppressWarnings("unused")
+		HierarchicLayer hLayer = new HierarchicLayer(contentsModel);
+		viewer.setContents(contentsModel);
 	}
 
 	private ContentsModel createContentsModel(List<ICDKReaction> model) {

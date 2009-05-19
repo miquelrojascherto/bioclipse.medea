@@ -56,8 +56,7 @@ public class ReactMolDrawingComposite extends Composite{
 	private void init(ReactionEditor page) throws BioclipseException, IOException, CDKException, CoreException {
 		this.setLayout(new FillLayout());	
 		drawingPanel = new JChemPaintEditorWidget(this,SWT.NONE);
-		List<ICDKReaction> model = null;
-		model = page.getModelFromEditorInput();
+		List<ICDKReaction> model = page.getModelFromEditorInput();
 		drawingPanel.setReaction( model.get( 0 ).getReaction());
 	}
 	
@@ -103,7 +102,7 @@ public class ReactMolDrawingComposite extends Composite{
 	 * @param HashMap    coordenates
 	 */
 	public void loadNewMolecule(IMolecule newModel) {
-	    drawingPanel.setAtomContainer( newModel );
+		drawingPanel.setAtomContainer( newModel );
 		this.setSize(getSize().x,getSize().y-1);
 	}
 
