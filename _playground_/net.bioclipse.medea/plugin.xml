@@ -84,7 +84,12 @@
          <description/>
       </wizard>
    </extension>
-   <extension
+
+   <!--
+     Commented out because this net.bioclipse.compute plugin was deprecated and removed. This wizard
+     will need replacement using the Bioclipse2 New World Order.
+
+    extension
          point="net.bioclipse.compute.computationWizards">
       <category
             id="net.bioclipse.compute.caseCategory"
@@ -103,6 +108,6 @@
             id="net.bioclipse.medea.business.MedeaManager"
             service="net.bioclipse.medea.business.MedeaManagerFactory">
       </scriptContribution>
-   </extension>
+   </extension -->
 
 </plugin>
