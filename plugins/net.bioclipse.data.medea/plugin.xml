@@ -19,9 +19,21 @@
   <extension
       point="net.bioclipse.data.install">
       <folder 
-      	name="Medea"
-      	description="Medea sample data"
-      	location="data"
+      	name="Javascripts"
+      	description="Scripts sample data"
+      	location="data/Javascripts"
+      	wizard="net.bioclipse.data.medea.NewMedeaProjectWizard"
+  	    icon="icons/MEDEA.gif"/>
+  	  <folder 
+      	name="Molecules"
+      	description="Sample structures"
+      	location="data/Molecules"
+      	wizard="net.bioclipse.data.medea.NewMedeaProjectWizard"
+  	    icon="icons/MEDEA.gif"/>
+  	  <folder 
+      	name="Spectra"
+      	description="Sample spectra"
+      	location="data/Spectra"
       	wizard="net.bioclipse.data.medea.NewMedeaProjectWizard"
   	    icon="icons/MEDEA.gif"/>
   </extension>
