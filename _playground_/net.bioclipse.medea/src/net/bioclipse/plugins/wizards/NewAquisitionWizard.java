@@ -4,17 +4,17 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 
-import net.bioclipse.compute.wizards.IComputationWizard;
+//import net.bioclipse.compute.wizards.IComputationWizard;
 import net.bioclipse.model.IBioResource;
 import net.bioclipse.plugins.Bc_MEDEAPlugin;
 import net.bioclipse.plugins.actions.MedeaSWT;
-import net.bioclipse.plugins.medea.job.PredictionMSJob;
+//import net.bioclipse.plugins.medea.job.PredictionMSJob;
 import nu.xom.ParentNode;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.jobs.Job;
+//import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
@@ -31,14 +31,16 @@ import org.xmlcml.cml.element.CMLCml;
 import org.xmlcml.cml.element.CMLMolecule;
 import org.xmlcml.cml.element.CMLSpectrum;
 
-public class NewAquisitionWizard extends Wizard implements IComputationWizard{
+public class NewAquisitionWizard extends Wizard 
+//implements IComputationWizard
+{
 
 	private static final Logger logger = Bc_MEDEAPlugin.getLogManager().getLogger(NewAquisitionWizard.class.toString());
 	private NewReactionAcquisitionWizardPage selectFilePage;
 	private AddMoleculeWizardPage addMoleculePage;
 	private AddSpectrumWizardPage addSpectrumPage;
 
-	private final PredictionMSJob computation = new PredictionMSJob();
+//	private final PredictionMSJob computation = new PredictionMSJob();
 
 	/**
 	 * Constructor of the NewAquisitionWizard object
@@ -170,10 +172,10 @@ public class NewAquisitionWizard extends Wizard implements IComputationWizard{
 	 *      org.eclipse.jface.viewers.IStructuredSelection)
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		computation.setSelection(selection);
+//		computation.setSelection(selection);
 	}
-	public Job getComputationJob() {
-		return computation;
-	}
+//	public Job getComputationJob() {
+//		return computation;
+//	}
 
 }
