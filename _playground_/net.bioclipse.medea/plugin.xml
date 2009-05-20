@@ -85,6 +85,14 @@
       </wizard>
    </extension>
 
+   <extension
+         point="net.bioclipse.scripting.contribution">
+      <scriptContribution
+            id="net.bioclipse.medea.business.MedeaManager"
+            service="net.bioclipse.medea.business.MedeaManagerFactory">
+      </scriptContribution>
+   </extension>
+
    <!--
      Commented out because this net.bioclipse.compute plugin was deprecated and removed. This wizard
      will need replacement using the Bioclipse2 New World Order.
