@@ -27,6 +27,12 @@ public class MedeaManager implements IMedeaManager {
         return "medea";
     }
 
+    /**
+     * Predict the mass spectrum given a IMolecule.
+     * 
+     * @param IMolecule The molecule to predict the spectrum
+     * @return          The predicted spectrum
+     */
     public ISpectrum predictMassSpectrum(IMolecule molecule) {
         ICDKMolecule mol = (ICDKMolecule)molecule.getAdapter(ICDKMolecule.class);
         if (mol == null) {
@@ -40,6 +46,13 @@ public class MedeaManager implements IMedeaManager {
         return spectrum;
     }
 
+    /**
+     * Learn the fragmentation process given a IMolecule and its corresponding Spectrum.
+     * 
+     * @param IMolecule The molecule
+     * @param ISpectrum The spectrum
+     * @return          The predicted spectrum
+     */
     public ISpectrum learnMassSpectrum(IMolecule molecule, ISpectrum spectrum, String nameFile) {
         ICDKMolecule mol = (ICDKMolecule)molecule.getAdapter(ICDKMolecule.class);
         if (mol == null) {
