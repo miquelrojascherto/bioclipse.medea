@@ -37,7 +37,7 @@
          </menu>
       </objectContribution>
       <objectContribution
-            id="bc_medea.predict"
+            id="bc_medea.learn"
             objectClass="org.eclipse.core.resources.IFile">
          <action
                class="net.bioclipse.plugins.actions.LearnAction"
@@ -67,47 +67,43 @@
             id="net.bioclipse.plugins.medea.perspective"
             name="MEDEA"/>
    </extension>
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <category
-            id="bc_medea.MedeaCategory"
-            name="Medea"/>
-      <wizard
-            canFinishEarly="false"
-            category="bc_medea.MedeaCategory"
-            class="net.bioclipse.plugins.wizards.NewAquisitionWizard"
-            hasPages="true"
-            icon="icons/MEDEA.gif"
-            id="bc_medea.NewAquisitionWizard"
-            name="new Aquisition Medea Predictions"
-            project="true">
-         <description/>
-      </wizard>
-   </extension>
-
-   <extension
-         point="net.bioclipse.scripting.contribution">
-      <scriptContribution
-            id="net.bioclipse.medea.business.MedeaManager"
-            service="net.bioclipse.medea.business.MedeaManagerFactory">
-      </scriptContribution>
-   </extension>
-
+   
    <!--
      Commented out because this net.bioclipse.compute plugin was deprecated and removed. This wizard
      will need replacement using the Bioclipse2 New World Order.
-
-    extension
-         point="net.bioclipse.compute.computationWizards">
+   -->
+   
+   <extension
+         point="org.eclipse.ui.newWizards">
       <category
-            id="net.bioclipse.compute.caseCategory"
-            name="Medea2"/>
+            id="net.bioclipse.medea.MedeaCategory"
+            name="Medea related"/>
       <wizard
-            category="bc_medea.MedeaCategory2"
-            class="net.bioclipse.plugins.wizards.NewAquisitionWizard"
+            canFinishEarly="false"
+            category="net.bioclipse.medea.MedeaCategory"
+            class="net.bioclipse.medea.wizard.NewMedeaWizard"
+            hasPages="true"
             icon="icons/MEDEA.gif"
-            id="bc_medea.NewAquisitionWizard"
-            name="new Aquisition Reaction Predictions"/>
+            id="net.bioclipse.medea.wizard.NewMedeaWizard"
+            name="Prediction MS"
+            project="true"
+            preferredPerspectives="net.bioclipse.plugins.perspective.MedeaPerspective">
+         <description/>
+      </wizard>
+   </extension>
+   
+   <extension point="org.eclipse.ui.navigator.navigatorContent">                                                  
+     <commonWizard type="new"                                                                                     
+        wizardId="net.bioclipse.medea.wizard.NewMedeaWizard">
+       <enablement>
+         <or>
+           <adapt type="org.eclipse.core.resources.IFile" />
+           <adapt type="org.eclipse.core.resources.IFolder" />
+           <adapt type="org.eclipse.core.resources.IProject" />
+           <adapt type="org.eclipse.core.resources.IWorkspaceRoot" />
+        </or>
+       </enablement>
+     </commonWizard>
    </extension>
 
    <extension
@@ -116,6 +112,6 @@
             id="net.bioclipse.medea.business.MedeaManager"
             service="net.bioclipse.medea.business.MedeaManagerFactory">
       </scriptContribution>
-   </extension -->
+   </extension>
 
 </plugin>
