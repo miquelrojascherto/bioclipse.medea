@@ -135,12 +135,12 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		}
 		
 		List<ICDKReaction> model;
-    try {        
-        model = this.getModelFromEditorInput();
-        updateContent( model );
-    } catch (Exception e ) {
-        LogUtils.handleException( e, logger );
-    }
+	    try {        
+	        model = this.getModelFromEditorInput();
+	        updateContent( model );
+	    } catch (Exception e ) {
+	        LogUtils.handleException( e, logger );
+	    }
 	}
 	
 	public void updateContent(List<ICDKReaction> model){
