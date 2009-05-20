@@ -255,7 +255,7 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
 		super.init(site, editorInput);
 		this.editorInput = editorInput;
-		
+		setPartName( editorInput.getName() );
 	}
 	/* (non-Javadoc)
 	 * Method declared on IEditorPart.
