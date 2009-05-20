@@ -6,7 +6,7 @@
       point = "org.eclipse.ui.newWizards">
  	<wizard
 	   id = "net.bioclipse.data.reaction.NewReactionProjectWizard"
-	   name = "Rection Sample Data Project"
+	   name = "Reaction Sample Data Project"
 	   project="true"
 	   class="net.bioclipse.data.wizards.NewDataProjectWizard"
 	   category="net.bioclipse.data"
@@ -19,9 +19,15 @@
   <extension
       point="net.bioclipse.data.install">
       <folder 
-      	name="Reaction"
-      	description="Reaction sample data"
-      	location="data"
+      	name="RXN"
+      	description="Reaction sample data with MDL RXN format"
+      	location="data/rxn"
+      	wizard="net.bioclipse.data.reaction.NewReactionProjectWizard"
+  	    icon="icons/tree.gif"/>
+  	  <folder 
+      	name="CML"
+      	description="Reaction sample data with Chemical Markup Language Format"
+      	location="data/cml"
       	wizard="net.bioclipse.data.reaction.NewReactionProjectWizard"
   	    icon="icons/tree.gif"/>
   </extension>
