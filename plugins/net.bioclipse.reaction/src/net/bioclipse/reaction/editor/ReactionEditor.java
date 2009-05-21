@@ -60,8 +60,10 @@ import org.eclipse.gef.ui.actions.DirectEditAction;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
+import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
+import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -79,7 +81,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.IPageSite;
-import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -97,6 +99,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	private SashForm form;
 	private ContentsModel contentsModel;
 	private GraphicalViewer viewer;
+	private Object fOutlinePage;
 	private static final Logger logger = Logger.getLogger( ReactionEditor.class.toString());
 	
 	/**
@@ -402,14 +405,18 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	 * (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
-	public Object getAdapter(Class type) {
-		if (type == ZoomManager.class)
+	public Object getAdapter(Class adapter ) {
+		if (adapter == ZoomManager.class)
 			return ((ScalableRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
-		//TODO outline
-		/*if (type == IContentOutlinePage.class) {
-			return new MyContentOutlinePage();
-		}*/
-		return super.getAdapter(type);
+		
+		if ( IContentOutlinePage.class.equals( adapter ) ) {
+            if ( fOutlinePage == null ) {
+                fOutlinePage = new MyContentOutlinePage();
+//                fOutlinePage.setInput( getControllerHub().getIChemModel() );
+            }
+            return fOutlinePage;
+        }
+		return super.getAdapter(adapter);
 	}
 	/*
 	 * (non-Javadoc)
@@ -508,109 +515,83 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		viewer.setContents(contentsM);
 		
 	}
-	
 	/**
 	 * A ContentOutlinePage which contains also zoom-viewer
 	 * 
 	 * @author Miguel Rojas
 	 */
 	class MyContentOutlinePage extends ContentOutlinePage {
-
-		private SashForm sash;
+	    private SashForm sash;
 		private ScrollableThumbnail thumbnail;
 		private DisposeListener disposeListener;
 
-		/**
-		 * Constructor of the MyContentOutlinePage object
-		 */
-		public MyContentOutlinePage() {
-			super();
-		}
+	    public MyContentOutlinePage() {
+	      super(new TreeViewer());
+	    }
+	    
+	    public void init(IPageSite pageSite) {
+	      super.init(pageSite);
+	      ActionRegistry registry = getActionRegistry();
+	      IActionBars bars = pageSite.getActionBars();
 
-		/*
-		 * (non-Javadoc)
-		 * @see org.eclipse.ui.part.Page#init(org.eclipse.ui.part.IPageSite)
-		 */
-		@SuppressWarnings("deprecation")
-		public void init(IPageSite pageSite) {
-			super.init(pageSite);
-			ActionRegistry registry = getActionRegistry();
-			IActionBars bars = pageSite.getActionBars();
+	      String id = IWorkbenchActionConstants.UNDO;
+	      bars.setGlobalActionHandler(id, registry.getAction(id));
 
-			// String id = ActionFactory.UNDO.getId();
-			String id = IWorkbenchActionConstants.UNDO;
-			bars.setGlobalActionHandler(id, registry.getAction(id));
+	      id = IWorkbenchActionConstants.REDO;
+	      bars.setGlobalActionHandler(id, registry.getAction(id));
 
-			id = IWorkbenchActionConstants.REDO;
-			bars.setGlobalActionHandler(id, registry.getAction(id));
+	      id = IWorkbenchActionConstants.DELETE;
+	      bars.setGlobalActionHandler(id, registry.getAction(id));
+	      bars.updateActionBars();
+	    }
 
-			id = IWorkbenchActionConstants.DELETE;
-			bars.setGlobalActionHandler(id, registry.getAction(id));
-			bars.updateActionBars();
-		}
+	    public void createControl(Composite parent) {
+	      sash = new SashForm(parent, SWT.VERTICAL);
+	      
+	      getViewer().createControl(sash);
+	      
+	      getViewer().setEditDomain(getEditDomain());
+	      getViewer().setEditPartFactory(new TreeEditPartFactory());
+	      getViewer().setContents(contentsModel);
+	      getSelectionSynchronizer().addViewer(getViewer());
+	      
+	      Canvas canvas = new Canvas(sash, SWT.BORDER);
+	      LightweightSystem lws = new LightweightSystem(canvas);
 
-		/*
-		 * (non-Javadoc)
-		 * @see org.eclipse.gef.ui.parts.ContentOutlinePage#createControl(org.eclipse.swt.widgets.Composite)
-		 */
-		public void createControl(Composite parent) {
-			sash = new SashForm(parent, SWT.VERTICAL);
+	      thumbnail = new ScrollableThumbnail(
+	          (Viewport) ((ScalableRootEditPart) getGraphicalViewer()
+	              .getRootEditPart()).getFigure());
+	      thumbnail.setSource(((ScalableRootEditPart) getGraphicalViewer()
+	          .getRootEditPart())
+	          .getLayer(LayerConstants.PRINTABLE_LAYERS));
+	      
+	      lws.setContents(thumbnail);
 
-			getPaletteViewer().createControl(sash);
+	      disposeListener = new DisposeListener() {
+	        public void widgetDisposed(DisposeEvent e) {
+	          if (thumbnail != null) {
+	            thumbnail.deactivate();
+	            thumbnail = null;
+	          }
+	        }
+	      };
+	      getGraphicalViewer().getControl().addDisposeListener(
+	          disposeListener);
 
-			getPaletteViewer().setEditDomain(getEditDomain());
-			getPaletteViewer().setEditPartFactory(new TreeEditPartFactory());
-			getPaletteViewer().setContents(contentsModel);
-			getSelectionSynchronizer().addViewer(getPaletteViewer());
+	    }
 
-			Canvas canvas = new Canvas(sash, SWT.BORDER);
-			LightweightSystem lws = new LightweightSystem(canvas);
+	    public Control getControl() {
+	      return sash;
+	    }
 
-			thumbnail = new ScrollableThumbnail(
-					(Viewport) ((ScalableRootEditPart) getPaletteViewer()
-							.getRootEditPart()).getFigure());
-			thumbnail.setSource(((ScalableRootEditPart) getPaletteViewer()
-					.getRootEditPart())
-					.getLayer(LayerConstants.PRINTABLE_LAYERS));
+	    public void dispose() {
+	      getSelectionSynchronizer().removeViewer(getViewer());
 
-			lws.setContents(thumbnail);
+	      if (getGraphicalViewer().getControl() != null
+	              && !getGraphicalViewer().getControl().isDisposed())
+	            getGraphicalViewer().getControl().removeDisposeListener(disposeListener);
+	      super.dispose();
 
-			disposeListener = new DisposeListener() {
-				public void widgetDisposed(DisposeEvent e) {
-					if (thumbnail != null) {
-						thumbnail.deactivate();
-						thumbnail = null;
-					}
-				}
-			};
-			getPaletteViewer().getControl().addDisposeListener(
-					disposeListener);
-
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * @see org.eclipse.gef.ui.parts.ContentOutlinePage#getControl()
-		 */
-		public Control getControl() {
-			return sash;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * @see org.eclipse.ui.part.Page#dispose()
-		 */
-		public void dispose() {
-			// SelectionSynchronizer �reeViewer�
-			getSelectionSynchronizer().removeViewer(getPaletteViewer());
-
-			if (getPaletteViewer().getControl() != null
-					&& !getPaletteViewer().getControl().isDisposed())
-				getPaletteViewer().getControl().removeDisposeListener(
-						disposeListener);
-
-			super.dispose();
-		}
-
-	}
+	    }
+	  }
 }
