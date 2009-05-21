@@ -42,9 +42,11 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.io.CMLWriter;
@@ -119,28 +121,29 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 		}
 		/* double-click funcionality - Opening JCP editor*/
 		if(req.getType().equals(RequestConstants.REQ_OPEN)){
-			System.out.println("doubles click - opening wizard");
 			AbstractObjectModel abstractObject = (AbstractObjectModel)this.getModel();
 			if(abstractObject instanceof CompoundObjectModel){
-				IMolecule mol = DefaultChemObjectBuilder.getInstance().newMolecule( ((CompoundObjectModel)abstractObject).getIMolecule());
-				if(mol != null && mol.getAtomCount() > 0){
-					StringWriter writer = new StringWriter();
-					CMLWriter cmlWriter = new CMLWriter(writer);
-			        try {
-						cmlWriter.write(mol);
-					} catch (CDKException e1) {
-						e1.printStackTrace();
-					}
-			        String cmlContent = writer.toString();
-			        IEditorDescriptor desc = PlatformUI.getWorkbench().
-		            getEditorRegistry().getDefaultEditor(mol.getID()+"_.cml",Platform.getContentTypeManager().getContentType( "net.bioclipse.contenttypes.cml.singleMolecule2d" ));
-			        try {
-		                IFile tmpFile= net.bioclipse.core.Activator.getVirtualProject().getFile(WizardHelper.findUnusedFileName(new StructuredSelection(net.bioclipse.core.Activator.getVirtualProject()), mol.getID(), ".cml") );
-		                tmpFile.create( new StringBufferInputStream(cmlContent), IFile.FORCE, null);
-		                IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new FileEditorInput(tmpFile), desc.getId());
-		            } catch ( Exception e ) {
-		            }
+				IAtomContainer atomContainer = DefaultChemObjectBuilder.getInstance().newMolecule( ((CompoundObjectModel)abstractObject).getIMolecule());
+				StringWriter writer = new StringWriter();
+				CMLWriter cmlWriter = new CMLWriter(writer);
+		        if(atomContainer == null){
+					atomContainer = new AtomContainer();
+					atomContainer.setID("m");
 				}
+		        try {
+					cmlWriter.write(atomContainer);
+				} catch (CDKException e1) {
+					e1.printStackTrace();
+				}
+		        String cmlContent = writer.toString();
+		        IEditorDescriptor desc = PlatformUI.getWorkbench().
+	            getEditorRegistry().getDefaultEditor(atomContainer.getID()+"_.cml",Platform.getContentTypeManager().getContentType( "net.bioclipse.contenttypes.cml.singleMolecule2d" ));
+		        try {
+	                IFile tmpFile= net.bioclipse.core.Activator.getVirtualProject().getFile(WizardHelper.findUnusedFileName(new StructuredSelection(net.bioclipse.core.Activator.getVirtualProject()), atomContainer.getID(), ".cml") );
+	                tmpFile.create( new StringBufferInputStream(cmlContent), IFile.FORCE, null);
+	                IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new FileEditorInput(tmpFile), desc.getId());
+	            } catch ( Exception e ) {
+	            }
 			}
 		}
 		
