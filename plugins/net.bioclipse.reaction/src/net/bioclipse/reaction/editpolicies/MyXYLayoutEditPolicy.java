@@ -63,9 +63,9 @@ public class MyXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	 * (non-Javadoc)
 	 * @see org.eclipse.gef.EditPolicy#getCommand(org.eclipse.gef.Request)
 	 */
-//	public Command getCommand(Request request){
-//		return super.getCommand(request);
-//	}
+	public Command getCommand(Request request){
+		return super.getCommand(request);
+	}
 
 	
 

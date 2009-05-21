@@ -412,7 +412,6 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		if ( IContentOutlinePage.class.equals( adapter ) ) {
             if ( fOutlinePage == null ) {
                 fOutlinePage = new MyContentOutlinePage();
-//                fOutlinePage.setInput( getControllerHub().getIChemModel() );
             }
             return fOutlinePage;
         }
@@ -432,15 +431,6 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	 */
 	public List<ICDKReaction> getModelFromEditorInput() throws BioclipseException, IOException, CDKException, CoreException{
 	    return ReactionMultiPageEditor.getModelFromEditorInput( this.editorInput);	    
-	}
-
-	/**
-	 * get the DrawingPanel object
-	 * 
-	 * @return The DrawingPanel object
-	 */
-	public JChemPaintEditorWidget getDrawingPanel() {
-		return child1;
 	}
 
 	/**

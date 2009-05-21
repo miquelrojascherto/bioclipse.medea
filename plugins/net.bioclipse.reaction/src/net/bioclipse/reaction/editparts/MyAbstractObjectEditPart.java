@@ -3,6 +3,10 @@ package net.bioclipse.reaction.editparts;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 
+import net.bioclipse.cdk.domain.CDKMolecule;
+import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
+import net.bioclipse.cdk.domain.CDKReaction;
+import net.bioclipse.cdk.domain.CDKReactionPropertySource;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.reaction.editpolicies.MyComponentEditPolicy;
 import net.bioclipse.reaction.editpolicies.MyDirectEditPolicy;
@@ -27,11 +31,10 @@ import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.ui.views.properties.IPropertySource;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.geometry.GeometryTools;
-import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 
@@ -97,109 +100,15 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 	 * @see org.eclipse.gef.EditPart#performRequest(org.eclipse.gef.Request)
 	 */
 	public void performRequest(Request req){
+		
 		/* one-click funcionality - introduction text - show molecule*/
 		if(req.getType().equals(RequestConstants.REQ_DIRECT_EDIT)){
-
-			
-			/*create IChemModel*/
-			AbstractObjectModel abstractObject = (AbstractObjectModel)this.getModel();
-			if(abstractObject instanceof CompoundObjectModel){
-				IMolecule mol = DefaultChemObjectBuilder.getInstance().newMolecule( ((CompoundObjectModel)abstractObject).getIMolecule());
-				if(mol != null && mol.getAtomCount() > 0){
-
-					if(!GeometryTools.has2DCoordinates(mol)){
-
-						StructureDiagramGenerator sdg = new StructureDiagramGenerator();
-						sdg.setMolecule(mol);
-						try {
-							sdg.generateCoordinates();
-							mol = sdg.getMolecule();
-							GeometryTools.translateAllPositive(mol);
-							((CompoundObjectModel)abstractObject).setIMolecule(mol);
-							
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						
-					}
-					JChemPaintEditorWidget jcp = abstractObject.getJCP();
-					jcp.setAtomContainer(mol);
-					
-				}
-			}else if(abstractObject instanceof ReactionObjectModel){
-				IReaction reaction = ((ReactionObjectModel)this.getModel()).getIReaction();
-//				IMoleculeSet moleculeSet = ReactionManipulator.getAllReactants(reaction);
-//				int numbReactants = moleculeSet.getAtomContainerCount();
-//				moleculeSet.add(ReactionManipulator.getAllProducts(reaction));
-//				
-//				int countM = 0;
-//				int width = 1;
-//				for(IAtomContainer ac: moleculeSet.molecules()){
-//					IMolecule mol = (IMolecule)ac;
-//					if(mol.getAtomCount() == 0)
-//						continue;
-//					
-//					GeometryTools.translateAllPositive(mol);
-//					GeometryTools.scaleMolecule(mol, new Dimension(xsize,ysize), 0.8,coordinates);			
-//					GeometryTools.center(mol, new Dimension(xsize,ysize),coordinates);
-//					
-//					
-//					if(countM == numbReactants - 1)
-//						width += GeometryTools.get2DDimension(mol).width+100;
-//					else
-//						width += GeometryTools.get2DDimension(mol).width+30;
-//					
-//					countM++;
-//				}
-				JChemPaintEditorWidget jcp = abstractObject.getJCP();
-        jcp.setReaction( reaction );				
-			}
 			this.performDirectEdit(); //-introduction text
-			
-			
-			return;
 		}
 		/* double-click funcionality - Opening JCP editor*/
 		if(req.getType().equals(RequestConstants.REQ_OPEN)){
-//			System.out.println("doubles click - opening wizard");
-//			LoadMoleculeDialog lmd = new LoadMoleculeDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
-//			lmd.open();
-//			
-//			if(lmd.getAction() == LoadMoleculeDialog.ACTION_OPEN_WIZARD){
-			/*the idea is able to choose how to load a molecule*/
-			
-				IChemModel chemModel = DefaultChemObjectBuilder.getInstance().newChemModel();
-				AbstractObjectModel abstractObject = (AbstractObjectModel)this.getModel();
-				
-				if(abstractObject instanceof CompoundObjectModel){
-					CompoundObjectModel compoundOM = (CompoundObjectModel)abstractObject;
-					IMolecule molecule = showWizard();
-					if(molecule == null)
-						return;
-					compoundOM.setIMolecule(molecule);
-					compoundOM.setText(molecule.getID());
-					IMoleculeSet moleculeSet = molecule.getBuilder().newMoleculeSet();
-					StructureDiagramGenerator sdg = new StructureDiagramGenerator();
-					sdg.setMolecule(molecule);
-					try {
-						sdg.generateCoordinates();
-						GeometryTools.translateAllPositive(molecule);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					moleculeSet.addMolecule(sdg.getMolecule());
-					chemModel.setMoleculeSet(moleculeSet);
-//					if(sdg.getMolecule() != null)
-//						if(sdg.getMolecule().getAtomCount() > 0){
-//							System.out.println("getAtomCount:"+sdg.getMolecule().getAtomCount());
-//							ReactMolDrawingComposite jcp = abstractObject.getJCP();
-//							System.out.println("jcp:"+jcp);
-//							jcp.getPage().setDirty(true);
-//						}
-				}
-//			}else if(lmd.getAction() == LoadMoleculeDialog.ACTION_OPEN_JCP)){
-//				
-//			}
+			System.out.println("doubles click - opening wizard");
+
 		}
 		
 		super.performRequest(req);
@@ -272,4 +181,50 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 		return ((AbstractObjectModel)getModel()).getModelTargetConnections();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter(Class adapter ) {
+		
+		AbstractObjectModel abstractObject = (AbstractObjectModel)this.getModel();
+		if(abstractObject instanceof CompoundObjectModel){
+			if (IPropertySource.class.equals(adapter)) {
+				CDKMolecule cdkMol= new CDKMolecule(((CompoundObjectModel)abstractObject).getIMolecule() );
+	            return new CDKMoleculePropertySource(cdkMol);
+			}
+			IMolecule mol = DefaultChemObjectBuilder.getInstance().newMolecule( ((CompoundObjectModel)abstractObject).getIMolecule());
+			if(mol != null && mol.getAtomCount() > 0){
+
+				if(!GeometryTools.has2DCoordinates(mol)){
+
+					StructureDiagramGenerator sdg = new StructureDiagramGenerator();
+					sdg.setMolecule(mol);
+					try {
+						sdg.generateCoordinates();
+						mol = sdg.getMolecule();
+						GeometryTools.translateAllPositive(mol);
+						((CompoundObjectModel)abstractObject).setIMolecule(mol);
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+				}
+				JChemPaintEditorWidget jcp = abstractObject.getJCP();
+				jcp.setAtomContainer(mol);
+			}
+		}else if(abstractObject instanceof ReactionObjectModel){
+			if (IPropertySource.class.equals(adapter)) {
+				CDKReaction cdkReact= new CDKReaction(((ReactionObjectModel)abstractObject).getIReaction() );
+	            return new CDKReactionPropertySource(cdkReact);
+	        
+			}
+			IReaction reaction = ((ReactionObjectModel)this.getModel()).getIReaction();
+			JChemPaintEditorWidget jcp = abstractObject.getJCP();
+			jcp.setReaction( reaction );
+
+		}
+		return super.getAdapter(adapter);
+	}
 }
