@@ -147,4 +147,18 @@ public class WCCMedeaJudge extends Judge implements IJudge, Serializable, Clonea
         // TODO Auto-generated method stub
         return null;
     }
+
+    public boolean checkJudge( String data ) {
+        CMLBuilder builder = new CMLBuilder();
+        try {
+            Document doc =  builder.buildEnsureCML(ResourcesPlugin.getWorkspace().getRoot().getFile( new Path(data)).getContents());
+            SpectrumUtils.namespaceThemAll( doc.getRootElement().getChildElements() );
+            doc.getRootElement().setNamespaceURI(CMLUtil.CML_NS);
+            CMLElement cmlElement = (CMLCml) builder.parseString(doc.toXML());
+            configure(cmlElement);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 }
