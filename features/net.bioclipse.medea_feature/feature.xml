@@ -30,6 +30,10 @@ The Eclipse Public License accompanies this distribution, and
 is available at http://www.eclipse.org/legal/epl-v10.html
    </license>
 
+   <includes
+         id="org.eclipse.gef"
+         version="0.0.0"/>
+
    <requires>
       <import feature="org.eclipse.gef" version="3.4.2"/>
    </requires>
