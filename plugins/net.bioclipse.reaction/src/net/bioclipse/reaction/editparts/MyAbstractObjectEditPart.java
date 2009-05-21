@@ -1,10 +1,9 @@
 package net.bioclipse.reaction.editparts;
 
-import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 
-import net.bioclipse.reaction.editor.ReactMolDrawingComposite;
+import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.reaction.editpolicies.MyComponentEditPolicy;
 import net.bioclipse.reaction.editpolicies.MyDirectEditPolicy;
 import net.bioclipse.reaction.editpolicies.MyGraphicalNodeEditPolicy;
@@ -30,13 +29,11 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.geometry.GeometryTools;
-import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
-import org.openscience.cdk.tools.manipulator.ReactionManipulator;
 
 /**
  * 
@@ -125,8 +122,8 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 						}
 						
 					}
-					ReactMolDrawingComposite jcp = abstractObject.getJCP();
-					jcp.loadNewMolecule(mol);
+					JChemPaintEditorWidget jcp = abstractObject.getJCP();
+					jcp.setAtomContainer(mol);
 					
 				}
 			}else if(abstractObject instanceof ReactionObjectModel){
@@ -154,8 +151,8 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 //					
 //					countM++;
 //				}
-        ReactMolDrawingComposite jcp = abstractObject.getJCP();
-        jcp.loadNewReactionSet( reaction );				
+				JChemPaintEditorWidget jcp = abstractObject.getJCP();
+        jcp.setReaction( reaction );				
 			}
 			this.performDirectEdit(); //-introduction text
 			

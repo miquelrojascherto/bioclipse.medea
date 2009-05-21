@@ -3,7 +3,7 @@ package net.bioclipse.reaction.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.bioclipse.reaction.editor.ReactMolDrawingComposite;
+import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -18,7 +18,7 @@ public class AbstractObjectModel extends AbstractModel  {
 	
 	private String text;
 	private Rectangle constraint;
-	private ReactMolDrawingComposite jcp;
+	private JChemPaintEditorWidget jcp;
 	
 	public static final String P_SOURCE_CONNECTION = "_source_connection";
 	public static final String P_TARGET_CONNECTION = "_target_connection";
@@ -38,7 +38,7 @@ public class AbstractObjectModel extends AbstractModel  {
 	 * 
 	 * @return the ReactMolDrawingComposite object
 	 */
-	public ReactMolDrawingComposite getJCP(){
+	public JChemPaintEditorWidget getJCP(){
 		return jcp;
 	}
 	/**
@@ -46,7 +46,7 @@ public class AbstractObjectModel extends AbstractModel  {
 	 * 
 	 * @param jcp the ReactMolDrawingComposite
 	 */
-	public void addJCP(ReactMolDrawingComposite jcp){
+	public void addJCP(JChemPaintEditorWidget jcp){
 		this.jcp = jcp;
 	}
 	/**

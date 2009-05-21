@@ -93,7 +93,7 @@ import org.openscience.cdk.interfaces.IReactionSet;
  */
 public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICDKChangeListener,IJCPEditorPart, BioResourceChangeListener {
 	private IEditorInput editorInput;
-	private ReactMolDrawingComposite child1;
+	private JChemPaintEditorWidget child1;
 	private SashForm form;
 	private ContentsModel contentsModel;
 	private GraphicalViewer viewer;
@@ -129,7 +129,8 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 //		viewer.addDragSourceListener(new MyFileDragSourceListener(viewer));
 		
 		try {
-            child1 = new ReactMolDrawingComposite(form, SWT.PUSH, this);	
+            child1 = new JChemPaintEditorWidget(form,SWT.PUSH);
+            child1.setReaction( this.getModelFromEditorInput().get( 0 ).getReaction());
         } catch ( Exception e ) {
 			LogUtils.handleException( e, logger );
 		}
@@ -432,7 +433,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	 * @return The DrawingPanel object
 	 */
 	public JChemPaintEditorWidget getDrawingPanel() {
-		return child1.getDrawingPanel();
+		return child1;
 	}
 
 	/**
