@@ -20,6 +20,8 @@ import net.bioclipse.cdk.domain.ICDKReaction;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.reaction.dnd.MyFileDragSourceListener;
+import net.bioclipse.reaction.dnd.MyFileDropTargetListener;
 import net.bioclipse.reaction.editparts.MyEditPartFactory;
 import net.bioclipse.reaction.editparts.tree.TreeEditPartFactory;
 import net.bioclipse.reaction.layout.HierarchicLayer;
@@ -128,8 +130,8 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	protected void initializeGraphicalViewer() {
 		viewer = getGraphicalViewer();
 
-//		viewer.addDropTargetListener(new MyFileDropTargetListener(viewer));
-//		viewer.addDragSourceListener(new MyFileDragSourceListener(viewer));
+		viewer.addDropTargetListener(new MyFileDropTargetListener(viewer));
+		viewer.addDragSourceListener(new MyFileDragSourceListener(viewer));
 		
 		try {
             child1 = new JChemPaintEditorWidget(form,SWT.PUSH);
