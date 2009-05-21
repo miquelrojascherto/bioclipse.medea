@@ -1,6 +1,8 @@
 package net.bioclipse.reaction.editparts;
 
 import java.beans.PropertyChangeEvent;
+import java.io.StringBufferInputStream;
+import java.io.StringWriter;
 import java.util.List;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
@@ -8,6 +10,7 @@ import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
 import net.bioclipse.cdk.domain.CDKReaction;
 import net.bioclipse.cdk.domain.CDKReactionPropertySource;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
+import net.bioclipse.chemoinformatics.wizards.WizardHelper;
 import net.bioclipse.reaction.editpolicies.MyComponentEditPolicy;
 import net.bioclipse.reaction.editpolicies.MyDirectEditPolicy;
 import net.bioclipse.reaction.editpolicies.MyGraphicalNodeEditPolicy;
@@ -15,6 +18,8 @@ import net.bioclipse.reaction.model.AbstractObjectModel;
 import net.bioclipse.reaction.model.CompoundObjectModel;
 import net.bioclipse.reaction.model.ReactionObjectModel;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.CompoundBorder;
@@ -30,12 +35,19 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IReaction;
+import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
 
 /**
@@ -108,7 +120,28 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 		/* double-click funcionality - Opening JCP editor*/
 		if(req.getType().equals(RequestConstants.REQ_OPEN)){
 			System.out.println("doubles click - opening wizard");
-
+			AbstractObjectModel abstractObject = (AbstractObjectModel)this.getModel();
+			if(abstractObject instanceof CompoundObjectModel){
+				IMolecule mol = DefaultChemObjectBuilder.getInstance().newMolecule( ((CompoundObjectModel)abstractObject).getIMolecule());
+				if(mol != null && mol.getAtomCount() > 0){
+					StringWriter writer = new StringWriter();
+					CMLWriter cmlWriter = new CMLWriter(writer);
+			        try {
+						cmlWriter.write(mol);
+					} catch (CDKException e1) {
+						e1.printStackTrace();
+					}
+			        String cmlContent = writer.toString();
+			        IEditorDescriptor desc = PlatformUI.getWorkbench().
+		            getEditorRegistry().getDefaultEditor(mol.getID()+"_.cml",Platform.getContentTypeManager().getContentType( "net.bioclipse.contenttypes.cml.singleMolecule2d" ));
+			        try {
+		                IFile tmpFile= net.bioclipse.core.Activator.getVirtualProject().getFile(WizardHelper.findUnusedFileName(new StructuredSelection(net.bioclipse.core.Activator.getVirtualProject()), mol.getID(), ".cml") );
+		                tmpFile.create( new StringBufferInputStream(cmlContent), IFile.FORCE, null);
+		                IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new FileEditorInput(tmpFile), desc.getId());
+		            } catch ( Exception e ) {
+		            }
+				}
+			}
 		}
 		
 		super.performRequest(req);
