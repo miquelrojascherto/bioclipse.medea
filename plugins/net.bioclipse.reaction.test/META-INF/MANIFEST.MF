@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Reaction Test Plug-in
+Bundle-SymbolicName: net.bioclipse.reaction.test
+Bundle-Version: 1.3.1
+Bundle-Activator: net.bioclipse.reaction.test.Activator
+Bundle-Vendor: Miguel Rojas
+Require-Bundle: org.openscience.cdk.interfaces,
+ org.openscience.cdk.core,
+ org.openscience.cdk.standard,
+ org.openscience.cdk.valencycheck,
+ org.openscience.cdk.io,
+ org.openscience.cdk.data,
+ org.openscience.cdk.ioformats,
+ org.openscience.cdk.extra,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.ui,
+ org.junit4,
+ net.bioclipse.core,
+ net.bioclipse.cdk.business,
+ net.bioclipse.core.tests,
+ net.bioclipse.reaction,
+ net.bioclipse.cml,
+ net.bioclipse.xom,
+ net.bioclipse.spectrum,
+ net.bioclipse.specmol,
+ org.xmlcml.cmlxom
+Bundle-ActivationPolicy: lazy
+Export-Package: net.bioclipse.reaction.test
+Import-Package: org.apache.commons.logging;version="1.0.4",
+ org.apache.log4j
