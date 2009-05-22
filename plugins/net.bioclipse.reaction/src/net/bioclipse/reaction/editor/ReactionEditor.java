@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2007-2009  Miguel Rojas, Stefan Kuhn
+ * Copyright (c) 2007-2009  Miguel Rojas <miguelrojasch@users.sf.net>, 
+ *                          Stefan Kuhn <shk3@users.sf.net>
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -94,6 +95,8 @@ import org.openscience.cdk.interfaces.IReactionSet;
 
 /**
  * An editor page showing a reaction as a tree and a detailed view.
+ * 
+ * @author Miguel Rojas
  */
 public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICDKChangeListener,IJCPEditorPart, BioResourceChangeListener {
 	private IEditorInput editorInput;

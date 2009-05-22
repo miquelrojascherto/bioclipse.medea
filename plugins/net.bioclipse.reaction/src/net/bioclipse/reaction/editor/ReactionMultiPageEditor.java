@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2007-2009  Miguel Rojas, Stefan Kuhn
+ * Copyright (c) 2007-2009  Miguel Rojas <miguelrojasch@users.sf.net>, 
+ *                          Stefan Kuhn <shk3@users.sf.net>
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -53,9 +54,11 @@ import org.openscience.cdk.io.formats.MDLRXNFormat;
  * Create a multi-page editor for a reactions.
  * It has 2 pages:
  * <ul>
- * <li>page 0 shows the reacion viewer
+ * <li>page 0 shows the reaction viewer.
  * <li>page 1 contains a nested the text editor.
  * </ul>
+ * 
+ * @author Miguel Rojas
  */
 public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISelectionListener {
 
