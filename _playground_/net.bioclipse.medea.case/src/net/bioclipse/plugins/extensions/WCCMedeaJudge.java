@@ -13,9 +13,11 @@ import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.XPathContext;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.viewers.ISelection;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.smiles.SmilesGenerator;
@@ -119,12 +121,8 @@ public class WCCMedeaJudge extends Judge implements IJudge, Serializable, Clonea
 		return new JudgeResult((long)maxScore,(long)scoreSum, 0l, message);
 	}
 
-	public void init() {
-		// nothing to do
-	}
-
     public IJudge createJudge(String data) throws MissingInformationException {
-        IJudge judge = new WCCMedeaJudge();
+        WCCMedeaJudge judge = new WCCMedeaJudge();
         judge.setData( data );
         CMLBuilder builder = new CMLBuilder();
         try {
@@ -163,5 +161,11 @@ public class WCCMedeaJudge extends Judge implements IJudge, Serializable, Clonea
             return false;
         }
         return true;
+    }
+
+    public IFile setData( ISelection selection, IFile sjsFile ) {
+
+        // TODO do data processing here
+        return null;
     }
 }
