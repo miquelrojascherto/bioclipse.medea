@@ -31,10 +31,8 @@ public class FileMoveTool extends SelectionTool {
 	public boolean handleNativeDragStarted(DragSourceEvent event){
 		EditPart part = getTargetEditPart();
 		String path = ((AbstractObjectModel) part.getModel()).getText();
-		System.out.println("path "+path);
 		if(part instanceof CompoundObjectEditPart || path != null){
 			File file = new File(path);
-			System.out.println("exists "+file.exists());
 			if(!file.exists())
 				event.doit = false;
 			else

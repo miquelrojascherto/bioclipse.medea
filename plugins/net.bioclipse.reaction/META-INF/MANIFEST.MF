@@ -3,38 +3,42 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Reaction Plug-in
 Bundle-SymbolicName: net.bioclipse.reaction;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: net.bioclipse.reaction.Activator
+Bundle-Activator: net.bioclipse.reaction.business.Activator
 Bundle-Vendor: Miguel Rojas
-Require-Bundle: org.eclipse.core.runtime,
+Require-Bundle: org.openscience.cdk.standard,
+ org.openscience.cdk.data,
+ org.openscience.cdk.sdg,
+ org.openscience.cdk.libiocml,
+ org.openscience.cdk.io,
+ org.openscience.cdk.nonotify,
+ org.openscience.cdk.core,
+ org.openscience.cdk.ioformats,
+ org.openscience.cdk.control,
+ org.openscience.cdk.smiles,
+ org.openscience.cdk.interfaces,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
  org.eclipse.ui,
  org.eclipse.ui.views,
- org.eclipse.core.resources,
  org.eclipse.ui.ide,
  org.eclipse.ui.console,
  org.eclipse.ui.workbench.texteditor,
+ org.eclipse.ui.editors,
  org.eclipse.jface.text,
+ org.eclipse.gef,
+ javax.vecmath,
  net.bioclipse.cdk.business,
  net.bioclipse.cdk.ui,
  net.bioclipse.cml,
+ net.bioclipse.reaction,
  net.bioclipse.xom,
  org.xmlcml.cmlxom,
- org.eclipse.gef;bundle-version="3.4.1",
- org.openscience.cdk.interfaces;bundle-version="1.2.2",
- net.bioclipse.cdk.jchempaint;bundle-version="2.0.0",
- net.bioclipse.core;bundle-version="2.0.0",
- org.openscience.cdk.core;bundle-version="1.2.2",
- org.openscience.cdk.ioformats;bundle-version="1.2.2",
- org.openscience.cdk.control;bundle-version="1.2.1",
- net.bioclipse.cdk.jchempaint.view;bundle-version="2.0.0",
- net.bioclipse.chemoinformatics;bundle-version="2.0.0",
- org.eclipse.ui.editors;bundle-version="3.4.0",
- javax.vecmath;bundle-version="1.2.1",
- org.openscience.cdk.standard;bundle-version="1.2.2",
- org.openscience.cdk.data;bundle-version="1.2.2",
- org.openscience.cdk.sdg;bundle-version="1.2.2",
- org.openscience.cdk.io;bundle-version="1.2.2",
- org.openscience.cdk.libiocml;bundle-version="1.2.2"
+ net.bioclipse.cdk.jchempaint,
+ net.bioclipse.core,
+ net.bioclipse.cdk.jchempaint.view,
+ net.bioclipse.chemoinformatics
 Bundle-ActivationPolicy: lazy
+Export-Package: net.bioclipse.reaction.business,
+ net.bioclipse.reaction.domain
 Import-Package: org.apache.commons.logging,
  org.apache.log4j
-Bundle-ClassPath: .

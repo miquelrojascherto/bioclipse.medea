@@ -45,11 +45,9 @@ public class NewReactionWizard extends Wizard implements INewWizard{
 		String fileName = addNameFilePage.getCompleteFileName();
 		File file = new File(fileName);
 		String filename = addNameFilePage.getFileName() + ".rmr";
-		System.out.println("names: "+filename);
 		
 		/*Get folder to install in from wizard page*/
 		BioResource parentFolder = addNameFilePage.getSelectedFolder();
-		System.out.println("bioresource: "+parentFolder);
 		if (file.exists()) {
 
 			boolean result = true;

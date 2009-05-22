@@ -16,11 +16,11 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 
-import net.bioclipse.cdk.business.Activator;
-import net.bioclipse.cdk.business.ICDKManager;
-import net.bioclipse.cdk.domain.ICDKReaction;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
+import net.bioclipse.reaction.business.Activator;
+import net.bioclipse.reaction.business.IReactionManager;
+import net.bioclipse.reaction.domain.ICDKReaction;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -119,7 +119,7 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
       }
       IFile inputFile = (IFile) file;
       try {
-        filetype=Activator.getDefault().getJavaCDKManager().determineFormat( inputFile.getFullPath().toOSString() );
+        filetype = Activator.getDefault().getJavaManager().determineFormat( inputFile.getFullPath().toOSString() );
       } catch ( Exception e ) {
           throw new RuntimeException(
           "Invalid editor input: Cannot determine file format");
@@ -155,9 +155,9 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	
 	
 	private void updateTextEditor() throws CDKException {
-	    IChemModel chemmodel=rEditor.getChemModelFromContentsModel();
-      StringWriter writer = new StringWriter();
-      DefaultChemObjectWriter cdkwriter=null;
+		IChemModel chemmodel=rEditor.getChemModelFromContentsModel();
+		StringWriter writer = new StringWriter();
+		DefaultChemObjectWriter cdkwriter=null;
 	    if(filetype.equals( "Chemical Markup Language" )){
 	        cdkwriter = new CMLWriter(writer);
 	        cdkwriter.write( chemmodel );
@@ -168,18 +168,18 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	        LogUtils.handleException( new BioclipseException("Unknown format in editor - totally lost here"), logger );
 	    }
 	    try {
-          cdkwriter.close();
-          textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput()).set(writer.toString());
-      } catch ( IOException e ) {
-          LogUtils.handleException( e, logger );
-      }
+	    	cdkwriter.close();
+	    	textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput()).set(writer.toString());
+	    } catch ( IOException e ) {
+	    	LogUtils.handleException( e, logger );
+	    }
     }
 
     /**
      * Saves the multi-page editor's document as another file.
 	   **/
 	public void doSaveAs() {
-      IProgressMonitor monitor = new NullProgressMonitor();
+		IProgressMonitor monitor = new NullProgressMonitor();
         boolean correctfiletype = false;
         IFile target = null;
         int ticks = 10000;
@@ -287,7 +287,7 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	private void updateReactionEditor() {
 	    if(textEditor==null)
 	        return;
-      ICDKManager cdkManager = Activator.getDefault().getJavaCDKManager();
+      IReactionManager reactionManager = Activator.getDefault().getJavaManager();
       byte[] newtext =
           textEditor
                   .getDocumentProvider()
@@ -296,7 +296,7 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
                                         .getEditorInput() )
                   .get().getBytes();
       try {
-        List<ICDKReaction> model = cdkManager.loadReactions( new ByteArrayInputStream(newtext), (IChemFormat) (filetype.equals( "Chemical Markup Language" ) ? CMLFormat.getInstance() : MDLRXNFormat.getInstance()));
+        List<ICDKReaction> model = reactionManager.loadReactions( new ByteArrayInputStream(newtext), (IChemFormat) (filetype.equals( "Chemical Markup Language" ) ? CMLFormat.getInstance() : MDLRXNFormat.getInstance()));
         rEditor.updateContent( model );
       } catch ( Exception e ) {
           LogUtils.handleException( e, logger );
@@ -318,7 +318,7 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
                   "Invalid editor input: Does not provide an IFile");
       }
       IFile inputFile = (IFile) file;
-      ICDKManager cdkManager = Activator.getDefault().getJavaCDKManager();
-      return cdkManager.loadReactions( inputFile );
+      IReactionManager reactionManager = Activator.getDefault().getJavaManager();
+      return reactionManager.loadReactions( inputFile );
   }
 }

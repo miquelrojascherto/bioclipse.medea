@@ -1,6 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007-2009  Miguel Rojas <miguelrojasch@users.sf.net>, 
- *                          Stefan Kuhn <shk3@users.sf.net>
+ * Copyright (c) 2007-2009  Miguel Rojas <miguelrojasch@users.sf.net>
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -53,7 +52,6 @@ public class LoadMoleculeDialog extends TitleAreaDialog {
 		
 		Listener radioGroup = new Listener () {
 		     public void handleEvent (Event event) {
-		    	 System.out.println("changing");
 		    	 if(radios[0].getSelection())
 		    		 actionTODO = ACTION_OPEN_WIZARD;
 		    	 else

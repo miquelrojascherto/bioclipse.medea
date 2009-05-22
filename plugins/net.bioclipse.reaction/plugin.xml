@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
+   <extension
+         point="net.bioclipse.scripting.contribution">
+      <scriptContribution
+            id="net.bioclipse.reaction.business.ReactionManager"
+            service="net.bioclipse.reaction.business.ReactionManagerFactory">
+      </scriptContribution>
+   </extension>
 	<extension
     	point="org.eclipse.ui.editors">
 		<editor

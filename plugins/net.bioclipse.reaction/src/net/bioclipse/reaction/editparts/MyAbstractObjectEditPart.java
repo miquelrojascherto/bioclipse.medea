@@ -18,10 +18,10 @@ import java.util.List;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
-import net.bioclipse.cdk.domain.CDKReaction;
-import net.bioclipse.cdk.domain.CDKReactionPropertySource;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.chemoinformatics.wizards.WizardHelper;
+import net.bioclipse.reaction.domain.CDKReaction;
+import net.bioclipse.reaction.domain.CDKReactionPropertySource;
 import net.bioclipse.reaction.editpolicies.MyComponentEditPolicy;
 import net.bioclipse.reaction.editpolicies.MyDirectEditPolicy;
 import net.bioclipse.reaction.editpolicies.MyGraphicalNodeEditPolicy;

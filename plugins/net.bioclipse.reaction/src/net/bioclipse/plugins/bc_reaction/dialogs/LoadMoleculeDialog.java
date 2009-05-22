@@ -42,7 +42,6 @@ public class LoadMoleculeDialog extends TitleAreaDialog {
 		
 		Listener radioGroup = new Listener () {
 		     public void handleEvent (Event event) {
-		    	 System.out.println("changing");
 		    	 if(radios[0].getSelection())
 		    		 actionTODO = ACTION_OPEN_WIZARD;
 		    	 else
