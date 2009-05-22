@@ -39,5 +39,9 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Export-Package: net.bioclipse.medea,
  net.bioclipse.medea.business,
- net.bioclipse.medea.core
+ net.bioclipse.medea.core,
+ net.bioclipse.medea.core.learning,
+ net.bioclipse.medea.core.prediction,
+ net.bioclipse.medea.core.reaction,
+ net.bioclipse.medea.wizard
 Import-Package: org.apache.log4j;version="1.2.15"
