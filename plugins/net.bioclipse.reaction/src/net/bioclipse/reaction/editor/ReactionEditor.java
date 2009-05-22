@@ -43,6 +43,7 @@ import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.parts.ScrollableThumbnail;
 import org.eclipse.gef.DefaultEditDomain;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
 import org.eclipse.gef.KeyStroke;
@@ -66,6 +67,7 @@ import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
+import org.eclipse.gef.ui.parts.SelectionSynchronizer;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -100,7 +102,7 @@ import org.openscience.cdk.interfaces.IReactionSet;
  */
 public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICDKChangeListener,IJCPEditorPart, BioResourceChangeListener {
 	private IEditorInput editorInput;
-	private JChemPaintEditorWidget child1;
+	private JChemPaintEditorWidget jcpEW;
 	private SashForm form;
 	private ContentsModel contentsModel;
 	private GraphicalViewer viewer;
@@ -135,21 +137,14 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 
 		viewer.addDropTargetListener(new MyFileDropTargetListener(viewer));
 		viewer.addDragSourceListener(new MyFileDragSourceListener(viewer));
-		
 		try {
-            child1 = new JChemPaintEditorWidget(form,SWT.PUSH);
-            child1.setReaction( this.getModelFromEditorInput().get( 0 ).getReaction());
+			List<ICDKReaction> model = this.getModelFromEditorInput();
+			jcpEW = new JChemPaintEditorWidget(form,SWT.PUSH);
+            jcpEW.setReaction( model.get( 0 ).getReaction());
+	        updateContent( model );
         } catch ( Exception e ) {
 			LogUtils.handleException( e, logger );
 		}
-		
-		List<ICDKReaction> model;
-	    try {        
-	        model = this.getModelFromEditorInput();
-	        updateContent( model );
-	    } catch (Exception e ) {
-	        LogUtils.handleException( e, logger );
-	    }
 	}
 	
 	public void updateContent(List<ICDKReaction> model){
@@ -167,7 +162,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 			IReaction reaction = iteratorReactions.next().getReaction();
 			/*reaction*/
 			ReactionObjectModel reactionObject = new ReactionObjectModel();
-			reactionObject.addJCP(child1);
+			reactionObject.addJCP(jcpEW);
 			String textID = reaction.getID();
 			if(textID == null)
 				textID = "Reac"+countReactions;
@@ -190,7 +185,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 					reactantObject = (CompoundObjectModel)objectExisting;
 				else{
 					reactantObject = new CompoundObjectModel();
-					reactantObject.addJCP(child1);
+					reactantObject.addJCP(jcpEW);
 					reactantObject.setText(name);
 					reactantObject.setIMolecule(reactant);
 					contentsModel.addChild(reactantObject);
@@ -219,7 +214,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 					productObject = (CompoundObjectModel)objectExisting;
 				else{
 					productObject = new CompoundObjectModel();
-					productObject.addJCP(child1);
+					productObject.addJCP(jcpEW);
 					productObject.setText(name);
 					productObject.setIMolecule(product);
 					contentsModel.addChild(productObject);
@@ -416,7 +411,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		
 		if ( IContentOutlinePage.class.equals( adapter ) ) {
             if ( fOutlinePage == null ) {
-                fOutlinePage = new MyContentOutlinePage();
+                fOutlinePage = new ReactionOutLinePage(this);
             }
             return fOutlinePage;
         }
@@ -510,83 +505,25 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		viewer.setContents(contentsM);
 		
 	}
-	/**
-	 * A ContentOutlinePage which contains also zoom-viewer
-	 * 
-	 * @author Miguel Rojas
-	 */
-	class MyContentOutlinePage extends ContentOutlinePage {
-	    private SashForm sash;
-		private ScrollableThumbnail thumbnail;
-		private DisposeListener disposeListener;
+	
+	public ActionRegistry getEditorActionRegistry(){
+		return getActionRegistry();
+	}
+	
+	public DefaultEditDomain getEditorEditDomain(){
+		return getEditDomain();
+	}
 
-	    public MyContentOutlinePage() {
-	      super(new TreeViewer());
-	    }
-	    
-	    public void init(IPageSite pageSite) {
-	      super.init(pageSite);
-	      ActionRegistry registry = getActionRegistry();
-	      IActionBars bars = pageSite.getActionBars();
+	public SelectionSynchronizer getEditorSelectionSynchronizer(){
+		return getSelectionSynchronizer();
+	}
 
-	      String id = IWorkbenchActionConstants.UNDO;
-	      bars.setGlobalActionHandler(id, registry.getAction(id));
+	public GraphicalViewer getEditorGraphicalViewer(){
+		return getGraphicalViewer();
+	}
+	
+	public ContentsModel getContentsModel() {
+		return contentsModel;
+	}
 
-	      id = IWorkbenchActionConstants.REDO;
-	      bars.setGlobalActionHandler(id, registry.getAction(id));
-
-	      id = IWorkbenchActionConstants.DELETE;
-	      bars.setGlobalActionHandler(id, registry.getAction(id));
-	      bars.updateActionBars();
-	    }
-
-	    public void createControl(Composite parent) {
-	      sash = new SashForm(parent, SWT.VERTICAL);
-	      
-	      getViewer().createControl(sash);
-	      
-	      getViewer().setEditDomain(getEditDomain());
-	      getViewer().setEditPartFactory(new TreeEditPartFactory());
-	      getViewer().setContents(contentsModel);
-	      getSelectionSynchronizer().addViewer(getViewer());
-	      
-	      Canvas canvas = new Canvas(sash, SWT.BORDER);
-	      LightweightSystem lws = new LightweightSystem(canvas);
-
-	      thumbnail = new ScrollableThumbnail(
-	          (Viewport) ((ScalableRootEditPart) getGraphicalViewer()
-	              .getRootEditPart()).getFigure());
-	      thumbnail.setSource(((ScalableRootEditPart) getGraphicalViewer()
-	          .getRootEditPart())
-	          .getLayer(LayerConstants.PRINTABLE_LAYERS));
-	      
-	      lws.setContents(thumbnail);
-
-	      disposeListener = new DisposeListener() {
-	        public void widgetDisposed(DisposeEvent e) {
-	          if (thumbnail != null) {
-	            thumbnail.deactivate();
-	            thumbnail = null;
-	          }
-	        }
-	      };
-	      getGraphicalViewer().getControl().addDisposeListener(
-	          disposeListener);
-
-	    }
-
-	    public Control getControl() {
-	      return sash;
-	    }
-
-	    public void dispose() {
-	      getSelectionSynchronizer().removeViewer(getViewer());
-
-	      if (getGraphicalViewer().getControl() != null
-	              && !getGraphicalViewer().getControl().isDisposed())
-	            getGraphicalViewer().getControl().removeDisposeListener(disposeListener);
-	      super.dispose();
-
-	    }
-	  }
 }
