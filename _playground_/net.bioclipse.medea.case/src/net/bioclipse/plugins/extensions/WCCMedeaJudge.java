@@ -111,7 +111,10 @@ public class WCCMedeaJudge extends Judge implements IJudge, Serializable, Clonea
 			predPeakInt[peakNo] = peak.getYValue();
 		}
 		
-		double scoreSum = maxScore*net.bioclipse.spectrum.Activator.getDefault().getSpectrumManager().calculateSimilarityWCC( msPeakPos, msPeakInt, predPeakPos, predPeakInt, 2);
+		double scoreSum = maxScore*net.bioclipse.spectrum.Activator
+		    .getDefault().getJavaSpectrumManager().calculateSimilarityWCC(
+		        msPeakPos, msPeakInt, predPeakPos, predPeakInt, 2
+		     );
 		String message = "Score: " + scoreSum  + "/" + maxScore;
 		return new JudgeResult((long)maxScore,(long)scoreSum, 0l, message);
 	}
