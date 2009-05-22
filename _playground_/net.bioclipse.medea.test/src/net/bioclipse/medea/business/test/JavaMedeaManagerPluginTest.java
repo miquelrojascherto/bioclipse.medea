@@ -22,7 +22,7 @@ public class JavaMedeaManagerPluginTest extends AbstractMedeaManagerPluginTest {
         medeamanager = net.bioclipse.medea.Activator.getDefault()
             .getJavaManager();
         sp = net.bioclipse.spectrum.Activator.getDefault()
-            .getSpectrumManager();
+            .getJavaSpectrumManager();
     }
 
 }

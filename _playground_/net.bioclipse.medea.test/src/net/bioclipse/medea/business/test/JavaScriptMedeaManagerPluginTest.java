@@ -23,7 +23,7 @@ public class JavaScriptMedeaManagerPluginTest
         medeamanager = net.bioclipse.medea.Activator.getDefault()
             .getJavaScriptManager();
         sp = net.bioclipse.spectrum.Activator.getDefault()
-            .getSpectrumManager();
+            .getJavaScriptSpectrumManager();
     }
 
 }
