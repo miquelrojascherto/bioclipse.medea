@@ -10,17 +10,14 @@
  ******************************************************************************/
 package net.bioclipse.reaction.domain;
 
+import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioObject;
 
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionScheme;
-import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.libio.cml.Convertor;
-import org.openscience.cdk.smiles.SmilesGenerator;
-import org.openscience.cdk.tools.manipulator.ReactionSchemeManipulator;
 import org.xmlcml.cml.element.CMLCml;
 
 /**
@@ -33,11 +30,15 @@ public class CDKReactionScheme extends BioObject implements ICDKReactionScheme {
     // cached properties
     private String cachedSMILES;
 
+    private static Preferences prefs;
     /*
      * Needed by Spring
      */
     public CDKReactionScheme(){
-        super();
+    	super();
+        if (prefs == null && Activator.getDefault() != null) {
+            prefs = Activator.getDefault().getPluginPreferences();
+        }
     }
     
     public CDKReactionScheme(IReactionScheme reaction) {
@@ -45,34 +46,34 @@ public class CDKReactionScheme extends BioObject implements ICDKReactionScheme {
         this.reaction=reaction;
     }
 
-    public String getSMILES(net.bioclipse.core.domain.IReaction.Property urgency) throws BioclipseException {
-
-        //TODO: wrap in job?
-        if (urgency == net.bioclipse.core.domain.IReaction.Property.USE_CACHED) return cachedSMILES;
-
-        if (cachedSMILES != null &&
-            urgency == net.bioclipse.core.domain.IReaction.Property.USE_CACHED_OR_CALCULATED) {
-            return cachedSMILES;
-        }
-
-        if (getReactionScheme() == null)
-            throw new BioclipseException("Unable to calculate SMILES: Reaction scheme is empty");
-
-        if (!(getReactionScheme() instanceof IReactionScheme))
-            throw new BioclipseException("Unable to calculate SMILES: Not a reaction.");
-
-        SmilesGenerator generator = new SmilesGenerator();
-        String cachedSMILES = "";
-        try {
-        	IReactionSet reactionList = ReactionSchemeManipulator.getAllReactions(reaction);
-        	for(IReaction react:reactionList.reactions())
-        		cachedSMILES += generator.createSMILES(react)+"\n";
-        } catch ( CDKException e ) {
-            throw new BioclipseException(e.getMessage());
-        }
-
-        return cachedSMILES;
-    }
+//    public String getSMILES(net.bioclipse.core.domain.IReaction.Property urgency) throws BioclipseException {
+//
+//        //TODO: wrap in job?
+//        if (urgency == net.bioclipse.core.domain.IReaction.Property.USE_CACHED) return cachedSMILES;
+//
+//        if (cachedSMILES != null &&
+//            urgency == net.bioclipse.core.domain.IReaction.Property.USE_CACHED_OR_CALCULATED) {
+//            return cachedSMILES;
+//        }
+//
+//        if (getReactionScheme() == null)
+//            throw new BioclipseException("Unable to calculate SMILES: Reaction scheme is empty");
+//
+//        if (!(getReactionScheme() instanceof IReactionScheme))
+//            throw new BioclipseException("Unable to calculate SMILES: Not a reaction.");
+//
+//        SmilesGenerator generator = new SmilesGenerator();
+//        String cachedSMILES = "";
+//        try {
+//        	IReactionSet reactionList = ReactionSchemeManipulator.getAllReactions(reaction);
+//        	for(IReaction react:reactionList.reactions())
+//        		cachedSMILES += generator.createSMILES(react)+"\n";
+//        } catch ( CDKException e ) {
+//            throw new BioclipseException(e.getMessage());
+//        }
+//
+//        return cachedSMILES;
+//    }
 
     public IReactionScheme getReactionScheme() {
         return reaction;

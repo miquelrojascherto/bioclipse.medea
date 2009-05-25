@@ -99,8 +99,8 @@ public class ReactionManager implements IBioclipseManager {
 		                           monitor
 		);
     	loadedReact.setResource(file);
-		
-		return loadedReact;
+
+    	return loadedReact;
 	}
 
     public ICDKReactionScheme loadReactionScheme( InputStream instream,

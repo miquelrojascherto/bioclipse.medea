@@ -69,9 +69,22 @@ public interface IReactionManager extends IBioclipseManager {
             methodSummary = "Loads an assigned reaction scheme from file. ")
     @Recorded
     @TestMethods("testLoadReactionScheme_IFile")
-    public ICDKReactionScheme loadReactionScheme( IFile file )
-        throws IOException, BioclipseException, CoreException;
+    public ICDKReactionScheme loadReactionScheme( IFile file )throws IOException,
+															    BioclipseException,
+															    CDKException,
+															    CoreException;
     
+    @Recorded
+    @PublishedMethod(
+         params="InputStream instream, IChemFormat format",
+         methodSummary="Reads a stream into a list of ICDKReactionScheme.")
+    @TestMethods("testLoadReactionScheme_InputStream_IProgressMonitor_IChemFormat")
+    public ICDKReactionScheme loadReactionScheme( InputStream instream,
+            IChemFormat format )
+            throws BioclipseException,
+            CDKException,
+            IOException;
+
     @Recorded
     @PublishedMethod( 
         params = "String path",

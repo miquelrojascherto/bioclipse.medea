@@ -23,6 +23,7 @@ import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.reaction.dnd.MyFileDragSourceListener;
 import net.bioclipse.reaction.dnd.MyFileDropTargetListener;
 import net.bioclipse.reaction.domain.ICDKReaction;
+import net.bioclipse.reaction.domain.ICDKReactionScheme;
 import net.bioclipse.reaction.editparts.MyEditPartFactory;
 import net.bioclipse.reaction.layout.HierarchicLayer;
 import net.bioclipse.reaction.model.AbstractConnectionModel;
@@ -123,28 +124,29 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		viewer.addDropTargetListener(new MyFileDropTargetListener(viewer));
 		viewer.addDragSourceListener(new MyFileDragSourceListener(viewer));
 		try {
-			List<ICDKReaction> model = this.getModelFromEditorInput();
+			ICDKReactionScheme model = this.getModelFromEditorInput();
 			jcpEW = new JChemPaintEditorWidget(form,SWT.PUSH);
-			jcpEW.setReaction( model.get( 0 ).getReaction());
+			jcpEW.setReaction( model.getReactionScheme().getReaction(0));
 	        updateContent( model );
         } catch ( Exception e ) {
 			LogUtils.handleException( e, logger );
 		}
 	}
 	
-	public void updateContent(List<ICDKReaction> model){
+	public void updateContent(ICDKReactionScheme model){
 		contentsModel = createContentsModel(model);
 		@SuppressWarnings("unused")
 		HierarchicLayer hLayer = new HierarchicLayer(contentsModel);
 		viewer.setContents(contentsModel);
 	}
 
-	private ContentsModel createContentsModel(List<ICDKReaction> model) {
+	private ContentsModel createContentsModel(ICDKReactionScheme model) {
 		contentsModel = new ContentsModel();
 		int countReactions = 0;
 		int countcompounds = 0;
-		for(Iterator<ICDKReaction> iteratorReactions = model.iterator(); iteratorReactions.hasNext();) {
-			IReaction reaction = iteratorReactions.next().getReaction();
+//		for(Iterator<ICDKReaction> iteratorReactions = model.iterator(); iteratorReactions.hasNext();) {
+//		IReaction reaction = iteratorReactions.next().getReaction();
+		for(IReaction reaction:model.getReactionScheme().reactions()){
 			/*reaction*/
 			ReactionObjectModel reactionObject = new ReactionObjectModel();
 			reactionObject.addJCP(jcpEW);
@@ -414,7 +416,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	 * Get the IChemModel from the parsedResource
 	 * @return The IChemModel necessary for ReactionEditor
 	 */
-	public List<ICDKReaction> getModelFromEditorInput() throws BioclipseException, IOException, CDKException, CoreException{
+	public ICDKReactionScheme getModelFromEditorInput() throws BioclipseException, IOException, CDKException, CoreException{
 	    return ReactionMultiPageEditor.getModelFromEditorInput( this.editorInput);	    
 	}
 
@@ -483,7 +485,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	 * 
 	 * @param chemModel
 	 */
-	public void updateViewer(List<ICDKReaction> chemModel) {
+	public void updateViewer(ICDKReactionScheme chemModel) {
 		ContentsModel contentsM = createContentsModel(chemModel);
 		@SuppressWarnings("unused")
 		HierarchicLayer hLayer = new HierarchicLayer(contentsM);

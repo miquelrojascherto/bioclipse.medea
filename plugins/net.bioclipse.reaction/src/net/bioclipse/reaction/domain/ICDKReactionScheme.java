@@ -17,7 +17,7 @@ import org.openscience.cdk.interfaces.IReactionScheme;
  * An intertace for CDKReaction
  *
  */
-public interface ICDKReactionScheme extends net.bioclipse.core.domain.IReaction{
+public interface ICDKReactionScheme extends net.bioclipse.core.domain.IReactionScheme{
 
     public IReactionScheme getReactionScheme();
 }

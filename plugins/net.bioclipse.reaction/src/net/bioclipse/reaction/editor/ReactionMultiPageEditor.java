@@ -20,7 +20,9 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.reaction.business.Activator;
 import net.bioclipse.reaction.business.IReactionManager;
+import net.bioclipse.reaction.domain.CDKReactionScheme;
 import net.bioclipse.reaction.domain.ICDKReaction;
+import net.bioclipse.reaction.domain.ICDKReactionScheme;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
@@ -40,14 +42,17 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.openscience.cdk.ReactionSet;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.DefaultChemObjectWriter;
 import org.openscience.cdk.io.MDLRXNWriter;
 import org.openscience.cdk.io.formats.CMLFormat;
 import org.openscience.cdk.io.formats.IChemFormat;
 import org.openscience.cdk.io.formats.MDLRXNFormat;
+import org.openscience.cdk.tools.manipulator.ReactionSchemeManipulator;
 
 
 /**
@@ -296,7 +301,7 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
                                         .getEditorInput() )
                   .get().getBytes();
       try {
-        List<ICDKReaction> model = reactionManager.loadReactions( new ByteArrayInputStream(newtext), (IChemFormat) (filetype.equals( "Chemical Markup Language" ) ? CMLFormat.getInstance() : MDLRXNFormat.getInstance()));
+        ICDKReactionScheme model = reactionManager.loadReactionScheme( new ByteArrayInputStream(newtext), (IChemFormat) (filetype.equals( "Chemical Markup Language" ) ? CMLFormat.getInstance() : MDLRXNFormat.getInstance()));
         rEditor.updateContent( model );
       } catch ( Exception e ) {
           LogUtils.handleException( e, logger );
@@ -311,7 +316,7 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 		//TODO when is this used?
 	}
 	
-  public static List<ICDKReaction> getModelFromEditorInput(IEditorInput input) throws BioclipseException, IOException, CDKException, CoreException{
+  public static ICDKReactionScheme getModelFromEditorInput(IEditorInput input) throws BioclipseException, IOException, CDKException, CoreException{
       Object file = input.getAdapter(IFile.class);
       if (!(file instanceof IFile)) {
           throw new BioclipseException(
@@ -319,6 +324,13 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
       }
       IFile inputFile = (IFile) file;
       IReactionManager reactionManager = Activator.getDefault().getJavaManager();
-      return reactionManager.loadReactions( inputFile );
+      List<ICDKReaction> rr = reactionManager.loadReactions( inputFile );
+      
+      IReactionSet reactionSet = new ReactionSet();
+      for(int i = 0 ; i < rr.size(); i++)
+    	  reactionSet.addReaction(rr.get(i).getReaction());
+      
+      ICDKReactionScheme ircdkS = new CDKReactionScheme(ReactionSchemeManipulator.createReactionScheme(reactionSet));
+      return ircdkS;
   }
 }
