@@ -10,6 +10,9 @@
  ******************************************************************************/
 package net.bioclipse.reaction.editor;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import net.bioclipse.reaction.editparts.tree.TreeEditPartFactory;
 
 import org.eclipse.draw2d.LightweightSystem;
@@ -36,7 +39,7 @@ import org.eclipse.ui.part.IPageSite;
  * 
  * @author Miguel Rojas
  */
-public class ReactionOutLinePage extends ContentOutlinePage {
+public class ReactionOutLinePage extends ContentOutlinePage implements PropertyChangeListener{
 	private SashForm sash;
 	private ScrollableThumbnail thumbnail;
 	private DisposeListener disposeListener;
@@ -109,5 +112,10 @@ public class ReactionOutLinePage extends ContentOutlinePage {
 	    	reactionEditor.getEditorGraphicalViewer().getControl().removeDisposeListener(disposeListener);
 	    super.dispose();
 
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		System.out.println("propertyChange Out");
 	}
 }

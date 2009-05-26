@@ -16,10 +16,14 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.bioclipse.reaction.editor.ReactionOutLinePage;
 import net.bioclipse.reaction.editpolicies.MyBendpointEditPolicy;
 import net.bioclipse.reaction.editpolicies.MyConnectionEditPolicy;
 import net.bioclipse.reaction.editpolicies.MyConnectionEndpointEditPolicy;
 import net.bioclipse.reaction.model.AbstractConnectionModel;
+import net.bioclipse.reaction.model.AbstractModel;
+import net.bioclipse.reaction.model.AbstractObjectModel;
+import net.bioclipse.reaction.model.CompoundObjectModel;
 
 import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.draw2d.BendpointConnectionRouter;
@@ -50,7 +54,6 @@ public class MyAbstractConnectionEditPart extends AbstractConnectionEditPart imp
 		installEditPolicy(EditPolicy.CONNECTION_ROLE,new MyConnectionEditPolicy());
 		installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE,new MyConnectionEndpointEditPolicy());
 		installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE, new MyBendpointEditPolicy());
-		
 	}
 	/*
 	 * (non-Javadoc)
@@ -95,6 +98,23 @@ public class MyAbstractConnectionEditPart extends AbstractConnectionEditPart imp
 	 */
 	protected void refreshVisuals(){
 		refreshBendpoints();
+
+		AbstractModel abstractObject = (AbstractConnectionModel)this.getModel();
+		if(abstractObject instanceof AbstractConnectionModel){
+			AbstractConnectionModel connectionObject = (AbstractConnectionModel)abstractObject;
+//			ReactionOutLinePage outLinePage = connectionObject.getOutLinePage();
+//			outLinePage.;
+		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter(Class adapter ) {
+		AbstractModel abstractObject = (AbstractConnectionModel)this.getModel();
+		if(abstractObject instanceof AbstractConnectionModel){
+		}
+		return super.getAdapter(adapter);
+	}
 }

@@ -12,24 +12,33 @@
 package net.bioclipse.reaction.editparts;
 
 import java.beans.PropertyChangeEvent;
+import java.io.IOException;
 import java.io.StringBufferInputStream;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import net.bioclipse.cdk.business.Activator;
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
+import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.chemoinformatics.wizards.WizardHelper;
+import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.reaction.domain.CDKReaction;
 import net.bioclipse.reaction.domain.CDKReactionPropertySource;
 import net.bioclipse.reaction.editpolicies.MyComponentEditPolicy;
 import net.bioclipse.reaction.editpolicies.MyDirectEditPolicy;
 import net.bioclipse.reaction.editpolicies.MyGraphicalNodeEditPolicy;
+import net.bioclipse.reaction.model.AbstractConnectionModel;
+import net.bioclipse.reaction.model.AbstractModel;
 import net.bioclipse.reaction.model.AbstractObjectModel;
 import net.bioclipse.reaction.model.CompoundObjectModel;
 import net.bioclipse.reaction.model.ReactionObjectModel;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ColorConstants;
@@ -50,6 +59,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -67,9 +77,11 @@ import org.openscience.cdk.layout.StructureDiagramGenerator;
  * 
  * @author Miguel Rojas
  */
-public class MyAbstractObjectEditPart extends EditPartWithListener implements NodeEditPart{
+public class MyAbstractObjectEditPart extends EditPartWithListener implements NodeEditPart, IPropertyListener{
 	
 	private MyDirectEditManager directManager = null;
+    private static Map<IEditorPart,IFile> orignalFiles=new HashMap<IEditorPart,IFile>();
+    private static Map<IEditorPart,CompoundObjectModel> orignalChildren=new HashMap<IEditorPart,CompoundObjectModel>();
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
@@ -134,7 +146,8 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 		if(req.getType().equals(RequestConstants.REQ_OPEN)){
 			AbstractObjectModel abstractObject = (AbstractObjectModel)this.getModel();
 			if(abstractObject instanceof CompoundObjectModel){
-				IAtomContainer atomContainer = DefaultChemObjectBuilder.getInstance().newMolecule( ((CompoundObjectModel)abstractObject).getIMolecule());
+				CompoundObjectModel compoundObject = (CompoundObjectModel)abstractObject;
+				IAtomContainer atomContainer = DefaultChemObjectBuilder.getInstance().newMolecule( compoundObject.getIMolecule());
 				StringWriter writer = new StringWriter();
 				CMLWriter cmlWriter = new CMLWriter(writer);
 		        if(atomContainer == null){
@@ -153,8 +166,12 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 	                IFile tmpFile= net.bioclipse.core.Activator.getVirtualProject().getFile(WizardHelper.findUnusedFileName(new StructuredSelection(net.bioclipse.core.Activator.getVirtualProject()), atomContainer.getID(), ".cml") );
 	                tmpFile.create( new StringBufferInputStream(cmlContent), IFile.FORCE, null);
 	                IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new FileEditorInput(tmpFile), desc.getId());
-	            } catch ( Exception e ) {
+	                editor.addPropertyListener( this );
+	                orignalFiles.put( editor, tmpFile);
+	                orignalChildren.put(editor,compoundObject);
+                } catch ( Exception e ) {
 	            }
+	            
 			}
 		}
 		
@@ -234,7 +251,7 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 	 */
 	public Object getAdapter(Class adapter ) {
 		
-		AbstractObjectModel abstractObject = (AbstractObjectModel)this.getModel();
+		AbstractModel abstractObject = (AbstractObjectModel)this.getModel();
 		if(abstractObject instanceof CompoundObjectModel){
 			if (IPropertySource.class.equals(adapter)) {
 				CDKMolecule cdkMol= new CDKMolecule(((CompoundObjectModel)abstractObject).getIMolecule() );
@@ -258,7 +275,7 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 					}
 					
 				}
-				JChemPaintEditorWidget jcp = abstractObject.getJCP();
+				JChemPaintEditorWidget jcp = ((CompoundObjectModel)abstractObject).getJCP();
 				jcp.setAtomContainer(mol);
 			}
 		}else if(abstractObject instanceof ReactionObjectModel){
@@ -268,10 +285,25 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 	        
 			}
 			IReaction reaction = ((ReactionObjectModel)this.getModel()).getIReaction();
-			JChemPaintEditorWidget jcp = abstractObject.getJCP();
+			JChemPaintEditorWidget jcp = ((AbstractObjectModel)abstractObject).getJCP();
 			jcp.setReaction( reaction );
 
 		}
 		return super.getAdapter(adapter);
+	}
+	@Override
+	public void propertyChanged(Object source, int paramInt) {
+		try {
+			ICDKMolecule cdkMol = Activator.getDefault().getJavaCDKManager().loadMolecule(orignalFiles.get( source ) );
+			IAtomContainer ac = cdkMol.getAtomContainer();
+			CompoundObjectModel compoundObject = orignalChildren.get(source);
+			compoundObject.setIMolecule(ac);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (BioclipseException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -45,6 +45,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import org.openscience.cdk.ReactionSet;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IReactionScheme;
 import org.openscience.cdk.interfaces.IReactionSet;
 import org.openscience.cdk.io.CMLWriter;
 import org.openscience.cdk.io.DefaultChemObjectWriter;
@@ -165,7 +166,9 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 		DefaultChemObjectWriter cdkwriter=null;
 	    if(filetype.equals( "Chemical Markup Language" )){
 	        cdkwriter = new CMLWriter(writer);
-	        cdkwriter.write( chemmodel );
+	        IReactionSet reactionSet = chemmodel.getReactionSet();
+	        IReactionScheme scheme = ReactionSchemeManipulator.createReactionScheme(reactionSet);
+	        cdkwriter.write( scheme );
 	    }else if(filetype.equals( "MDL Reaction format" )){
 	        cdkwriter = new MDLRXNWriter(writer);
 	        cdkwriter.write( chemmodel.getReactionSet() );
@@ -303,14 +306,14 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
       try {
     	  
 //        ICDKReactionScheme model = reactionManager.loadReactionScheme( new ByteArrayInputStream(newtext), (IChemFormat) (filetype.equals( "Chemical Markup Language" ) ? CMLFormat.getInstance() : MDLRXNFormat.getInstance()));
+    	  
     	  List<ICDKReaction> rr = reactionManager.loadReactions( new ByteArrayInputStream(newtext), (IChemFormat) (filetype.equals( "Chemical Markup Language" ) ? CMLFormat.getInstance() : MDLRXNFormat.getInstance()) );
-          
           IReactionSet reactionSet = new ReactionSet();
           for(int i = 0 ; i < rr.size(); i++)
         	  reactionSet.addReaction(rr.get(i).getReaction());
-          
           ICDKReactionScheme model = new CDKReactionScheme(ReactionSchemeManipulator.createReactionScheme(reactionSet));
           rEditor.updateContent( model );
+          
       } catch ( Exception e ) {
           LogUtils.handleException( e, logger );
       }
@@ -333,12 +336,11 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
       IFile inputFile = (IFile) file;
       IReactionManager reactionManager = Activator.getDefault().getJavaManager();
       List<ICDKReaction> rr = reactionManager.loadReactions( inputFile );
-      
-      IReactionSet reactionSet = new ReactionSet();
+	  IReactionSet reactionSet = new ReactionSet();
       for(int i = 0 ; i < rr.size(); i++)
     	  reactionSet.addReaction(rr.get(i).getReaction());
-      
-      ICDKReactionScheme ircdkS = new CDKReactionScheme(ReactionSchemeManipulator.createReactionScheme(reactionSet));
+     
+	  ICDKReactionScheme ircdkS = new CDKReactionScheme(ReactionSchemeManipulator.createReactionScheme(reactionSet));
       return ircdkS;
 //      return reactionManager.loadReactions( inputFile );
   }

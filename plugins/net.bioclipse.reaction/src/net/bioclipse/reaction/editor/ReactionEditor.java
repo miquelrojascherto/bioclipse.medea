@@ -80,6 +80,7 @@ import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionSet;
+import org.openscience.cdk.tools.manipulator.ReactionSchemeManipulator;
 
 /**
  * An editor page showing a reaction as a tree and a detailed view.
@@ -93,6 +94,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	private ContentsModel contentsModel;
 	private GraphicalViewer viewer;
 	private Object fOutlinePage;
+	private MyEditPartFactory epf;
 	private static final Logger logger = Logger.getLogger( ReactionEditor.class.toString());
 	
 	/**
@@ -126,6 +128,9 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		try {
 			ICDKReactionScheme model = this.getModelFromEditorInput();
 			jcpEW = new JChemPaintEditorWidget(form,SWT.PUSH);
+			epf.setEJP(jcpEW);
+			fOutlinePage = new ReactionOutLinePage(this);
+			epf.setOutLinePage((ReactionOutLinePage)fOutlinePage);
 			jcpEW.setReaction( model.getReactionScheme().getReaction(0));
 	        updateContent( model );
         } catch ( Exception e ) {
@@ -144,9 +149,8 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		contentsModel = new ContentsModel();
 		int countReactions = 0;
 		int countcompounds = 0;
-//		for(Iterator<ICDKReaction> iteratorReactions = model.iterator(); iteratorReactions.hasNext();) {
-//		IReaction reaction = iteratorReactions.next().getReaction();
-		for(IReaction reaction:model.getReactionScheme().reactions()){
+		IReactionSet reactions = ReactionSchemeManipulator.getAllReactions(model.getReactionScheme());
+		for(IReaction reaction:reactions.reactions()){
 			/*reaction*/
 			ReactionObjectModel reactionObject = new ReactionObjectModel();
 			reactionObject.addJCP(jcpEW);
@@ -295,7 +299,8 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		action = new ZoomOutAction(manager);
 		getActionRegistry().registerAction(action);
 		
-		viewer.setEditPartFactory(new MyEditPartFactory());
+		epf = new MyEditPartFactory();
+		viewer.setEditPartFactory(epf);
 		
 		KeyHandler keyHandler = new KeyHandler();
 		keyHandler.put(KeyStroke.getPressed(SWT.DEL,127,0),getActionRegistry().getAction(GEFActionConstants.DELETE));
@@ -441,8 +446,8 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 					IMolecule reactant = DefaultChemObjectBuilder.getInstance().newMolecule(reactantOM.getIMolecule());
 					if(reactant == null){
 						reactant = DefaultChemObjectBuilder.getInstance().newMolecule();
-						reactant.setID(reactantOM.getText());
 					}
+					reactant.setID(reactantOM.getText());
 					reaction.addReactant(reactant);
 				}
 				List listT = reactionOM.getModelSourceConnections();
@@ -452,8 +457,8 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 					IMolecule product = DefaultChemObjectBuilder.getInstance().newMolecule(productOM.getIMolecule());
 					if(product == null){
 						product = DefaultChemObjectBuilder.getInstance().newMolecule();
-						product.setID(productOM.getText());
 					}
+					product.setID(productOM.getText());
 					reaction.addProduct(product);
 				}
 				reaction.setID(reactionOM.getText());
@@ -511,6 +516,10 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	
 	public ContentsModel getContentsModel() {
 		return contentsModel;
+	}
+	
+	public JChemPaintEditorWidget getJChemPaintEditorWidget(){
+		return jcpEW;
 	}
 
 }
