@@ -1,23 +1,39 @@
 package net.bioclipse.plugins.extensions;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 
+import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.medea.core.Medea;
 import net.bioclipse.seneca.judge.IJudge;
 import net.bioclipse.seneca.judge.Judge;
 import net.bioclipse.seneca.judge.JudgeResult;
 import net.bioclipse.seneca.judge.MissingInformationException;
+import net.bioclipse.seneca.judge.WCCNMRShiftDBJudge;
+import net.bioclipse.spectrum.domain.IJumboSpectrum;
+import net.bioclipse.spectrum.editor.SpectrumEditor;
 import nu.xom.Document;
+import nu.xom.Element;
 import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.XPathContext;
 
+import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.smiles.SmilesGenerator;
@@ -33,6 +49,8 @@ import org.xmlcml.cml.element.CMLSpectrum;
 import spok.utils.SpectrumUtils;
 
 public class WCCMedeaJudge extends Judge implements IJudge, Serializable, Cloneable {
+
+  private static Logger logger = Logger.getLogger(WCCNMRShiftDBJudge.class);
 
 	public double maxScore = 1000; // Score for optimum fit of exp. with calc. shift
 	private final static Medea medeaTool = new Medea();
@@ -72,7 +90,7 @@ public class WCCMedeaJudge extends Judge implements IJudge, Serializable, Clonea
 		}
 		
 		CMLSpectrum cmlSpect = (CMLSpectrum)result.get(0);
-		if (!"MS".equals(cmlSpect.getType())) {
+		if (!"MS".equals(cmlSpect.getType()) && !"massSpectrum".equals(cmlSpect.getType())) {
 			throw new MissingInformationException("Spectrum is not of type MS.");
 		}
 		if (cmlSpect.getPeakListElements() == null) {
@@ -121,16 +139,22 @@ public class WCCMedeaJudge extends Judge implements IJudge, Serializable, Clonea
 		return new JudgeResult((long)maxScore,(long)scoreSum, 0l, message);
 	}
 
-    public IJudge createJudge(String data) throws MissingInformationException {
+    public IJudge createJudge(IPath data) throws MissingInformationException {
         WCCMedeaJudge judge = new WCCMedeaJudge();
         judge.setData( data );
         CMLBuilder builder = new CMLBuilder();
         try {
-            Document doc =  builder.buildEnsureCML(ResourcesPlugin.getWorkspace().getRoot().getFile( new Path(judge.getData())).getContents());
+            Document doc =  builder.buildEnsureCML(ResourcesPlugin.getWorkspace().getRoot().getFile( judge.getData()).getContents());
             SpectrumUtils.namespaceThemAll( doc.getRootElement().getChildElements() );
             doc.getRootElement().setNamespaceURI(CMLUtil.CML_NS);
-            CMLElement cmlElement = (CMLCml) builder.parseString(doc.toXML());
-            judge.configure(cmlElement);
+            Element element = builder.parseString(doc.toXML());
+            if(element instanceof CMLCml)
+                judge.configure((CMLCml)element);
+            else if(element instanceof CMLSpectrum){
+                CMLCml cmlcml=new CMLCml();
+                cmlcml.appendChild( element );
+                judge.configure(cmlcml);
+            }
         } catch (IOException e) {
             throw new MissingInformationException("Could not read the cmlString.");
         } catch (ParsingException e) {
@@ -155,17 +179,75 @@ public class WCCMedeaJudge extends Judge implements IJudge, Serializable, Clonea
             Document doc =  builder.buildEnsureCML(ResourcesPlugin.getWorkspace().getRoot().getFile( new Path(data)).getContents());
             SpectrumUtils.namespaceThemAll( doc.getRootElement().getChildElements() );
             doc.getRootElement().setNamespaceURI(CMLUtil.CML_NS);
-            CMLElement cmlElement = (CMLCml) builder.parseString(doc.toXML());
-            configure(cmlElement);
+            Element element = builder.parseString(doc.toXML());
+            if(element instanceof CMLCml)
+                configure((CMLCml)element);
+            else if(element instanceof CMLSpectrum){
+                CMLCml cmlcml=new CMLCml();
+                cmlcml.appendChild( element );
+                configure(cmlcml);
+            }
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
         return true;
     }
 
     public IFile setData( ISelection selection, IFile sjsFile ) {
-
-        // TODO do data processing here
-        return null;
+        IStructuredSelection ssel = (IStructuredSelection) selection;
+        if(ssel.size()>1){
+            MessageBox mb = new MessageBox(new Shell(), SWT.ICON_WARNING);
+            mb.setText("Multiple Files");
+            mb.setMessage("Only one file can be dropped on here!");
+            mb.open();
+            return null;
+        }else{
+            if (ssel.getFirstElement() instanceof IFile) {
+                IFile file = (IFile) ssel.getFirstElement();
+                IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
+                InputStream stream;
+                try {
+                    stream = file.getContents();
+                    IContentType contentType = contentTypeManager.findContentTypeFor(stream, file.getName());
+                    if(contentType.getId().equals( "net.bioclipse.contenttypes.jcampdx" ) ||  contentType.getId().equals( "net.bioclipse.contenttypes.cml.singleSpectrum")){
+                        IJumboSpectrum spectrum=net.bioclipse.spectrum
+                            .Activator.getDefault()
+                            .getJavaSpectrumManager()
+                            .loadSpectrum( file );
+                        //if the file is somewhere else , we make a new file
+                        IFile newFile;
+                        if(file.getParent()!=sjsFile.getParent()){
+                            IContainer folder = sjsFile.getParent();
+                            newFile=folder.getFile( new Path(file.getName().substring( 0, file.getName().length()-1-file.getFileExtension().length() )+".cml") );
+                            net.bioclipse.spectrum.Activator
+                                .getDefault().getJavaSpectrumManager()
+                                .saveSpectrum(
+                                    spectrum, newFile,
+                                    SpectrumEditor.CML_TYPE
+                                );
+                        }else{
+                            newFile = file;
+                        }
+                        return newFile;
+                    }else{
+                        MessageBox mb = new MessageBox(new Shell(), SWT.ICON_WARNING);
+                        mb.setText("Not a spectrum file");
+                        mb.setMessage("Only a spectrum file (JCAMP or CML) can be dropped on here!");
+                        mb.open();
+                        return null;
+                    }
+                } catch ( Exception e ) {
+                    LogUtils.handleException( e, logger );
+                    return null;
+                }
+            }else{
+                MessageBox mb = new MessageBox(new Shell(), SWT.ICON_WARNING);
+                mb.setText("Not a file");
+                mb.setMessage("Only a file (not directory etc.) can be dropped on here!");
+                mb.open();
+                return null;
+            }
+        }
     }
 }
