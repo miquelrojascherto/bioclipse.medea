@@ -16,7 +16,7 @@ package net.bioclipse.reaction.editparts;
  * 
  * @author Miguel Rojas
  */
-public class LineConnectionEditPart extends MyAbstractConnectionEditPart{
+public class LineConnectionEditPart extends RAbstractConnectionEditPart{
 	/*
 	 * (non-Javadoc)
 	 * @see net.bioclipse.plugins.bc_reaction.editparts.MyAbstractConnectionEditPart#createEditPolicies()

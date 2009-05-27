@@ -12,8 +12,6 @@
 package net.bioclipse.reaction.editparts;
 
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
-import net.bioclipse.reaction.editor.ReactionOutLinePage;
-import net.bioclipse.reaction.model.AbstractConnectionModel;
 import net.bioclipse.reaction.model.AbstractObjectModel;
 import net.bioclipse.reaction.model.ArrowConnectionModel;
 import net.bioclipse.reaction.model.CompoundObjectModel;
@@ -27,10 +25,9 @@ import org.eclipse.gef.EditPartFactory;
  * 
  * @author Miguel Rojas
  */
-public class MyEditPartFactory implements EditPartFactory {
+public class REditPartFactory implements EditPartFactory {
 	
 	private JChemPaintEditorWidget jcpe;
-	private ReactionOutLinePage fOutlinePage;
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart, java.lang.Object)
@@ -46,11 +43,9 @@ public class MyEditPartFactory implements EditPartFactory {
 			part = new CompoundObjectEditPart();
 			((AbstractObjectModel)model).addJCP(jcpe);
 		}else if (model instanceof LineConnectionModel){
-			  part = new LineConnectionEditPart();
-				((AbstractConnectionModel)model).addOutLinePage(fOutlinePage);
+			part = new LineConnectionEditPart();
 		}else if(model instanceof ArrowConnectionModel){
 			part = new ArrowConnectionEditPart();
-			((AbstractConnectionModel)model).addOutLinePage(fOutlinePage);
 		}
 		part.setModel(model);
 		return part;
@@ -60,8 +55,5 @@ public class MyEditPartFactory implements EditPartFactory {
 	 */
 	public void setEJP(JChemPaintEditorWidget jcpe){
 		this.jcpe = jcpe;
-	}
-	public void setOutLinePage(ReactionOutLinePage fOutlinePage) {
-		this.fOutlinePage = fOutlinePage;
 	}
 }

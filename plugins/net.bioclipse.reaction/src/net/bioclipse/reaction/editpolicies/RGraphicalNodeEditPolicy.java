@@ -23,7 +23,7 @@ import org.eclipse.gef.requests.ReconnectRequest;
  * 
  * @author Miguel Rojas
  */
-public class MyGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy{
+public class RGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy{
 	
 	/*
 	 * (non-Javadoc)

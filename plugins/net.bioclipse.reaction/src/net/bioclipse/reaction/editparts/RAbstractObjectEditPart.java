@@ -28,9 +28,9 @@ import net.bioclipse.chemoinformatics.wizards.WizardHelper;
 import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.reaction.domain.CDKReaction;
 import net.bioclipse.reaction.domain.CDKReactionPropertySource;
-import net.bioclipse.reaction.editpolicies.MyComponentEditPolicy;
-import net.bioclipse.reaction.editpolicies.MyDirectEditPolicy;
-import net.bioclipse.reaction.editpolicies.MyGraphicalNodeEditPolicy;
+import net.bioclipse.reaction.editpolicies.RComponentEditPolicy;
+import net.bioclipse.reaction.editpolicies.RDirectEditPolicy;
+import net.bioclipse.reaction.editpolicies.RGraphicalNodeEditPolicy;
 import net.bioclipse.reaction.model.AbstractConnectionModel;
 import net.bioclipse.reaction.model.AbstractModel;
 import net.bioclipse.reaction.model.AbstractObjectModel;
@@ -49,6 +49,7 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.AccessibleEditPart;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
@@ -77,9 +78,9 @@ import org.openscience.cdk.layout.StructureDiagramGenerator;
  * 
  * @author Miguel Rojas
  */
-public class MyAbstractObjectEditPart extends EditPartWithListener implements NodeEditPart, IPropertyListener{
+public class RAbstractObjectEditPart extends EditPartWithListener implements NodeEditPart, IPropertyListener{
 	
-	private MyDirectEditManager directManager = null;
+	private RDirectEditManager directManager = null;
     private static Map<IEditorPart,IFile> orignalFiles=new HashMap<IEditorPart,IFile>();
     private static Map<IEditorPart,CompoundObjectModel> orignalChildren=new HashMap<IEditorPart,CompoundObjectModel>();
 	/*
@@ -102,9 +103,9 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	protected void createEditPolicies() {
-		installEditPolicy(EditPolicy.COMPONENT_ROLE,new MyComponentEditPolicy());
-		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,new MyDirectEditPolicy());
-		installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,new MyGraphicalNodeEditPolicy());
+		installEditPolicy(EditPolicy.COMPONENT_ROLE,new RComponentEditPolicy());
+		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,new RDirectEditPolicy());
+		installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,new RGraphicalNodeEditPolicy());
 		
 	}
 	/*
@@ -178,24 +179,12 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 		super.performRequest(req);
 	}
 	/**
-	 * show a Wizard with the predicted mass spectrum.
-	 * 
-	 * @return The IMolecule object
-	 */
-	public IMolecule showWizard(){
-		//NewAquisitionWizard nAW = new NewAquisitionWizard();
-		//WizardDialog wd = new WizardDialog( new Shell(), nAW );
-		//wd.open();
-		//return nAW.getIMolecule();
-	    return null;
-	}
-	/**
 	 * rewrite the Cell
 	 */
 	private void performDirectEdit(){
 		if(directManager  == null){
-			directManager = new MyDirectEditManager(this, TextCellEditor.class, 
-													new MyCellEditorLocator(getFigure()));
+			directManager = new RDirectEditManager(this, TextCellEditor.class, 
+													new RCellEditorLocator(getFigure()));
 				
 		}
 		directManager.show();
@@ -250,48 +239,48 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
 	public Object getAdapter(Class adapter ) {
-		
 		AbstractModel abstractObject = (AbstractObjectModel)this.getModel();
 		if(abstractObject instanceof CompoundObjectModel){
 			if (IPropertySource.class.equals(adapter)) {
 				CDKMolecule cdkMol= new CDKMolecule(((CompoundObjectModel)abstractObject).getIMolecule() );
 	            return new CDKMoleculePropertySource(cdkMol);
-			}
-			IMolecule mol = DefaultChemObjectBuilder.getInstance().newMolecule( ((CompoundObjectModel)abstractObject).getIMolecule());
-			if(mol != null && mol.getAtomCount() > 0){
-
-				if(!GeometryTools.has2DCoordinates(mol)){
-
-					StructureDiagramGenerator sdg = new StructureDiagramGenerator();
-					sdg.setMolecule(mol);
-					try {
-						sdg.generateCoordinates();
-						mol = sdg.getMolecule();
-						GeometryTools.translateAllPositive(mol);
-						((CompoundObjectModel)abstractObject).setIMolecule(mol);
+			}else if (AccessibleEditPart.class.equals(adapter)){
+				IMolecule mol = DefaultChemObjectBuilder.getInstance().newMolecule( ((CompoundObjectModel)abstractObject).getIMolecule());
+				if(mol != null && mol.getAtomCount() > 0){
+	
+					if(!GeometryTools.has2DCoordinates(mol)){
+	
+						StructureDiagramGenerator sdg = new StructureDiagramGenerator();
+						sdg.setMolecule(mol);
+						try {
+							sdg.generateCoordinates();
+							mol = sdg.getMolecule();
+							GeometryTools.translateAllPositive(mol);
+							((CompoundObjectModel)abstractObject).setIMolecule(mol);
+							
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						
-					} catch (Exception e) {
-						e.printStackTrace();
 					}
-					
+					JChemPaintEditorWidget jcp = ((CompoundObjectModel)abstractObject).getJCP();
+					jcp.setAtomContainer(mol);
 				}
-				JChemPaintEditorWidget jcp = ((CompoundObjectModel)abstractObject).getJCP();
-				jcp.setAtomContainer(mol);
 			}
 		}else if(abstractObject instanceof ReactionObjectModel){
 			if (IPropertySource.class.equals(adapter)) {
 				CDKReaction cdkReact= new CDKReaction(((ReactionObjectModel)abstractObject).getIReaction() );
 	            return new CDKReactionPropertySource(cdkReact);
-	        
+	        }else if (AccessibleEditPart.class.equals(adapter)){
+				IReaction reaction = ((ReactionObjectModel)this.getModel()).getIReaction();
+				JChemPaintEditorWidget jcp = ((AbstractObjectModel)abstractObject).getJCP();
+				jcp.setReaction( reaction );
 			}
-			IReaction reaction = ((ReactionObjectModel)this.getModel()).getIReaction();
-			JChemPaintEditorWidget jcp = ((AbstractObjectModel)abstractObject).getJCP();
-			jcp.setReaction( reaction );
 
 		}
 		return super.getAdapter(adapter);
 	}
-
+	
 	public void propertyChanged(Object source, int paramInt) {
 		try {
 			ICDKMolecule cdkMol = Activator.getDefault().getJavaCDKManager().loadMolecule(orignalFiles.get( source ) );

@@ -14,7 +14,7 @@ package net.bioclipse.reaction.editparts;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 
-import net.bioclipse.reaction.editpolicies.MyXYLayoutEditPolicy;
+import net.bioclipse.reaction.editpolicies.RXYLayoutEditPolicy;
 import net.bioclipse.reaction.model.ContentsModel;
 
 import org.eclipse.draw2d.IFigure;
@@ -40,14 +40,14 @@ public class ContentsEditPart extends EditPartWithListener{
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	protected void createEditPolicies() {
-		installEditPolicy(EditPolicy.LAYOUT_ROLE, new MyXYLayoutEditPolicy());
+		installEditPolicy(EditPolicy.LAYOUT_ROLE, new RXYLayoutEditPolicy());
 		
 	}
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
 	 */
-	protected List getModelChildren(){
+	protected List<Object> getModelChildren(){
 		return ((ContentsModel)getModel()).getChildren();
 	}
 	/*

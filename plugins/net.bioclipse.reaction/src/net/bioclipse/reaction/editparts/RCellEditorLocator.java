@@ -20,14 +20,14 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Miguel Rojas
  */
-public class MyCellEditorLocator implements CellEditorLocator {
+public class RCellEditorLocator implements CellEditorLocator {
 	private IFigure figure;
 	
 	/**
 	 * Constructor of the MyCellEditorLocator object
 	 * @param f The IFigure
 	 */
-	public MyCellEditorLocator(IFigure f){
+	public RCellEditorLocator(IFigure f){
 		figure = f;
 	}
 	/*

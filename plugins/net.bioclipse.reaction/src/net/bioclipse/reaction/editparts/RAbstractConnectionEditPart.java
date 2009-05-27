@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.bioclipse.reaction.editor.ReactionOutLinePage;
-import net.bioclipse.reaction.editpolicies.MyBendpointEditPolicy;
-import net.bioclipse.reaction.editpolicies.MyConnectionEditPolicy;
-import net.bioclipse.reaction.editpolicies.MyConnectionEndpointEditPolicy;
+import net.bioclipse.reaction.editpolicies.RBendpointEditPolicy;
+import net.bioclipse.reaction.editpolicies.RConnectionEditPolicy;
+import net.bioclipse.reaction.editpolicies.RConnectionEndpointEditPolicy;
 import net.bioclipse.reaction.model.AbstractConnectionModel;
 import net.bioclipse.reaction.model.AbstractModel;
 import net.bioclipse.reaction.model.AbstractObjectModel;
@@ -36,7 +36,7 @@ import org.eclipse.gef.editparts.AbstractConnectionEditPart;
  * 
  * @author Miguel Rojas
  */
-public class MyAbstractConnectionEditPart extends AbstractConnectionEditPart implements PropertyChangeListener{
+public class RAbstractConnectionEditPart extends AbstractConnectionEditPart implements PropertyChangeListener{
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
@@ -51,9 +51,9 @@ public class MyAbstractConnectionEditPart extends AbstractConnectionEditPart imp
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	protected void createEditPolicies() {
-		installEditPolicy(EditPolicy.CONNECTION_ROLE,new MyConnectionEditPolicy());
-		installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE,new MyConnectionEndpointEditPolicy());
-		installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE, new MyBendpointEditPolicy());
+		installEditPolicy(EditPolicy.CONNECTION_ROLE,new RConnectionEditPolicy());
+		installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE,new RConnectionEndpointEditPolicy());
+		installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE, new RBendpointEditPolicy());
 	}
 	/*
 	 * (non-Javadoc)

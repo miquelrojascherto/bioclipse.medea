@@ -13,7 +13,7 @@ package net.bioclipse.reaction.editor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import net.bioclipse.reaction.editparts.tree.TreeEditPartFactory;
+import net.bioclipse.reaction.editparts.tree.ROutPageEditPartFactory;
 
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.Viewport;
@@ -72,7 +72,7 @@ public class ReactionOutLinePage extends ContentOutlinePage implements PropertyC
 	    getViewer().createControl(sash);
 	      
 	    getViewer().setEditDomain(reactionEditor.getEditorEditDomain());
-	    getViewer().setEditPartFactory(new TreeEditPartFactory());
+	    getViewer().setEditPartFactory(new ROutPageEditPartFactory());
 	    getViewer().setContents(reactionEditor.getContentsModel());
 	    reactionEditor.getEditorSelectionSynchronizer().addViewer(getViewer());
 	      

@@ -24,7 +24,7 @@ import net.bioclipse.reaction.dnd.MyFileDragSourceListener;
 import net.bioclipse.reaction.dnd.MyFileDropTargetListener;
 import net.bioclipse.reaction.domain.ICDKReaction;
 import net.bioclipse.reaction.domain.ICDKReactionScheme;
-import net.bioclipse.reaction.editparts.MyEditPartFactory;
+import net.bioclipse.reaction.editparts.REditPartFactory;
 import net.bioclipse.reaction.layout.HierarchicLayer;
 import net.bioclipse.reaction.model.AbstractConnectionModel;
 import net.bioclipse.reaction.model.AbstractObjectModel;
@@ -94,7 +94,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	private ContentsModel contentsModel;
 	private GraphicalViewer viewer;
 	private Object fOutlinePage;
-	private MyEditPartFactory epf;
+	private REditPartFactory epf;
 	private static final Logger logger = Logger.getLogger( ReactionEditor.class.toString());
 	
 	/**
@@ -129,8 +129,6 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 			ICDKReactionScheme model = this.getModelFromEditorInput();
 			jcpEW = new JChemPaintEditorWidget(form,SWT.PUSH);
 			epf.setEJP(jcpEW);
-			fOutlinePage = new ReactionOutLinePage(this);
-			epf.setOutLinePage((ReactionOutLinePage)fOutlinePage);
 			jcpEW.setReaction( model.getReactionScheme().getReaction(0));
 	        updateContent( model );
         } catch ( Exception e ) {
@@ -299,7 +297,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		action = new ZoomOutAction(manager);
 		getActionRegistry().registerAction(action);
 		
-		epf = new MyEditPartFactory();
+		epf = new REditPartFactory();
 		viewer.setEditPartFactory(epf);
 		
 		KeyHandler keyHandler = new KeyHandler();

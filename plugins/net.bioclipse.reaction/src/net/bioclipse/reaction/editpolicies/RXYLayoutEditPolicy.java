@@ -26,7 +26,7 @@ import org.eclipse.gef.requests.CreateRequest;
  * 
  * @author Miguel Rojas
  */
-public class MyXYLayoutEditPolicy extends XYLayoutEditPolicy {
+public class RXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	
 	/*
 	 * (non-Javadoc)

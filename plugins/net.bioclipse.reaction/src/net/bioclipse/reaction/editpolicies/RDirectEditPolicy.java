@@ -21,7 +21,7 @@ import org.eclipse.gef.requests.DirectEditRequest;
  * 
  * @author Miguel Rojas
  */
-public class MyDirectEditPolicy extends DirectEditPolicy{
+public class RDirectEditPolicy extends DirectEditPolicy{
 	
 	/*
 	 * (non-Javadoc)

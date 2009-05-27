@@ -19,7 +19,7 @@ import org.eclipse.draw2d.PolylineConnection;
  * 
  * @author Miguel Rojas
  */
-public class ArrowConnectionEditPart extends MyAbstractConnectionEditPart{
+public class ArrowConnectionEditPart extends RAbstractConnectionEditPart{
 	
 	/*
 	 * (non-Javadoc)

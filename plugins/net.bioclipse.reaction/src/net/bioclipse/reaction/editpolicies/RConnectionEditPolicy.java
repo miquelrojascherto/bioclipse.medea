@@ -11,25 +11,25 @@
  ******************************************************************************/
 package net.bioclipse.reaction.editpolicies;
 
-import net.bioclipse.reaction.model.commands.DeleteCommand;
+import net.bioclipse.reaction.model.commands.DeleteConnectionCommand;
 
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.editpolicies.ComponentEditPolicy;
+import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
+
 /**
  * 
  * @author Miguel Rojas
  */
-public class MyComponentEditPolicy extends ComponentEditPolicy{
-	
+public class RConnectionEditPolicy extends ConnectionEditPolicy {
+
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.gef.editpolicies.ComponentEditPolicy#createDeleteCommand(org.eclipse.gef.requests.GroupRequest)
+	 * @see org.eclipse.gef.editpolicies.ConnectionEditPolicy#getDeleteCommand(org.eclipse.gef.requests.GroupRequest)
 	 */
-	protected Command createDeleteCommand(GroupRequest deletRequest){
-		DeleteCommand command = new DeleteCommand();
-		command.setContentsModel(getHost().getParent().getModel());
-		command.setReactionModel(getHost().getModel());
+	protected Command getDeleteCommand(GroupRequest request) {
+		DeleteConnectionCommand command = new DeleteConnectionCommand();
+		command.setConnectionModel(getHost().getModel());
 		return command;
 	}
 }

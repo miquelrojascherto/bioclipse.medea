@@ -18,7 +18,7 @@ import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
 import net.bioclipse.reaction.domain.CDKReaction;
 import net.bioclipse.reaction.domain.CDKReactionPropertySource;
-import net.bioclipse.reaction.editpolicies.MyComponentEditPolicy;
+import net.bioclipse.reaction.editpolicies.RComponentEditPolicy;
 import net.bioclipse.reaction.model.AbstractModel;
 import net.bioclipse.reaction.model.AbstractObjectModel;
 import net.bioclipse.reaction.model.CompoundObjectModel;
@@ -53,7 +53,7 @@ public class ReactionROutPageEditPart extends ROutPageEditPart{
 	 * @see org.eclipse.gef.editparts.AbstractTreeEditPart#createEditPolicies()
 	 */
 	protected void createEditPolicies() {
-		installEditPolicy(EditPolicy.COMPONENT_ROLE, new MyComponentEditPolicy());
+		installEditPolicy(EditPolicy.COMPONENT_ROLE, new RComponentEditPolicy());
 	}
 
 	/*

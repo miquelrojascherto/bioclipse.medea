@@ -34,8 +34,8 @@ public class AbstractObjectModel extends AbstractModel  {
 	public static final String P_SOURCE_CONNECTION = "_source_connection";
 	public static final String P_TARGET_CONNECTION = "_target_connection";
 	
-	private List sourceConnections = new ArrayList();
-	private List targetConnections = new ArrayList();
+	private List<Object> sourceConnections = new ArrayList<Object>();
+	private List<Object> targetConnections = new ArrayList<Object>();
 	/**
 	 * Constructor of the AbstractObjectModel object
 	 * 
@@ -136,7 +136,6 @@ public class AbstractObjectModel extends AbstractModel  {
 	 * add the Source connection
 	 * @param connx The Object
 	 */
-	@SuppressWarnings("unchecked")
 	public void addSourceConnection(Object connx){
 		sourceConnections.add(connx);
 		firePropertyChange(P_SOURCE_CONNECTION,null,null);
@@ -145,17 +144,16 @@ public class AbstractObjectModel extends AbstractModel  {
 	 * add the Target connection
 	 * @param connx The OBject
 	 */
-	@SuppressWarnings("unchecked")
 	public void addTargetConnection(Object connx){
 		targetConnections.add(connx);
 		firePropertyChange(P_TARGET_CONNECTION,null,null);
 	}
 	
-	public List getModelSourceConnections(){
+	public List<Object> getModelSourceConnections(){
 		return sourceConnections;
 	}
 	
-	public List getModelTargetConnections(){
+	public List<Object> getModelTargetConnections(){
 		return targetConnections;
 	}
 	/**

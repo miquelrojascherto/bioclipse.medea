@@ -24,7 +24,7 @@ import org.eclipse.gef.requests.BendpointRequest;
  * 
  * @author Miguel Rojas
  */
-public class MyBendpointEditPolicy extends BendpointEditPolicy {
+public class RBendpointEditPolicy extends BendpointEditPolicy {
 
 	/*
 	 * (non-Javadoc)

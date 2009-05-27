@@ -25,7 +25,7 @@ import org.eclipse.draw2d.MarginBorder;
  * 
  * @author Miguel Rojas
  */
-public class ReactionObjectEditPart extends MyAbstractObjectEditPart{
+public class ReactionObjectEditPart extends RAbstractObjectEditPart{
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()

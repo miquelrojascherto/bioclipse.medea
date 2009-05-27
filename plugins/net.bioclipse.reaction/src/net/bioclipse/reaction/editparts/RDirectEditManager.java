@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Miguel Rojas
  */
-public class MyDirectEditManager extends DirectEditManager{
+public class RDirectEditManager extends DirectEditManager{
 
 	private AbstractObjectModel reactionModel;
 
@@ -32,7 +32,7 @@ public class MyDirectEditManager extends DirectEditManager{
 	 * @param editorType  The Class
 	 * @param locator     The CellEditorLocator
 	 */
-	public MyDirectEditManager(GraphicalEditPart source, Class editorType, CellEditorLocator locator) {
+	public RDirectEditManager(GraphicalEditPart source, Class editorType, CellEditorLocator locator) {
 		super(source, editorType, locator);
 		reactionModel = (AbstractObjectModel)source.getModel();
 	}
