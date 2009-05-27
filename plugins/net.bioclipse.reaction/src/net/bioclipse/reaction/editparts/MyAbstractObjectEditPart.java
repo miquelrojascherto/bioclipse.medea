@@ -291,7 +291,7 @@ public class MyAbstractObjectEditPart extends EditPartWithListener implements No
 		}
 		return super.getAdapter(adapter);
 	}
-	@Override
+
 	public void propertyChanged(Object source, int paramInt) {
 		try {
 			ICDKMolecule cdkMol = Activator.getDefault().getJavaCDKManager().loadMolecule(orignalFiles.get( source ) );
