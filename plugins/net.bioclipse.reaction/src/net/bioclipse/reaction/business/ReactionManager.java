@@ -87,7 +87,7 @@ public class ReactionManager implements IBioclipseManager {
         CDKManagerHelper.registerAllFormats(formatsFactory);
     }
 	
-    public String getNamespace() {
+    public String getManagerName() {
         return "reaction";
     }
     
