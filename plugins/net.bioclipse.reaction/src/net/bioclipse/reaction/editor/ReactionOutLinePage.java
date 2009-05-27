@@ -115,6 +115,5 @@ public class ReactionOutLinePage extends ContentOutlinePage implements PropertyC
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
-		System.out.println("propertyChange Out");
 	}
 }

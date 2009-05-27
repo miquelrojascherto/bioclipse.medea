@@ -22,7 +22,6 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.reaction.dnd.MyFileDragSourceListener;
 import net.bioclipse.reaction.dnd.MyFileDropTargetListener;
-import net.bioclipse.reaction.domain.ICDKReaction;
 import net.bioclipse.reaction.domain.ICDKReactionScheme;
 import net.bioclipse.reaction.editparts.REditPartFactory;
 import net.bioclipse.reaction.layout.HierarchicLayer;
@@ -39,6 +38,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
@@ -227,7 +227,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	 * @return              The AbstractObjectModel. 
 	 */
 	private AbstractObjectModel getObject(ContentsModel contentsModel, String ref) {
-		for(Iterator iterator = contentsModel.getChildren().iterator(); iterator.hasNext();) {
+		for(Iterator<Object> iterator = contentsModel.getChildren().iterator(); iterator.hasNext();) {
 			AbstractObjectModel object = (AbstractObjectModel)iterator.next();
 			if(object.getText().equals(ref)){
 				return object;
@@ -240,7 +240,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	 * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public void doSave(IProgressMonitor monitor) {
-  }
+	}
 	
 	
 	/*
@@ -432,30 +432,36 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		IChemModel newChemModel = DefaultChemObjectBuilder.getInstance().newChemModel();
 		IReactionSet reactionSet = DefaultChemObjectBuilder.getInstance().newReactionSet();
 		newChemModel.setReactionSet(reactionSet);
-		for(Iterator iterator = contentsModel.getChildren().iterator(); iterator.hasNext();) {
+		for(Iterator<Object> iterator = contentsModel.getChildren().iterator(); iterator.hasNext();) {
 			AbstractObjectModel object = (AbstractObjectModel)iterator.next();
 			if(object instanceof ReactionObjectModel){
 				ReactionObjectModel reactionOM = (ReactionObjectModel)object;
-				List listS = reactionOM.getModelTargetConnections();
+				List<Object> listS = reactionOM.getModelTargetConnections();
 				IReaction reaction = DefaultChemObjectBuilder.getInstance().newReaction();
-				for(Iterator iter = listS.iterator(); iter.hasNext();){
+				for(Iterator<Object> iter = listS.iterator(); iter.hasNext();){
 					AbstractConnectionModel con = (AbstractConnectionModel)iter.next();
 					CompoundObjectModel reactantOM = (CompoundObjectModel)con.getSource();
+					Rectangle reactangle = reactantOM.getConstraint();
 					IMolecule reactant = DefaultChemObjectBuilder.getInstance().newMolecule(reactantOM.getIMolecule());
 					if(reactant == null){
 						reactant = DefaultChemObjectBuilder.getInstance().newMolecule();
 					}
+					reactant.setProperty("reactPlug:x", (new Double(reactangle.x)).toString());
+					reactant.setProperty("reactPlug:y", (new Double(reactangle.y)).toString());
 					reactant.setID(reactantOM.getText());
 					reaction.addReactant(reactant);
 				}
-				List listT = reactionOM.getModelSourceConnections();
-				for(Iterator iter = listT.iterator(); iter.hasNext();){
+				List<Object> listT = reactionOM.getModelSourceConnections();
+				for(Iterator<Object> iter = listT.iterator(); iter.hasNext();){
 					AbstractConnectionModel con = (AbstractConnectionModel)iter.next();
 					CompoundObjectModel productOM = (CompoundObjectModel)con.getTarget();
+					Rectangle reactangle = productOM.getConstraint();
 					IMolecule product = DefaultChemObjectBuilder.getInstance().newMolecule(productOM.getIMolecule());
 					if(product == null){
 						product = DefaultChemObjectBuilder.getInstance().newMolecule();
 					}
+					product.setProperty("reactPlug:x", (new Double(reactangle.x)).toString());
+					product.setProperty("reactPlug:y", (new Double(reactangle.y)).toString());
 					product.setID(productOM.getText());
 					reaction.addProduct(product);
 				}
@@ -514,10 +520,6 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	
 	public ContentsModel getContentsModel() {
 		return contentsModel;
-	}
-	
-	public JChemPaintEditorWidget getJChemPaintEditorWidget(){
-		return jcpEW;
 	}
 
 }

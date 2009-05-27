@@ -161,7 +161,7 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	
 	
 	private void updateTextEditor() throws CDKException {
-		IChemModel chemmodel=rEditor.getChemModelFromContentsModel();
+		IChemModel chemmodel = rEditor.getChemModelFromContentsModel();
 		StringWriter writer = new StringWriter();
 		DefaultChemObjectWriter cdkwriter=null;
 	    if(filetype.equals( "Chemical Markup Language" )){
@@ -169,6 +169,7 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	        IReactionSet reactionSet = chemmodel.getReactionSet();
 	        IReactionScheme scheme = ReactionSchemeManipulator.createReactionScheme(reactionSet);
 	        cdkwriter.write( scheme );
+	        System.out.println(writer.toString());
 	    }else if(filetype.equals( "MDL Reaction format" )){
 	        cdkwriter = new MDLRXNWriter(writer);
 	        cdkwriter.write( chemmodel.getReactionSet() );
@@ -324,7 +325,6 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		//TODO when is this used?
 	}
 	
   public static ICDKReactionScheme getModelFromEditorInput(IEditorInput input) throws BioclipseException, IOException, CDKException, CoreException{

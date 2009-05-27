@@ -27,14 +27,13 @@ public class DeleteCommand extends Command{
 	private ContentsModel contentsModel;
 	private AbstractObjectModel reactionModel;
 	
-	private List sourceConnections = new ArrayList();
-	private List targetConnections = new ArrayList();
+	private List<Object> sourceConnections = new ArrayList<Object>();
+	private List<Object> targetConnections = new ArrayList<Object>();
 	
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.gef.commands.Command#execute()
 	 */
-	@SuppressWarnings("unchecked")
 	public void execute(){
 		sourceConnections.addAll(reactionModel.getModelSourceConnections());
 		targetConnections.addAll(reactionModel.getModelTargetConnections());

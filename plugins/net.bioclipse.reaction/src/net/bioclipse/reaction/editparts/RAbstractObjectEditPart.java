@@ -114,7 +114,7 @@ public class RAbstractObjectEditPart extends EditPartWithListener implements Nod
 	 */
 	protected void refreshVisuals(){
 		Rectangle constraint = ((AbstractObjectModel)getModel()).getConstraint();
-		
+		// New Reactangle to store in CML
 		((GraphicalEditPart)getParent()).setLayoutConstraint(this,getFigure(),constraint);
 	}
 	/*
@@ -222,7 +222,7 @@ public class RAbstractObjectEditPart extends EditPartWithListener implements Nod
 	 * (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getModelSourceConnections()
 	 */
-	protected List getModelSourceConnections(){
+	protected List<Object> getModelSourceConnections(){
 		return ((AbstractObjectModel)getModel()).getModelSourceConnections();
 	}
 	
@@ -244,7 +244,8 @@ public class RAbstractObjectEditPart extends EditPartWithListener implements Nod
 			if (IPropertySource.class.equals(adapter)) {
 				CDKMolecule cdkMol= new CDKMolecule(((CompoundObjectModel)abstractObject).getIMolecule() );
 	            return new CDKMoleculePropertySource(cdkMol);
-			}else if (AccessibleEditPart.class.equals(adapter)){
+			}
+			else if (AccessibleEditPart.class.equals(adapter)){
 				IMolecule mol = DefaultChemObjectBuilder.getInstance().newMolecule( ((CompoundObjectModel)abstractObject).getIMolecule());
 				if(mol != null && mol.getAtomCount() > 0){
 	
@@ -287,6 +288,8 @@ public class RAbstractObjectEditPart extends EditPartWithListener implements Nod
 			IAtomContainer ac = cdkMol.getAtomContainer();
 			CompoundObjectModel compoundObject = orignalChildren.get(source);
 			compoundObject.setIMolecule(ac);
+			JChemPaintEditorWidget jcp = compoundObject.getJCP();
+			jcp.setAtomContainer(ac);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (BioclipseException e) {

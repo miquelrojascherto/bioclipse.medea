@@ -16,14 +16,10 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.bioclipse.reaction.editor.ReactionOutLinePage;
 import net.bioclipse.reaction.editpolicies.RBendpointEditPolicy;
 import net.bioclipse.reaction.editpolicies.RConnectionEditPolicy;
 import net.bioclipse.reaction.editpolicies.RConnectionEndpointEditPolicy;
 import net.bioclipse.reaction.model.AbstractConnectionModel;
-import net.bioclipse.reaction.model.AbstractModel;
-import net.bioclipse.reaction.model.AbstractObjectModel;
-import net.bioclipse.reaction.model.CompoundObjectModel;
 
 import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.draw2d.BendpointConnectionRouter;
@@ -98,13 +94,6 @@ public class RAbstractConnectionEditPart extends AbstractConnectionEditPart impl
 	 */
 	protected void refreshVisuals(){
 		refreshBendpoints();
-
-		AbstractModel abstractObject = (AbstractConnectionModel)this.getModel();
-		if(abstractObject instanceof AbstractConnectionModel){
-			AbstractConnectionModel connectionObject = (AbstractConnectionModel)abstractObject;
-//			ReactionOutLinePage outLinePage = connectionObject.getOutLinePage();
-//			outLinePage.;
-		}
 	}
 	
 	/*
@@ -112,9 +101,6 @@ public class RAbstractConnectionEditPart extends AbstractConnectionEditPart impl
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
 	public Object getAdapter(Class adapter ) {
-		AbstractModel abstractObject = (AbstractConnectionModel)this.getModel();
-		if(abstractObject instanceof AbstractConnectionModel){
-		}
 		return super.getAdapter(adapter);
 	}
 }
