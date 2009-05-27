@@ -14,7 +14,12 @@ package net.bioclipse.reaction.editparts.tree;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 
+import net.bioclipse.cdk.domain.CDKMolecule;
+import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
+import net.bioclipse.reaction.domain.CDKReaction;
+import net.bioclipse.reaction.domain.CDKReactionPropertySource;
 import net.bioclipse.reaction.editpolicies.MyComponentEditPolicy;
+import net.bioclipse.reaction.model.AbstractModel;
 import net.bioclipse.reaction.model.AbstractObjectModel;
 import net.bioclipse.reaction.model.CompoundObjectModel;
 import net.bioclipse.reaction.model.ReactionObjectModel;
@@ -22,11 +27,12 @@ import net.bioclipse.reaction.model.ReactionObjectModel;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.views.properties.IPropertySource;
 /**
  * 
  * @author Miguel Rojas
  */
-public class ReactionROutPageEditPart extends ROutPageEditPart {
+public class ReactionROutPageEditPart extends ROutPageEditPart{
 	private Image imageReaction;
 	private Image imageR;
 	private Image imageP;
@@ -99,5 +105,22 @@ public class ReactionROutPageEditPart extends ROutPageEditPart {
 		}
 	    
 		return image;
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter(Class adapter ) {
+		if (IPropertySource.class.equals(adapter)) {
+			AbstractModel abstractObject = (AbstractObjectModel)this.getModel();
+			if(abstractObject instanceof CompoundObjectModel){
+				CDKMolecule cdkMol= new CDKMolecule(((CompoundObjectModel)abstractObject).getIMolecule() );
+				return new CDKMoleculePropertySource(cdkMol);
+			}else if(abstractObject instanceof ReactionObjectModel){
+				CDKReaction cdkReact= new CDKReaction(((ReactionObjectModel)abstractObject).getIReaction() );
+	            return new CDKReactionPropertySource(cdkReact);
+			}
+		}
+		return super.getAdapter(adapter);
 	}
 }
