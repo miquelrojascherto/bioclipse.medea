@@ -40,7 +40,6 @@ public class ReactionTreeEditPart extends MyTreeEditPart {
 		imageR = new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/reactant.gif"));
 		imageP = new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/product.gif"));
 		imageRP = new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/reactProduct.gif"));
-		
 	}
 
 	/*
@@ -69,6 +68,8 @@ public class ReactionTreeEditPart extends MyTreeEditPart {
 		if (evt.getPropertyName().equals(AbstractObjectModel.P_TEXT))
 			refreshVisuals();
 		else if(evt.getPropertyName().equals(AbstractObjectModel.P_TARGET_CONNECTION))
+			refreshVisuals();
+		else if(evt.getPropertyName().equals(AbstractObjectModel.P_SOURCE_CONNECTION))
 			refreshVisuals();
 		
 	}
