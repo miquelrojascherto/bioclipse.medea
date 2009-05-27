@@ -11,34 +11,31 @@
  ******************************************************************************/
 package net.bioclipse.reaction.editparts.tree;
 
-import net.bioclipse.reaction.model.AbstractObjectModel;
+import java.beans.PropertyChangeEvent;
+import java.util.List;
+
 import net.bioclipse.reaction.model.ContentsModel;
 
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartFactory;
 /**
  * 
  * @author Miguel Rojas
  */
-public class TreeEditPartFactory implements EditPartFactory {
+public class ContentsROutPageEditPart extends ROutPageEditPart {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart, java.lang.Object)
+	 * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
 	 */
-	public EditPart createEditPart(EditPart context, Object model) {
-		EditPart part = null;
-
-		if (model instanceof ContentsModel)
-			part = new ContentsTreeEditPart();
-		else 
-			if (model instanceof AbstractObjectModel)
-			part = new ReactionTreeEditPart();
-
-		if (part != null)
-			part.setModel(model);
-
-		return part;
+	protected List<Object> getModelChildren() {
+		return ((ContentsModel) getModel()).getChildren();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName().equals(ContentsModel.P_CHILDREN))
+			refreshChildren();
+	}
 }

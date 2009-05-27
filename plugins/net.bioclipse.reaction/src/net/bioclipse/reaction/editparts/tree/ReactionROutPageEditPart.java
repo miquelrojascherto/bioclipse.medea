@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Display;
  * 
  * @author Miguel Rojas
  */
-public class ReactionTreeEditPart extends MyTreeEditPart {
+public class ReactionROutPageEditPart extends ROutPageEditPart {
 	private Image imageReaction;
 	private Image imageR;
 	private Image imageP;
@@ -34,7 +34,7 @@ public class ReactionTreeEditPart extends MyTreeEditPart {
 	/**
 	 * Constructor of the ReactionTreeEditPart object
 	 */
-	public ReactionTreeEditPart(){
+	public ReactionROutPageEditPart(){
 		super();
 		imageReaction = new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/reactionLineOut.gif"));
 		imageR = new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/reactant.gif"));

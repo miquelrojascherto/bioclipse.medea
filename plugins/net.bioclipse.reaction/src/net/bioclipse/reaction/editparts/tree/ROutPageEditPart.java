@@ -21,7 +21,7 @@ import org.eclipse.gef.editparts.AbstractTreeEditPart;
  * 
  * @author Miguel Rojas
  */
-public abstract class MyTreeEditPart extends AbstractTreeEditPart implements PropertyChangeListener {
+public abstract class ROutPageEditPart extends AbstractTreeEditPart implements PropertyChangeListener {
 
 	/*
 	 * (non-Javadoc)
