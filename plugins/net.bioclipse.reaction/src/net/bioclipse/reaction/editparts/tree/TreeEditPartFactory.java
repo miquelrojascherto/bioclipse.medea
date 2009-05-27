@@ -31,7 +31,8 @@ public class TreeEditPartFactory implements EditPartFactory {
 
 		if (model instanceof ContentsModel)
 			part = new ContentsTreeEditPart();
-		else if (model instanceof AbstractObjectModel)
+		else 
+			if (model instanceof AbstractObjectModel)
 			part = new ReactionTreeEditPart();
 
 		if (part != null)

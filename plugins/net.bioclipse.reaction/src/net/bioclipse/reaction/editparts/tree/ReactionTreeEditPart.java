@@ -68,6 +68,9 @@ public class ReactionTreeEditPart extends MyTreeEditPart {
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(AbstractObjectModel.P_TEXT))
 			refreshVisuals();
+		else if(evt.getPropertyName().equals(AbstractObjectModel.P_TARGET_CONNECTION))
+			refreshVisuals();
+		
 	}
 	/*
 	 * (non-Javadoc)
@@ -75,13 +78,14 @@ public class ReactionTreeEditPart extends MyTreeEditPart {
 	 */
 	protected Image getImage(AbstractObjectModel model) {
 		Image image = null;
-	    
-		if(model instanceof ReactionObjectModel)
+
+		if(model instanceof ReactionObjectModel){
 	    	return imageReaction;
-		else{
+		}else{
 			CompoundObjectModel compoundObject = (CompoundObjectModel)model;
-			List list1 = compoundObject.getModelSourceConnections();
-			List list2 = compoundObject.getModelTargetConnections();
+			List<Object> list1 = compoundObject.getModelSourceConnections();
+			List<Object> list2 = compoundObject.getModelTargetConnections();
+
 			if(list1.size() == 0 && list2.size() != 0)
 				return imageP;
 			
