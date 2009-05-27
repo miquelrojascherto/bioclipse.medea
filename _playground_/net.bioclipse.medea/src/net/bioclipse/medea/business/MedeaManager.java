@@ -24,7 +24,7 @@ public class MedeaManager implements IBioclipseManager {
 
     private final static Medea predictor = new Medea();
 
-    public String getNamespace() {
+    public String getManagerName() {
         return "medea";
     }
 
