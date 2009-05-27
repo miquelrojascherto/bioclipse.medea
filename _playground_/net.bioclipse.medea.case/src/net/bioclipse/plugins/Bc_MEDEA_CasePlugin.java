@@ -44,7 +44,7 @@ public class Bc_MEDEA_CasePlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 //		New logger with com.tools.logging
-		configureLogger();
+		//configureLogger();
 	}
 
 	/**
