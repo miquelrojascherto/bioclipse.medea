@@ -95,6 +95,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	private GraphicalViewer viewer;
 	private Object fOutlinePage;
 	private REditPartFactory epf;
+	private boolean hasPositions;
 	private static final Logger logger = Logger.getLogger( ReactionEditor.class.toString());
 	
 	/**
@@ -138,8 +139,9 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	
 	public void updateContent(ICDKReactionScheme model){
 		contentsModel = createContentsModel(model);
-		@SuppressWarnings("unused")
-		HierarchicLayer hLayer = new HierarchicLayer(contentsModel);
+		if(!hasPositions){
+			new HierarchicLayer(contentsModel);
+		}
 		viewer.setContents(contentsModel);
 	}
 
@@ -157,6 +159,14 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 				textID = "Reac"+countReactions;
 
 			reactionObject.setText(textID);
+			String pos_X = (String)reaction.getProperty("reactPlug:x");
+			if(pos_X != null){
+				hasPositions = true;
+				String pos_Y = (String)reaction.getProperty("reactPlug:y");
+				int i_x = (int)Double.parseDouble(pos_X);
+				int i_y = (int)Double.parseDouble(pos_Y);
+				createBox(reactionObject,i_x,i_y);
+			}
 			reactionObject.setIReaction(reaction);
 			contentsModel.addChild(reactionObject);
 			countReactions ++;
@@ -176,6 +186,14 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 					reactantObject = new CompoundObjectModel();
 					reactantObject.addJCP(jcpEW);
 					reactantObject.setText(name);
+					pos_X = (String)reactant.getProperty("reactPlug:x");
+					if(pos_X != null){
+						hasPositions = true;
+						String pos_Y = (String)reactant.getProperty("reactPlug:y");
+						int i_x = (int)Double.parseDouble(pos_X);
+						int i_y = (int)Double.parseDouble(pos_Y);
+						createBox(reactantObject,i_x,i_y);
+					}
 					reactantObject.setIMolecule(reactant);
 					contentsModel.addChild(reactantObject);
 				}
@@ -205,6 +223,14 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 					productObject = new CompoundObjectModel();
 					productObject.addJCP(jcpEW);
 					productObject.setText(name);
+					pos_X = (String)product.getProperty("reactPlug:x");
+					if(pos_X != null){
+						hasPositions = true;
+						String pos_Y = (String)product.getProperty("reactPlug:y");
+						int i_x = (int)Double.parseDouble(pos_X);
+						int i_y = (int)Double.parseDouble(pos_Y);
+						createBox(productObject,i_x,i_y);
+					}
 					productObject.setIMolecule(product);
 					contentsModel.addChild(productObject);
 				}
@@ -219,6 +245,11 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 			}
 		}
 		return contentsModel;
+	}
+	private void createBox(AbstractObjectModel object, int pos_X, int pos_Y) {
+		object.setConstraint(new Rectangle(pos_X,pos_Y,-1,-1));
+		
+		
 	}
 	/**
 	 * get the object if it exists
@@ -249,7 +280,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	 */
 	public void doSaveAs() {
 	
-	}
+	}	
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
@@ -466,6 +497,9 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 					reaction.addProduct(product);
 				}
 				reaction.setID(reactionOM.getText());
+				Rectangle reactangle = reactionOM.getConstraint();
+				reaction.setProperty("reactPlug:x", (new Double(reactangle.x)).toString());
+				reaction.setProperty("reactPlug:y", (new Double(reactangle.y)).toString());
 				reactionSet.addReaction(reaction);
 				
 			}
