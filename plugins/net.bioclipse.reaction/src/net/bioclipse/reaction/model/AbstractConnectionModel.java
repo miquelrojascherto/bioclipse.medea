@@ -14,8 +14,7 @@ package net.bioclipse.reaction.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
-import net.bioclipse.reaction.editor.ReactionOutLinePage;
+import net.bioclipse.reaction.view.ReactionOutLinePage;
 
 import org.eclipse.draw2d.geometry.Point;
 /**
@@ -78,17 +77,5 @@ public class AbstractConnectionModel extends AbstractModel{
 	public void replaceBendpoint(int index, Point point){
 		bendpoints.set(index,point);
 		firePropertyChange(P_BEND_POINT,null,null);
-	}
-
-	public void addOutLinePage(ReactionOutLinePage fOutlinePage) {
-		this.fOutlinePage = fOutlinePage;
-	}
-	/**
-	 * get the getOutLinePage composite
-	 * 
-	 * @return the ReactionOutLinePage object
-	 */
-	public ReactionOutLinePage getOutLinePage(){
-		return fOutlinePage;
 	}
 }

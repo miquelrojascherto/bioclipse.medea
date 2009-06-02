@@ -21,7 +21,8 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
  */
 abstract public class AbstractModel {
 	
-private PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+	private PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+	private boolean active = false;
 	
 	public void addPropertyChangeListener(PropertyChangeListener listener){
 		listeners.addPropertyChangeListener(listener);
@@ -55,5 +56,12 @@ private PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	}
 
 	public void setPropertyValue(Object id, Object value) {
+	}
+	
+	public void setAtive(boolean isActive){
+		this.active = isActive;
+	}
+	public boolean isActive(){
+		return this.active;
 	}
 }

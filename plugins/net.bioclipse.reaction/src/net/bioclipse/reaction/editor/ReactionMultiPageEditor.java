@@ -169,7 +169,6 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	        IReactionSet reactionSet = chemmodel.getReactionSet();
 	        IReactionScheme scheme = ReactionSchemeManipulator.createReactionScheme(reactionSet);
 	        cdkwriter.write( scheme );
-	        System.out.println(writer.toString());
 	    }else if(filetype.equals( "MDL Reaction format" )){
 	        cdkwriter = new MDLRXNWriter(writer);
 	        cdkwriter.write( chemmodel.getReactionSet() );
@@ -344,4 +343,18 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
       return ircdkS;
 //      return reactionManager.loadReactions( inputFile );
   }
+//  	/*
+//	 * (non-Javadoc)
+//	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+//	 */
+//	public Object getAdapter(Class adapter ) {
+//		System.out.println("getAdaptar RectionMultiPageEditor: "+adapter);
+//		if(org.openscience.cdk.interfaces.IAtomContainer.class.equals(adapter)){
+//			System.out.println("Bindgo IAtomContainer");
+//			ContentsModel content = rEditor.getContentsModel();
+//			System.out.println("model: "+((AbstractModel)content));
+//		}else if(org.openscience.cdk.interfaces.IReaction.class.equals(adapter))
+//			System.out.println("Bindgo IAtomContainer");
+//		return super.getAdapter(adapter);
+//	}
 }

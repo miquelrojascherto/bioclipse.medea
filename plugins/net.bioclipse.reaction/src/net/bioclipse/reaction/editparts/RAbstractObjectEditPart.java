@@ -31,7 +31,6 @@ import net.bioclipse.reaction.domain.CDKReactionPropertySource;
 import net.bioclipse.reaction.editpolicies.RComponentEditPolicy;
 import net.bioclipse.reaction.editpolicies.RDirectEditPolicy;
 import net.bioclipse.reaction.editpolicies.RGraphicalNodeEditPolicy;
-import net.bioclipse.reaction.model.AbstractConnectionModel;
 import net.bioclipse.reaction.model.AbstractModel;
 import net.bioclipse.reaction.model.AbstractObjectModel;
 import net.bioclipse.reaction.model.CompoundObjectModel;
@@ -139,11 +138,11 @@ public class RAbstractObjectEditPart extends EditPartWithListener implements Nod
 	 */
 	public void performRequest(Request req){
 		
-		/* one-click funcionality - introduction text - show molecule*/
+		/* one-click functionality - introduction text - show molecule*/
 		if(req.getType().equals(RequestConstants.REQ_DIRECT_EDIT)){
 			this.performDirectEdit(); //-introduction text
 		}
-		/* double-click funcionality - Opening JCP editor*/
+		/* double-click functionality - Opening JCP editor*/
 		if(req.getType().equals(RequestConstants.REQ_OPEN)){
 			AbstractObjectModel abstractObject = (AbstractObjectModel)this.getModel();
 			if(abstractObject instanceof CompoundObjectModel){
@@ -278,6 +277,9 @@ public class RAbstractObjectEditPart extends EditPartWithListener implements Nod
 				jcp.setReaction( reaction );
 			}
 
+		}else if(net.bioclipse.core.domain.IMolecule.class.equals(adapter)){
+			CDKMolecule cdkMol= new CDKMolecule(((CompoundObjectModel)abstractObject).getIMolecule() );
+            return cdkMol.getAtomContainer();
 		}
 		return super.getAdapter(adapter);
 	}

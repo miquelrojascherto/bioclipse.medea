@@ -27,8 +27,7 @@
             </contentTypeBinding>
     	</editor>
    	</extension>
-     <extension
-           point="org.eclipse.ui.newWizards">
+     <extension point="org.eclipse.ui.newWizards">
         <category
               id="bc_reaction.ReactionCategory"
               name="Reaction"/>
@@ -40,6 +39,16 @@
               name="New Reaction"
               project="true"/>
      </extension>
+     <extension point="org.eclipse.ui.views">
+      	<view
+            category="net.bioclipse.chemoinformatics.views.category"
+            class="net.bioclipse.reaction.view.JChemPaintReactView"
+            icon="icons/doc_mol_2d.png"
+            id="net.bioclipse.cdk.ui.view.Java2DReactRendererView"
+            name="2D-Structure-React"
+            restorable="true">
+      	</view>
+  	 </extension>
      <!--extension
            point="org.eclipse.ui.preferencePages">
         <page

@@ -23,7 +23,9 @@ import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.reaction.dnd.MyFileDragSourceListener;
 import net.bioclipse.reaction.dnd.MyFileDropTargetListener;
 import net.bioclipse.reaction.domain.ICDKReactionScheme;
+import net.bioclipse.reaction.editparts.CompoundObjectEditPart;
 import net.bioclipse.reaction.editparts.REditPartFactory;
+import net.bioclipse.reaction.editparts.ReactionObjectEditPart;
 import net.bioclipse.reaction.layout.HierarchicLayer;
 import net.bioclipse.reaction.model.AbstractConnectionModel;
 import net.bioclipse.reaction.model.AbstractObjectModel;
@@ -33,6 +35,7 @@ import net.bioclipse.reaction.model.ContentsModel;
 import net.bioclipse.reaction.model.LineConnectionModel;
 import net.bioclipse.reaction.model.ReactionObjectModel;
 import net.bioclipse.reaction.tools.FileMoveToolEntry;
+import net.bioclipse.reaction.view.ReactionOutLinePage;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IMarker;
@@ -65,6 +68,7 @@ import org.eclipse.gef.ui.parts.SelectionSynchronizer;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
@@ -77,6 +81,7 @@ import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionSet;
@@ -96,6 +101,9 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	private Object fOutlinePage;
 	private REditPartFactory epf;
 	private boolean hasPositions;
+	private Object viewPageReact;
+	private Object jpRview;
+	private Object jcpView;
 	private static final Logger logger = Logger.getLogger( ReactionEditor.class.toString());
 	
 	/**
@@ -435,6 +443,18 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
                 fOutlinePage = new ReactionOutLinePage(this);
             }
             return fOutlinePage;
+        }
+		if ( IChemObject.class.equals( adapter ) ) {
+    			StructuredSelection sele = (StructuredSelection)this.getEditorGraphicalViewer().getSelection();
+    			if(sele.getFirstElement() instanceof CompoundObjectEditPart){
+        			Object model = ((CompoundObjectEditPart)sele.getFirstElement()).getModel();
+        			if(model instanceof CompoundObjectModel)
+    				return ((CompoundObjectModel)model).getIMolecule();
+    			}else if(sele.getFirstElement() instanceof ReactionObjectEditPart){
+    				Object model = ((ReactionObjectEditPart)sele.getFirstElement()).getModel();
+        			if(model instanceof ReactionObjectModel)
+            			return ((ReactionObjectModel)model).getIReaction();
+    			}
         }
 		return super.getAdapter(adapter);
 	}

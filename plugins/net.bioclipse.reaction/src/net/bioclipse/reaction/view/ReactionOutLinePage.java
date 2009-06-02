@@ -8,11 +8,12 @@
  *
  * Contact: http://www.bioclipse.net/
  ******************************************************************************/
-package net.bioclipse.reaction.editor;
+package net.bioclipse.reaction.view;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import net.bioclipse.reaction.editor.ReactionEditor;
 import net.bioclipse.reaction.editparts.tree.ROutPageEditPartFactory;
 
 import org.eclipse.draw2d.LightweightSystem;
