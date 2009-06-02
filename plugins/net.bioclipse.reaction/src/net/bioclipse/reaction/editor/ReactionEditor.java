@@ -36,6 +36,7 @@ import net.bioclipse.reaction.model.LineConnectionModel;
 import net.bioclipse.reaction.model.ReactionObjectModel;
 import net.bioclipse.reaction.tools.FileMoveToolEntry;
 import net.bioclipse.reaction.view.ReactionOutLinePage;
+import net.bioclipse.reaction.wizards.FormWizardContextMenuProvider;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IMarker;
@@ -101,9 +102,6 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	private Object fOutlinePage;
 	private REditPartFactory epf;
 	private boolean hasPositions;
-	private Object viewPageReact;
-	private Object jpRview;
-	private Object jcpView;
 	private static final Logger logger = Logger.getLogger( ReactionEditor.class.toString());
 	
 	/**
@@ -344,6 +342,8 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		keyHandler.put(KeyStroke.getPressed(SWT.F2,0),getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
 		
 		getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(keyHandler));
+		
+		viewer.setContextMenu(new FormWizardContextMenuProvider(viewer, getActionRegistry()));  
 	}
 	
 	/*
