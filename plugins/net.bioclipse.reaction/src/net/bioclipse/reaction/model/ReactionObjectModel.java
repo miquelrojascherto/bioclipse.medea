@@ -13,6 +13,7 @@ package net.bioclipse.reaction.model;
 
 import net.bioclipse.reaction.tools.CounterObjects;
 
+import org.openscience.cdk.Reaction;
 import org.openscience.cdk.interfaces.IReaction;
 
 /**
@@ -21,7 +22,7 @@ import org.openscience.cdk.interfaces.IReaction;
  */
 public class ReactionObjectModel extends AbstractObjectModel{
 	
-	private IReaction reaction;
+	private IReaction reaction = new Reaction();
 	/**
 	 * Constructor of the ReactionObjectModel object
 	 */
