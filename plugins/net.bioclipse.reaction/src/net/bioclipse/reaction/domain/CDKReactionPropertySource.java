@@ -10,23 +10,29 @@
  ******************************************************************************/
 package net.bioclipse.reaction.domain;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import net.bioclipse.core.domain.props.BioObjectPropertySource;
+import net.bioclipse.reaction.model.ReactionObjectModel;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IReaction;
 
-public class CDKReactionPropertySource extends BioObjectPropertySource {
+public class CDKReactionPropertySource extends BioObjectPropertySource implements PropertyChangeListener {
 
     protected static final String PROPERTY_DIRECTION = "Direction Reaction";
     protected static final String PROPERTY_NUM_REACTANTS = "Number of reactants";
     protected static final String PROPERTY_NUM_PRODUCTS = "Number of products";
+    protected static final String PROPERTY_COLOR = "Color";
+    protected static final String PROPERTY_LABEL = "Label";
 
     private final Object cdkPropertiesTable[][] =
     {
@@ -35,26 +41,34 @@ public class CDKReactionPropertySource extends BioObjectPropertySource {
         { PROPERTY_NUM_REACTANTS,
             new TextPropertyDescriptor(PROPERTY_NUM_REACTANTS,PROPERTY_NUM_REACTANTS)},
         { PROPERTY_NUM_PRODUCTS,
-            new TextPropertyDescriptor(PROPERTY_NUM_PRODUCTS,PROPERTY_NUM_PRODUCTS)},
+            new TextPropertyDescriptor(PROPERTY_NUM_PRODUCTS,PROPERTY_NUM_PRODUCTS)}
+            
             
     };
+    
+    private final Object boxPropertiesTable[][] =
+    {
+            { PROPERTY_COLOR,
+            	new TextPropertyDescriptor(PROPERTY_COLOR,PROPERTY_COLOR)},
+            { PROPERTY_LABEL,
+            	new TextPropertyDescriptor(PROPERTY_LABEL,PROPERTY_LABEL)}
+    };
 
-    private CDKReaction cdkReact;
     private ArrayList<IPropertyDescriptor> cdkProperties;
     private HashMap<String, Object> cdkValueMap;
 
-    public CDKReactionPropertySource(CDKReaction item) {
-        super(item);
-        cdkReact = item;
+    public CDKReactionPropertySource(ReactionObjectModel rModel) {
+        super(new CDKReaction(rModel.getIReaction()));
         
-        cdkProperties = setupProperties(item.getReaction());
-        cdkValueMap = getPropertyValues(item);
+        CDKReaction reaction = new CDKReaction(rModel.getIReaction());
+        cdkProperties = setupProperties(reaction.getReaction());
+        cdkValueMap = getPropertyValues(reaction,rModel);
     }
 
     /**
      * @param item
      */
-    private HashMap<String, Object> getPropertyValues(CDKReaction item) {
+    private HashMap<String, Object> getPropertyValues(CDKReaction item,ReactionObjectModel rModel) {
         HashMap<String, Object> valueMap = new HashMap<String, Object>();
         valueMap.put(
         		PROPERTY_DIRECTION,
@@ -75,27 +89,39 @@ public class CDKReactionPropertySource extends BioObjectPropertySource {
             String label = ""+propKey;
             valueMap.put(label, ""+objectProps.get(propKey));
         }
+        valueMap.put(
+        		PROPERTY_COLOR,
+        		ColorConstants.red
+        );
+        valueMap.put(
+        		PROPERTY_LABEL,
+        		rModel.getText()
+        );
         return valueMap;
     }
 
     private ArrayList<IPropertyDescriptor> setupProperties(IChemObject object) {
-        ArrayList<IPropertyDescriptor> cdkProperties =
-            new ArrayList<IPropertyDescriptor>();
+        ArrayList<IPropertyDescriptor> cdkProperties = new ArrayList<IPropertyDescriptor>();
+
         // default properties
         for (int i=0;i<cdkPropertiesTable.length;i++) {
-            PropertyDescriptor descriptor;
-            descriptor = (PropertyDescriptor)cdkPropertiesTable[i][1];
+        	PropertyDescriptor descriptor = (PropertyDescriptor)cdkPropertiesTable[i][1];
             descriptor.setCategory("General");
             cdkProperties.add(descriptor);
         }
         // IChemObject.getProperties()
         Map<Object,Object> objectProps = object.getProperties();
         for (Object propKey : objectProps.keySet()) {
-            PropertyDescriptor descriptor;
             String label = ""+propKey;
-            descriptor = new TextPropertyDescriptor(label,label);
+            PropertyDescriptor descriptor = new TextPropertyDescriptor(label,label);
             descriptor.setCategory("Reaction Properties");
             cdkProperties.add(descriptor);
+        }
+        // IChemObject.getProperties()
+        for (int i=0;i<boxPropertiesTable.length;i++) {
+        	PropertyDescriptor descriptor = (PropertyDescriptor)boxPropertiesTable[i][1];
+        	descriptor.setCategory("Box Properties");
+        	cdkProperties.add(descriptor);
         }
         return cdkProperties;
     }
@@ -135,5 +161,12 @@ public class CDKReactionPropertySource extends BioObjectPropertySource {
     public void setValueMap(HashMap<String, Object> valueMap) {
         this.cdkValueMap = valueMap;
     }
+    /*
+	 * (non-Javadoc)
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		
+	}
 
 }

@@ -326,35 +326,21 @@ public class ReactionMultiPageEditor extends MultiPageEditorPart implements ISel
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 	}
 	
-  public static ICDKReactionScheme getModelFromEditorInput(IEditorInput input) throws BioclipseException, IOException, CDKException, CoreException{
-      Object file = input.getAdapter(IFile.class);
-      if (!(file instanceof IFile)) {
-          throw new BioclipseException(
-                  "Invalid editor input: Does not provide an IFile");
-      }
-      IFile inputFile = (IFile) file;
-      IReactionManager reactionManager = Activator.getDefault().getJavaManager();
-      List<ICDKReaction> rr = reactionManager.loadReactions( inputFile );
-	  IReactionSet reactionSet = new ReactionSet();
-      for(int i = 0 ; i < rr.size(); i++)
-    	  reactionSet.addReaction(rr.get(i).getReaction());
-     
-	  ICDKReactionScheme ircdkS = new CDKReactionScheme(ReactionSchemeManipulator.createReactionScheme(reactionSet));
-      return ircdkS;
-//      return reactionManager.loadReactions( inputFile );
-  }
-//  	/*
-//	 * (non-Javadoc)
-//	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-//	 */
-//	public Object getAdapter(Class adapter ) {
-//		System.out.println("getAdaptar RectionMultiPageEditor: "+adapter);
-//		if(org.openscience.cdk.interfaces.IAtomContainer.class.equals(adapter)){
-//			System.out.println("Bindgo IAtomContainer");
-//			ContentsModel content = rEditor.getContentsModel();
-//			System.out.println("model: "+((AbstractModel)content));
-//		}else if(org.openscience.cdk.interfaces.IReaction.class.equals(adapter))
-//			System.out.println("Bindgo IAtomContainer");
-//		return super.getAdapter(adapter);
-//	}
+	  public static ICDKReactionScheme getModelFromEditorInput(IEditorInput input) throws BioclipseException, IOException, CDKException, CoreException{
+	      Object file = input.getAdapter(IFile.class);
+	      if (!(file instanceof IFile)) {
+	          throw new BioclipseException(
+	                  "Invalid editor input: Does not provide an IFile");
+	      }
+	      IFile inputFile = (IFile) file;
+	      IReactionManager reactionManager = Activator.getDefault().getJavaManager();
+	      List<ICDKReaction> rr = reactionManager.loadReactions( inputFile );
+		  IReactionSet reactionSet = new ReactionSet();
+	      for(int i = 0 ; i < rr.size(); i++)
+	    	  reactionSet.addReaction(rr.get(i).getReaction());
+	     
+		  ICDKReactionScheme ircdkS = new CDKReactionScheme(ReactionSchemeManipulator.createReactionScheme(reactionSet));
+	      return ircdkS;
+	//      return reactionManager.loadReactions( inputFile );
+	  }
 }

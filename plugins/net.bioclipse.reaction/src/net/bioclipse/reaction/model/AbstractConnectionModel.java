@@ -14,8 +14,6 @@ package net.bioclipse.reaction.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.bioclipse.reaction.view.ReactionOutLinePage;
-
 import org.eclipse.draw2d.geometry.Point;
 /**
  * 
@@ -23,8 +21,7 @@ import org.eclipse.draw2d.geometry.Point;
  */
 public class AbstractConnectionModel extends AbstractModel{
 	private AbstractObjectModel source, target;
-	private List bendpoints = new ArrayList();
-	private ReactionOutLinePage fOutlinePage;
+	private List<Object> bendpoints = new ArrayList<Object>();
 	
 	public static final String P_BEND_POINT = "_bend_point";
 	
@@ -66,7 +63,7 @@ public class AbstractConnectionModel extends AbstractModel{
 		bendpoints.add(index,point);
 		firePropertyChange(P_BEND_POINT,null,null);
 	}
-	public List getBendpoints(){
+	public List<Object> getBendpoints(){
 		return bendpoints;
 	}
 	public void removeBendpoint(int index){

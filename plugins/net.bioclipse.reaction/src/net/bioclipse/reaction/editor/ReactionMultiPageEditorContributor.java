@@ -20,6 +20,7 @@ import org.eclipse.gef.ui.actions.ZoomComboContributionItem;
 import org.eclipse.gef.ui.actions.ZoomInRetargetAction;
 import org.eclipse.gef.ui.actions.ZoomOutRetargetAction;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * Manages the installation/deinstallation of global actions for multi-page editors.
@@ -62,9 +63,8 @@ public class ReactionMultiPageEditorContributor extends ActionBarContributor {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToToolBar(org.eclipse.jface.action.IToolBarManager)
 	 */
-	@SuppressWarnings("deprecation")
 	public void contributeToToolBar(IToolBarManager toolBarManager) {
-	   toolBarManager.add(getActionRegistry().getAction(GEFActionConstants.DELETE));
+		toolBarManager.add(getAction(ActionFactory.DELETE.getId()));
 	   
 	   toolBarManager.add(getActionRegistry().getAction(GEFActionConstants.ZOOM_IN));
 	   toolBarManager.add(getActionRegistry().getAction(GEFActionConstants.ZOOM_OUT));

@@ -22,6 +22,8 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.util.LogUtils;
 import net.bioclipse.reaction.dnd.MyFileDragSourceListener;
 import net.bioclipse.reaction.dnd.MyFileDropTargetListener;
+import net.bioclipse.reaction.domain.CDKReaction;
+import net.bioclipse.reaction.domain.CDKReactionPropertySource;
 import net.bioclipse.reaction.domain.ICDKReactionScheme;
 import net.bioclipse.reaction.editparts.CompoundObjectEditPart;
 import net.bioclipse.reaction.editparts.REditPartFactory;
@@ -47,6 +49,8 @@ import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
 import org.eclipse.gef.KeyStroke;
+import org.eclipse.gef.MouseWheelHandler;
+import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.ConnectionCreationToolEntry;
@@ -77,6 +81,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
@@ -102,6 +107,7 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	private Object fOutlinePage;
 	private REditPartFactory epf;
 	private boolean hasPositions;
+	private KeyHandler keyHandler;
 	private static final Logger logger = Logger.getLogger( ReactionEditor.class.toString());
 	
 	/**
@@ -154,7 +160,8 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	private ContentsModel createContentsModel(ICDKReactionScheme model) {
 		contentsModel = new ContentsModel();
 		int countReactions = 0;
-		int countcompounds = 0;
+		
+    	int countcompounds = 0;
 		IReactionSet reactions = ReactionSchemeManipulator.getAllReactions(model.getReactionScheme());
 		for(IReaction reaction:reactions.reactions()){
 			/*reaction*/
@@ -337,9 +344,12 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 		epf = new REditPartFactory();
 		viewer.setEditPartFactory(epf);
 		
-		KeyHandler keyHandler = new KeyHandler();
-		keyHandler.put(KeyStroke.getPressed(SWT.DEL,127,0),getActionRegistry().getAction(GEFActionConstants.DELETE));
+		keyHandler = new KeyHandler();
+		keyHandler.put(KeyStroke.getPressed(SWT.DEL,127,0),getActionRegistry().getAction(ActionFactory.DELETE.getId()));
 		keyHandler.put(KeyStroke.getPressed(SWT.F2,0),getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
+		keyHandler.put( KeyStroke.getPressed('+', SWT.KEYPAD_ADD, 0), getActionRegistry().getAction(GEFActionConstants.ZOOM_IN)); 
+		keyHandler.put( KeyStroke.getPressed('-', SWT.KEYPAD_SUBTRACT, 0), getActionRegistry().getAction(GEFActionConstants.ZOOM_OUT));
+		viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.NONE), MouseWheelZoomHandler.SINGLETON);
 		
 		getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(keyHandler));
 		
@@ -437,7 +447,8 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	public Object getAdapter(Class adapter ) {
 		if (adapter == ZoomManager.class)
 			return ((ScalableRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
-		
+
+        System.out.println("getAdapter  redi"+adapter);
 		if ( IContentOutlinePage.class.equals( adapter ) ) {
             if ( fOutlinePage == null ) {
                 fOutlinePage = new ReactionOutLinePage(this);
@@ -574,6 +585,9 @@ public class ReactionEditor extends GraphicalEditorWithPalette{// implements ICD
 	
 	public ContentsModel getContentsModel() {
 		return contentsModel;
+	}
+	public KeyHandler getKeyHandler() {
+		return keyHandler;
 	}
 
 }

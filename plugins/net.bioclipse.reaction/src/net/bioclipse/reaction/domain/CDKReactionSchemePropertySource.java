@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.bioclipse.reaction.domain;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +21,6 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.openscience.cdk.interfaces.IChemObject;
-import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.tools.manipulator.ReactionSchemeManipulator;
 
 public class CDKReactionSchemePropertySource extends BioObjectPropertySource {
@@ -34,13 +34,11 @@ public class CDKReactionSchemePropertySource extends BioObjectPropertySource {
             
     };
 
-    private CDKReactionScheme cdkReact;
     private ArrayList<IPropertyDescriptor> cdkProperties;
     private HashMap<String, Object> cdkValueMap;
 
     public CDKReactionSchemePropertySource(CDKReactionScheme item) {
         super(item);
-        cdkReact = item;
         
         cdkProperties = setupProperties(item.getReactionScheme());
         cdkValueMap = getPropertyValues(item);
@@ -121,5 +119,11 @@ public class CDKReactionSchemePropertySource extends BioObjectPropertySource {
     public void setValueMap(HashMap<String, Object> valueMap) {
         this.cdkValueMap = valueMap;
     }
-
+    /*
+	 * (non-Javadoc)
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		
+	}
 }

@@ -1,6 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007-2009  Miguel Rojas <miguelrojasch@users.sf.net>, 
- *                          Stefan Kuhn <shk3@users.sf.net>
+ * Copyright (c) 2007-2009  Miguel Rojas <miguelrojasch@users.sf.net>
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +11,7 @@
 package net.bioclipse.reaction.editparts.tree;
 
 import java.beans.PropertyChangeEvent;
+import java.util.List;
 
 import net.bioclipse.cdk.domain.CDKMolecule;
 import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
@@ -30,14 +30,18 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * 
  * @author Miguel Rojas
  */
-public class ReactionROutPageEditPart extends ROutPageEditPart{
-	private Image imageReaction;
+public class CompoundROutPageEditPart extends ROutPageEditPart{
+	private Image imageR;
+	private Image imageP;
+	private Image imageRP;
 	/**
 	 * Constructor of the ReactionTreeEditPart object
 	 */
-	public ReactionROutPageEditPart(){
+	public CompoundROutPageEditPart(){
 		super();
-		imageReaction = new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/reactionLineOut.gif"));
+		imageR = new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/reactant.gif"));
+		imageP = new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/product.gif"));
+		imageRP = new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/reactProduct.gif"));
 	}
 
 	/*
@@ -76,7 +80,22 @@ public class ReactionROutPageEditPart extends ROutPageEditPart{
 	 * @see org.eclipse.gef.editparts.AbstractTreeEditPart#getImage()
 	 */
 	protected Image getImage(AbstractObjectModel model) {
-		return imageReaction;
+		Image image = null;
+
+		CompoundObjectModel compoundObject = (CompoundObjectModel)model;
+		List<Object> list1 = compoundObject.getModelSourceConnections();
+		List<Object> list2 = compoundObject.getModelTargetConnections();
+
+		if(list1.size() == 0 && list2.size() != 0)
+			return imageP;
+		
+		if(list2.size() == 0 && list1.size() != 0)
+			return imageR;
+		
+		if(list2.size() != 0 && list1.size() != 0)
+			return imageRP;
+		
+		return image;
 	}
 	/*
 	 * (non-Javadoc)
@@ -89,7 +108,6 @@ public class ReactionROutPageEditPart extends ROutPageEditPart{
 				CDKMolecule cdkMol= new CDKMolecule(((CompoundObjectModel)abstractObject).getIMolecule() );
 				return new CDKMoleculePropertySource(cdkMol);
 			}else if(abstractObject instanceof ReactionObjectModel){
-//				CDKReaction cdkReact= new CDKReaction(((ReactionObjectModel)abstractObject).getIReaction() );
 	            return new CDKReactionPropertySource((ReactionObjectModel)abstractObject);
 			}
 		}

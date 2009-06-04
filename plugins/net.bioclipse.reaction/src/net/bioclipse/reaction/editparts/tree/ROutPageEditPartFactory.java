@@ -12,15 +12,32 @@
 package net.bioclipse.reaction.editparts.tree;
 
 import net.bioclipse.reaction.model.AbstractObjectModel;
+import net.bioclipse.reaction.model.CompoundObjectModel;
 import net.bioclipse.reaction.model.ContentsModel;
+import net.bioclipse.reaction.model.ReactionObjectModel;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 /**
- * 
+ * Factory that maps model elements to TreeEditParts.
+ * TreeEditParts are used in the outline view.
+ *
  * @author Miguel Rojas
  */
 public class ROutPageEditPartFactory implements EditPartFactory {
+	/**
+	 * 
+	 */
+	protected ContentsModel modelManager;
+	
+	/**
+	 * 
+	 * 
+	 * @param modelmanager 
+	 */
+	public ROutPageEditPartFactory(ContentsModel modelmanager){
+		this.modelManager=modelmanager;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -29,15 +46,18 @@ public class ROutPageEditPartFactory implements EditPartFactory {
 	public EditPart createEditPart(EditPart context, Object model) {
 		EditPart part = null;
 
-		if (model instanceof ContentsModel)
+		if (model instanceof ContentsModel){
 			part = new ContentsROutPageEditPart();
-		else 
-			if (model instanceof AbstractObjectModel)
-			part = new ReactionROutPageEditPart();
-
+		}else if (model instanceof AbstractObjectModel){
+			AbstractObjectModel objectModel = (AbstractObjectModel) model;
+			if(objectModel instanceof ReactionObjectModel)
+				part = new ReactionROutPageEditPart();
+			else if(objectModel instanceof CompoundObjectModel)
+				part = new CompoundROutPageEditPart();
+		}
 		if (part != null)
 			part.setModel(model);
-
+		
 		return part;
 	}
 

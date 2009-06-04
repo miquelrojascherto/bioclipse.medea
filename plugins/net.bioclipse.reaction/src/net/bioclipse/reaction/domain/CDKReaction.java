@@ -15,7 +15,6 @@ import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.core.domain.BioObject;
 
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.ui.views.properties.IPropertySource;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.libio.cml.Convertor;
@@ -100,12 +99,9 @@ public class CDKReaction extends BioObject implements ICDKReaction {
         if (adapter.isAssignableFrom(IReaction.class)) {
             return this.getReaction();
         }
-        
-        if (adapter.isAssignableFrom(IPropertySource.class)) {
-            return new CDKReactionPropertySource(this);
-        }
-        
-        // TODO Auto-generated method stub
+//        if (adapter.isAssignableFrom(IPropertySource.class)) {
+//            return new CDKReactionPropertySource(this);
+//        }
         return super.getAdapter( adapter );
     }
 }

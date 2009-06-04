@@ -15,13 +15,13 @@ import java.beans.PropertyChangeListener;
 
 import net.bioclipse.reaction.editor.ReactionEditor;
 import net.bioclipse.reaction.editparts.tree.ROutPageEditPartFactory;
+import net.bioclipse.reaction.wizards.FormWizardContextMenuProvider;
 
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.parts.ScrollableThumbnail;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
-import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.IPageSite;
 
 /**
@@ -53,27 +53,24 @@ public class ReactionOutLinePage extends ContentOutlinePage implements PropertyC
 	
 	public void init(IPageSite pageSite) {
 	    super.init(pageSite);
-	    ActionRegistry registry = reactionEditor.getEditorActionRegistry();
 	    IActionBars bars = pageSite.getActionBars();
-	    
-	    String id = IWorkbenchActionConstants.UNDO;
-	    bars.setGlobalActionHandler(id, registry.getAction(id));
-
-	    id = IWorkbenchActionConstants.REDO;
-	    bars.setGlobalActionHandler(id, registry.getAction(id));
-
-	    id = IWorkbenchActionConstants.DELETE;
-	    bars.setGlobalActionHandler(id, registry.getAction(id));
+	    bars.setGlobalActionHandler(ActionFactory.UNDO.getId(),reactionEditor.getEditorActionRegistry().getAction(ActionFactory.UNDO.getId())); 
+	    bars.setGlobalActionHandler(ActionFactory.REDO.getId(), reactionEditor.getEditorActionRegistry().getAction(ActionFactory.REDO.getId())); 
+	    bars.setGlobalActionHandler(ActionFactory.DELETE.getId(), reactionEditor.getEditorActionRegistry().getAction(ActionFactory.DELETE.getId()));
 	    bars.updateActionBars();
+	    
+	    getViewer().setKeyHandler(reactionEditor.getKeyHandler());
+	    
+	    getViewer().setContextMenu(new FormWizardContextMenuProvider(  getViewer(), reactionEditor.getEditorActionRegistry()));  
 	}
 	
 	public void createControl(Composite parent) {
 	    sash = new SashForm(parent, SWT.VERTICAL);
-	      
+        
 	    getViewer().createControl(sash);
-	      
+	    
 	    getViewer().setEditDomain(reactionEditor.getEditorEditDomain());
-	    getViewer().setEditPartFactory(new ROutPageEditPartFactory());
+	    getViewer().setEditPartFactory(new ROutPageEditPartFactory(reactionEditor.getContentsModel()));
 	    getViewer().setContents(reactionEditor.getContentsModel());
 	    reactionEditor.getEditorSelectionSynchronizer().addViewer(getViewer());
 	      
@@ -101,7 +98,7 @@ public class ReactionOutLinePage extends ContentOutlinePage implements PropertyC
 	        disposeListener);
     }
 
-    public Control getControl() {
+	public Control getControl() {
     	return sash;
 	}
 
@@ -115,6 +112,8 @@ public class ReactionOutLinePage extends ContentOutlinePage implements PropertyC
 
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		
 	}
 }

@@ -26,7 +26,6 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.chemoinformatics.wizards.WizardHelper;
 import net.bioclipse.core.business.BioclipseException;
-import net.bioclipse.reaction.domain.CDKReaction;
 import net.bioclipse.reaction.domain.CDKReactionPropertySource;
 import net.bioclipse.reaction.editpolicies.RComponentEditPolicy;
 import net.bioclipse.reaction.editpolicies.RDirectEditPolicy;
@@ -38,6 +37,7 @@ import net.bioclipse.reaction.model.ReactionObjectModel;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ColorConstants;
@@ -77,7 +77,7 @@ import org.openscience.cdk.layout.StructureDiagramGenerator;
  * 
  * @author Miguel Rojas
  */
-public class RAbstractObjectEditPart extends EditPartWithListener implements NodeEditPart, IPropertyListener{
+public class RAbstractObjectEditPart extends EditPartWithListener implements NodeEditPart, IPropertyListener, IAdaptable{
 	
 	private RDirectEditManager directManager = null;
     private static Map<IEditorPart,IFile> orignalFiles=new HashMap<IEditorPart,IFile>();
@@ -121,9 +121,9 @@ public class RAbstractObjectEditPart extends EditPartWithListener implements Nod
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
 	public void propertyChange(PropertyChangeEvent evt){
-		if(evt.getPropertyName().equals(AbstractObjectModel.P_CONSTRAINT))
+		if(evt.getPropertyName().equals(AbstractObjectModel.P_CONSTRAINT)){
 			refreshVisuals();
-		else if(evt.getPropertyName().equals(AbstractObjectModel.P_TEXT)){
+		}else if(evt.getPropertyName().equals(AbstractObjectModel.P_TEXT)){
 			Label label = (Label)getFigure();
 			label.setText((String)evt.getNewValue());
 		}else if(evt.getPropertyName().equals(AbstractObjectModel.P_SOURCE_CONNECTION))
@@ -269,8 +269,7 @@ public class RAbstractObjectEditPart extends EditPartWithListener implements Nod
 			}
 		}else if(abstractObject instanceof ReactionObjectModel){
 			if (IPropertySource.class.equals(adapter)) {
-				CDKReaction cdkReact= new CDKReaction(((ReactionObjectModel)abstractObject).getIReaction() );
-	            return new CDKReactionPropertySource(cdkReact);
+	            return new CDKReactionPropertySource((ReactionObjectModel)abstractObject);
 	        }else if (AccessibleEditPart.class.equals(adapter)){
 				IReaction reaction = ((ReactionObjectModel)this.getModel()).getIReaction();
 				JChemPaintEditorWidget jcp = ((AbstractObjectModel)abstractObject).getJCP();
