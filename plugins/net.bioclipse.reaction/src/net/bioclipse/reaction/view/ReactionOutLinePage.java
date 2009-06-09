@@ -112,7 +112,6 @@ public class ReactionOutLinePage extends ContentOutlinePage implements PropertyC
 
 	}
 
-	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		
 	}
