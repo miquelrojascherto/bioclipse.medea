@@ -252,7 +252,7 @@ public class JChemPaintReactView extends ViewPart
             try {
                 ICDKManager cdk = getCDKManager();
                 //Create cdkmol from IMol, via CML or SMILES if that fails
-                ICDKMolecule cdkMol=cdk.create( bcmol );
+                ICDKMolecule cdkMol=cdk.asCDKMolecule( bcmol );
 
                 //Create molecule
                 ac=cdkMol.getAtomContainer();
