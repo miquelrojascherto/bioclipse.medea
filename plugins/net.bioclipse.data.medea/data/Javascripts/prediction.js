@@ -6,3 +6,4 @@ ui.open(mol);
 
 cmlSpectrum = medea.predictMassSpectrum(mol)
 spectrum.saveSpectrum(cmlSpectrum,"Virtual/predictedSpectrum.cml","cml")
+ui.open("/Virtual/predictedSpectrum.cml");
