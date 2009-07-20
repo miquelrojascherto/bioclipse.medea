@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension
+   <!-- extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             id="bc_medea.predict"
@@ -66,7 +66,7 @@
             icon="icons/MEDEA.gif"
             id="net.bioclipse.plugins.medea.perspective"
             name="MEDEA"/>
-   </extension>
+   </extension -->
    
    <!--
      Commented out because this net.bioclipse.compute plugin was deprecated and removed. This wizard
