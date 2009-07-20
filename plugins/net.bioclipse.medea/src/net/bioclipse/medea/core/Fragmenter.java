@@ -391,8 +391,8 @@ public class Fragmenter {
 										prob = extractorP.getProbability(type.getClass().getSimpleName(),fragmentToStudy, fragments.getMolecule(k), fragments.getMolecule(molk),setOfReactions.getReaction(counta).mappings());
 										if(printInfo)
 											System.out.println("proba: "+prob);
-										if(prob < 0.01)
-											continue;
+//										if(prob < 0.01)
+//											continue;
 									}
 									FragmentMolecule fm = addNewFragment(fragments.getMolecule(k),
 											typeOfFragmentation,
@@ -440,10 +440,10 @@ public class Fragmenter {
 										if(printInfo)
 											System.out.println("proba: "+prob);
 										
-										if(prob < 0.01){
-											System.out.println("not continue, not suficient probability");
-											continue;
-										}
+//										if(prob < 0.01){
+//											System.out.println("not continue, not suficient probability");
+//											continue;
+//										}
 									}
 									addFragment(fragmentE,
 											typeOfFragmentation,
