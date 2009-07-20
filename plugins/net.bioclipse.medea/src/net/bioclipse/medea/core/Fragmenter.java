@@ -387,13 +387,13 @@ public class Fragmenter {
 									/*prove probability*/
 									double prob = -1;
 									
-									if(process == Medea.PREDICTPROCESS || process == Medea.LEARN_PREDPROCESS){
-										prob = extractorP.getProbability(type.getClass().getSimpleName(),fragmentToStudy, fragments.getMolecule(k), fragments.getMolecule(molk),setOfReactions.getReaction(counta).mappings());
-										if(printInfo)
-											System.out.println("proba: "+prob);
+//									if(process == Medea.PREDICTPROCESS || process == Medea.LEARN_PREDPROCESS){
+//										prob = extractorP.getProbability(type.getClass().getSimpleName(),fragmentToStudy, fragments.getMolecule(k), fragments.getMolecule(molk),setOfReactions.getReaction(counta).mappings());
+//										if(printInfo)
+//											System.out.println("proba: "+prob);
 //										if(prob < 0.01)
 //											continue;
-									}
+//									}
 									FragmentMolecule fm = addNewFragment(fragments.getMolecule(k),
 											typeOfFragmentation,
 											fragmentToStudy.getIdP(),
@@ -433,18 +433,18 @@ public class Fragmenter {
 									}
 									
 									
-									if(process == Medea.PREDICTPROCESS || process == Medea.LEARN_PREDPROCESS){
-										if(printInfo)
-											System.out.print("PREDICTPROCESS& LEARN_PREDPROCESS");
-										prob = extractorP.getProbability(type.getClass().getSimpleName(),fragmentToStudy, fragments.getMolecule(k), fragments.getMolecule(molk),setOfReactions.getReaction(counta).mappings());
-										if(printInfo)
-											System.out.println("proba: "+prob);
-										
+//									if(process == Medea.PREDICTPROCESS || process == Medea.LEARN_PREDPROCESS){
+//										if(printInfo)
+//											System.out.print("PREDICTPROCESS& LEARN_PREDPROCESS");
+//										prob = extractorP.getProbability(type.getClass().getSimpleName(),fragmentToStudy, fragments.getMolecule(k), fragments.getMolecule(molk),setOfReactions.getReaction(counta).mappings());
+//										if(printInfo)
+//											System.out.println("proba: "+prob);
+//										
 //										if(prob < 0.01){
 //											System.out.println("not continue, not suficient probability");
 //											continue;
 //										}
-									}
+//									}
 									addFragment(fragmentE,
 											typeOfFragmentation,
 											fragmentToStudy.getIdP(),
