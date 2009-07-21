@@ -209,11 +209,13 @@ public class ReactionManager implements IBioclipseManager {
 	
 	public void saveReaction(IReactionScheme reaction, String filename)
 	          throws BioclipseException, CDKException, CoreException{
+		System.out.println("saveReaction(IReactionScheme reaction, String filename)");
 		saveReaction(reaction, filename, false);
 	}
 
 	public void saveReaction(IReactionScheme reaction, String filename, boolean overwrite)
 	          throws BioclipseException, CDKException, CoreException{
+		System.out.println("saveReaction(IReactionScheme reaction, String filename, boolean overwrite)");
 		IFile file = ResourcePathTransformer.getInstance().transform(filename);
 		saveReaction(reaction, file, overwrite);
 	}
@@ -221,7 +223,9 @@ public class ReactionManager implements IBioclipseManager {
 	public void saveReaction(IReactionScheme reaction, IFile file, boolean overwrite)
 	          throws BioclipseException, CDKException, CoreException{
 		IChemFormat format = null;
-
+		
+		System.out.println("saveReaction(IReactionScheme reaction, IFile file, boolean overwrite)");
+		
         // are we really overwriting an old file?
         if (reaction.getResource() != null &&
             (reaction.getResource() instanceof IFile)) {
@@ -238,67 +242,68 @@ public class ReactionManager implements IBioclipseManager {
             }
         }
 
-        if (overwrite && format == null) {
-            format = guessFormatFromExtension(file);
-        }
-
-        // OK, not overwriting, but unknown format: default to CML
+//        if (overwrite && format == null) {
+//            format = guessFormatFromExtension(file);
+//        }
+//
+//        // OK, not overwriting, but unknown format: default to CML
 //        if (format == null) 
         	format = (IChemFormat)CMLFormat.getInstance();
 
         saveReaction(reaction, file, format, overwrite);
 	}
 
-	public void saveReaction( IReactionScheme reaction, 
-                          String filename, 
-                          IChemFormat filetype )
-	          throws BioclipseException, CDKException, CoreException{
-		
-	}
+//	public void saveReaction( IReactionScheme reaction, 
+//                          String filename, 
+//                          IChemFormat filetype )
+//	          throws BioclipseException, CDKException, CoreException{
+//		
+//	}
 	
-	public void saveReaction( IReactionScheme reaction,
-            IFile target,
-            IChemFormat filetype,
-            boolean overwrite)
+	public void saveReaction( IReactionScheme reaction,IFile target,IChemFormat filetype,boolean overwrite)
 		throws BioclipseException, CDKException, CoreException {
+		
+		System.out.println("3saveReaction( IReactionScheme reaction,IFile target,IChemFormat filetype,boolean overwrite)");
 		
 		if ( target.exists() && overwrite == false ) {
 			throw new BioclipseException("File already exists!");
 		}
 		
 		ICDKReactionScheme react = create(reaction);
-		IChemModel chemModel = new ChemModel();
-		chemModel.setReactionSet(ReactionSchemeManipulator.getAllReactions(react.getReactionScheme()));
-		this.save(chemModel, target, filetype, null);
+//		IChemModel chemModel = new ChemModel();
+//		chemModel.setReactionSet(ReactionSchemeManipulator.getAllReactions(react.getReactionScheme()));
+//		this.save(chemModel, target, filetype, null);
+//		
+//		react.setResource(target);
+//	}
+//
+//	public void saveReaction( IReactionScheme reaction, 
+//                          String filename, 
+//                          IChemFormat filetype, 
+//                          boolean overwrite )
+//	          throws BioclipseException, CDKException, CoreException{
+//		
+//	}
+//	
+//	public void save(IChemModel model, String target, IChemFormat filetype)
+//		    throws BioclipseException, CDKException, CoreException {
+//		save( model,ResourcePathTransformer.getInstance().transform(target),filetype, null );
+//	}
+//
+//	public void save( IChemModel model,
+//	          IFile target,
+//	          IChemFormat filetype,
+//	          IProgressMonitor monitor )
+//	    throws BioclipseException, CDKException, CoreException {
+		System.out.println("4saveReaction( IChemModel model,IFile target,IChemFormat filetype,boolean overwrite)");
 		
-		react.setResource(target);
-	}
-
-	public void saveReaction( IReactionScheme reaction, 
-                          String filename, 
-                          IChemFormat filetype, 
-                          boolean overwrite )
-	          throws BioclipseException, CDKException, CoreException{
-		
-	}
-	
-	public void save(IChemModel model, String target, IChemFormat filetype)
-		    throws BioclipseException, CDKException, CoreException {
-		save( model,ResourcePathTransformer.getInstance().transform(target),filetype, null );
-	}
-
-	public void save( IChemModel model,
-	          IFile target,
-	          IChemFormat filetype,
-	          IProgressMonitor monitor )
-	    throws BioclipseException, CDKException, CoreException {
-	
-		if (monitor == null)
-			monitor = new NullProgressMonitor();
+//		if (monitor == null)
+			NullProgressMonitor monitor = new NullProgressMonitor();
 		
 		if (filetype == null) 
 			filetype = (IChemFormat)CMLFormat.getInstance();
 		
+		System.out.println("1");
 		try {
 			int ticks = 10000;
 			monitor.beginTask("Writing file", ticks);
@@ -311,19 +316,25 @@ public class ReactionManager implements IBioclipseManager {
 			        "No writer available for this format: " +
 			        filetype.getFormatName());
 			}
+			System.out.println("2");
 			chemWriter.setWriter(writer);
 			
-			if (chemWriter.accepts(ChemModel.class)) {
-			  chemWriter.write(model);
-			} else if (chemWriter.accepts(ReactionSet.class)){
-				chemWriter.write(model.getReactionSet());
-			} else {
-			  throw new BioclipseException("Writer does not support writing" +
-			          "IChemModel or IReactionSet.");
-			}
+//			if (chemWriter.accepts(ChemModel.class)) {
+				System.out.println("2.5");
+				org.openscience.cdk.interfaces.IReactionScheme scheme = react.getReactionScheme();
+				System.out.println(ReactionSchemeManipulator.getAllReactions(scheme).getReactionCount());
+			  chemWriter.write(scheme);
+//			} else if (chemWriter.accepts(ReactionSet.class)){
+//				chemWriter.write(model.getReactionSet());
+//			} else {
+//			  throw new BioclipseException("Writer does not support writing" +
+//			          "IChemModel or IReactionSet.");
+//			}
+			System.out.println("3");
 			
 			chemWriter.close();
-			
+
+			System.out.println("4");
 			if (target.exists()) {
 			    target.setContents(
 			            new ByteArrayInputStream(writer.toString()
@@ -339,6 +350,8 @@ public class ReactionManager implements IBioclipseManager {
 			                    monitor );
 			}
 			monitor.worked(ticks);
+
+			System.out.println("5");
 			} catch (IOException exception) {
 			throw new BioclipseException("Failed to write file: " +
 			      exception.getMessage());
