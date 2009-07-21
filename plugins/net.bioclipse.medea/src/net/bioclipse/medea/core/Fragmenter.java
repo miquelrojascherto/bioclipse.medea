@@ -28,7 +28,6 @@ import org.openscience.cdk.reaction.type.parameters.IParameterReact;
 import org.openscience.cdk.reaction.type.parameters.SetReactionCenter;
 import org.openscience.cdk.smiles.SmilesGenerator;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
-import org.openscience.cdk.tools.IonizationPotentialTool;
 import org.openscience.cdk.tools.LonePairElectronChecker;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
@@ -107,11 +106,13 @@ public class Fragmenter {
 		
 		/* iniziate the FragmentTree*/
 		fragTree = new FragmentTree(molecule);
-		
 		ArrayList<Double> dar = new ArrayList<Double>();
         for(int i = 0 ; i < molecule.getAtomCount(); i++){
             IAtom atom = molecule.getAtom(i);
-            double value = IonizationPotentialTool.predictIP(molecule,atom);
+            double value = 0.0;
+            if(molecule.getConnectedLonePairsCount(atom) > 0)
+            	value = 1.0;
+//            double value = IonizationPotentialTool.predictIP(molecule,atom);
             if(value > 0.5){
             	System.out.println(atom.getSymbol()+" "+value);
                 IMolecule molecule_;
