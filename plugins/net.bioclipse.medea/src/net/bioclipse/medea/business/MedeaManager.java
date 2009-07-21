@@ -12,13 +12,14 @@ package net.bioclipse.medea.business;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.domain.IMolecule;
+import net.bioclipse.core.domain.IReactionScheme;
 import net.bioclipse.core.domain.ISpectrum;
 import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.medea.core.Medea;
+import net.bioclipse.reaction.domain.ICDKReactionScheme;
 import net.bioclipse.spectrum.domain.JumboSpectrum;
 
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.xmlcml.cml.element.CMLSpectrum;
 
 public class MedeaManager implements IBioclipseManager {
 
@@ -32,9 +33,9 @@ public class MedeaManager implements IBioclipseManager {
      * Predict the mass spectrum given a IMolecule.
      * 
      * @param IMolecule The molecule to predict the spectrum
-     * @return          The predicted spectrum
+     * @return          The predicted fragmentation
      */
-    public ISpectrum predictMassSpectrum(IMolecule molecule) {
+    public ICDKReactionScheme predictMassSpectrum(IMolecule molecule) {
         ICDKMolecule mol = (ICDKMolecule)molecule.getAdapter(ICDKMolecule.class);
         if (mol == null) {
             throw new RuntimeException("Only supports ICDKMolecule for now.");
@@ -42,9 +43,9 @@ public class MedeaManager implements IBioclipseManager {
 
         IAtomContainer container = mol.getAtomContainer();
         predictor.predictMS(container);
-        CMLSpectrum cmlSpectrum = predictor.getPredictedSpectrum();
-        ISpectrum spectrum = new JumboSpectrum(cmlSpectrum);
-        return spectrum;
+        ICDKReactionScheme reactionScheme = predictor.getPredictedFragmentation();
+        System.out.println("reactionScheme: "+reactionScheme);
+        return reactionScheme;
     }
 
     /**
@@ -52,9 +53,9 @@ public class MedeaManager implements IBioclipseManager {
      * 
      * @param IMolecule The molecule
      * @param ISpectrum The spectrum
-     * @return          The predicted spectrum
+     * @return          The predicted fragmentation
      */
-    public ISpectrum learnMassSpectrum(IMolecule molecule, ISpectrum spectrum, String nameFile) {
+    public ICDKReactionScheme learnMassSpectrum(IMolecule molecule, ISpectrum spectrum, String nameFile) {
         ICDKMolecule mol = (ICDKMolecule)molecule.getAdapter(ICDKMolecule.class);
         if (mol == null) {
             throw new RuntimeException("Only supports ICDKMolecule for now.");
@@ -62,9 +63,8 @@ public class MedeaManager implements IBioclipseManager {
 
         IAtomContainer container = mol.getAtomContainer();
         predictor.learningMS(container, ((JumboSpectrum)spectrum).getJumboObject(), nameFile);
-        CMLSpectrum cmlSpectrum = predictor.getPredictedSpectrum();
-        ISpectrum spectrumL = new JumboSpectrum(cmlSpectrum);
-        return spectrumL;
+        ICDKReactionScheme reactionScheme = predictor.getPredictedFragmentation();
+        return reactionScheme;
     }
 
 }

@@ -1,11 +1,12 @@
 package net.bioclipse.medea.core;
 
 import net.bioclipse.medea.core.reaction.ExtractorSetReactions;
+import net.bioclipse.reaction.domain.CDKReactionScheme;
+import net.bioclipse.reaction.domain.ICDKReactionScheme;
 
-import org.openscience.cdk.interfaces.IChemFile;
-import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.interfaces.IChemSequence;
+import org.openscience.cdk.interfaces.IReactionScheme;
 import org.openscience.cdk.interfaces.IReactionSet;
+import org.openscience.cdk.tools.manipulator.ReactionSchemeManipulator;
 
 /**
  * Class which creates a ChemModel that contains a reaction list from the FragmentTree.
@@ -14,7 +15,7 @@ import org.openscience.cdk.interfaces.IReactionSet;
  */
 public class CMLReactionCreator {
 	/** IChemFile which contains a IReactionSet*/
-	private IChemFile chemFile;
+	private ICDKReactionScheme cdkRSch;
 	/**
 	 * Constructor of the CMLReactionCreator object
 	 * 
@@ -22,6 +23,8 @@ public class CMLReactionCreator {
 	 */
 	CMLReactionCreator(FragmentTree fragmentTree){
 		IReactionSet reactionSet = (new ExtractorSetReactions(fragmentTree)).extract();
+		IReactionScheme reactionScheme = ReactionSchemeManipulator.createReactionScheme(reactionSet);
+		cdkRSch = new CDKReactionScheme(reactionScheme);
 //		IMoleculeSet moleculeSet = ReactionSetManipulator.getAllMolecules(reactionSet);
 //		for(Iterator iter = moleculeSet.molecules(); iter.hasNext();){
 //			HashMap coordinates = new HashMap();
@@ -47,13 +50,13 @@ public class CMLReactionCreator {
 //				}
 //			}
 //		}
-		
-		IChemModel chemModel = reactionSet.getBuilder().newChemModel();
-		chemModel.setReactionSet(reactionSet);
-		IChemSequence seq = reactionSet.getBuilder().newChemSequence();
-		seq.addChemModel(chemModel);
-		chemFile = reactionSet.getBuilder().newChemFile();
-		chemFile.addChemSequence(seq);
+//		
+//		IChemModel chemModel = reactionSet.getBuilder().newChemModel();
+//		chemModel.setReactionSet(reactionSet);
+//		IChemSequence seq = reactionSet.getBuilder().newChemSequence();
+//		seq.addChemModel(chemModel);
+//		chemFile = reactionSet.getBuilder().newChemFile();
+//		chemFile.addChemSequence(seq);
 		
 	}
 	/**
@@ -61,7 +64,7 @@ public class CMLReactionCreator {
 	 *
 	 * @return The ChemFile object
 	 */
-	IChemFile getChemFile() {
-		return chemFile;
+	public ICDKReactionScheme getReactionScheme() {
+		return cdkRSch;
 	}
 }

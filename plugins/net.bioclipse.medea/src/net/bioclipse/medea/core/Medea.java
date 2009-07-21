@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.bioclipse.core.domain.IReactionScheme;
 import net.bioclipse.medea.core.learning.ExtractorProbability;
 import net.bioclipse.medea.core.prediction.ExtractorAbundance;
+import net.bioclipse.reaction.domain.ICDKReactionScheme;
 
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -40,7 +42,7 @@ public class Medea {
 	/** CMLSpectrum which contains the final experimental spectrum*/
 	private CMLSpectrum cmlExpSpectrum = null;
 	/** IChemFile that contains the IReactionSet*/
-	private IChemFile chemFileReaction = null;
+	private ICDKReactionScheme chemFileReaction = null;
 	
 	private boolean taskFinalized = false;
 	private Fragmenter fController;
@@ -165,7 +167,7 @@ public class Medea {
 				cmlSpectrum = spectrumCreator.getCMLSpectrum();
 				
 				CMLReactionCreator reactionCreator = new CMLReactionCreator(fragmentTree);
-				chemFileReaction = reactionCreator.getChemFile();
+				chemFileReaction = reactionCreator.getReactionScheme();
 			}
 		}
 		taskFinalized  = true;
@@ -197,14 +199,14 @@ public class Medea {
 		return cmlExpSpectrum;
 	}
 
-	/**
-	 * get the ChemFile that contains the IReactionSet
-	 *
-	 * @return The IChemFile object
-	 */
-	public IChemFile getChemFileReaction() {
-		return chemFileReaction;
-	}
+//	/**
+//	 * get the ChemFile that contains the IReactionSet
+//	 *
+//	 * @return The IChemFile object
+//	 */
+//	public IChemFile getChemFileReaction() {
+//		return chemFileReaction;
+//	}
 	/**
 	 * get if task is finalized.
 	 * 
@@ -227,5 +229,9 @@ public class Medea {
 	 */
 	public int getProcessType(){
 		return process;
+	}
+
+	public ICDKReactionScheme getPredictedFragmentation() {
+		return chemFileReaction;
 	}
 }

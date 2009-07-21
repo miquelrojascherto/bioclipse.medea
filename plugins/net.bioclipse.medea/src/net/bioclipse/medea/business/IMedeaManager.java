@@ -16,6 +16,7 @@ import net.bioclipse.core.TestMethods;
 import net.bioclipse.core.domain.IMolecule;
 import net.bioclipse.core.domain.ISpectrum;
 import net.bioclipse.managers.business.IBioclipseManager;
+import net.bioclipse.reaction.domain.ICDKReactionScheme;
 
 @TestClasses(
     "net.bioclipse.medea.business.test.APITest," +
@@ -28,13 +29,13 @@ public interface IMedeaManager extends IBioclipseManager {
         methodSummary="Predicts an EI mass spectrum for the given molecule"
     )
     @TestMethods("testPredictMassSpectrum_IMolecule")
-    public ISpectrum predictMassSpectrum(IMolecule molecule);
+    public ICDKReactionScheme predictMassSpectrum(IMolecule molecule);
 
     @PublishedMethod(
             params="IMolecule molecule,ISpectrum spectrum,String nameFile",
             methodSummary="Learns an EI mass spectrum for the given molecule and the corresponding spectrum"
         )
     @TestMethods("testLearnMassSpectrum_IMolecule_ISpectrum_String")
-	public ISpectrum learnMassSpectrum(IMolecule molecule, ISpectrum spectrum, String nameFile);
+	public ICDKReactionScheme learnMassSpectrum(IMolecule molecule, ISpectrum spectrum, String nameFile);
 
 }
