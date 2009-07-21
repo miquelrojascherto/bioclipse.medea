@@ -43,4 +43,5 @@ Export-Package: net.bioclipse.reaction.business,
  net.bioclipse.reaction.domain
 Import-Package: org.apache.commons.logging,
  org.apache.log4j,
+ org.eclipse.emf.common.notify,
  org.eclipse.ui.views.properties.tabbed

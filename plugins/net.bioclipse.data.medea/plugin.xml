@@ -36,6 +36,12 @@
       	location="data/Spectra"
       	wizard="net.bioclipse.data.medea.NewMedeaProjectWizard"
   	    icon="icons/MEDEA.gif"/>
+  	  <folder 
+      	name="SDFfiles"
+      	description="SDF files"
+      	location="data/SDFfiles"
+      	wizard="net.bioclipse.data.medea.NewMedeaProjectWizard"
+  	    icon="icons/MEDEA.gif"/>
   </extension>
 
 </plugin>
