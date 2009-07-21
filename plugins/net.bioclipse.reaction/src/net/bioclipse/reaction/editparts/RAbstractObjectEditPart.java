@@ -12,7 +12,6 @@
 package net.bioclipse.reaction.editparts;
 
 import java.beans.PropertyChangeEvent;
-import java.io.IOException;
 import java.io.StringBufferInputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -25,7 +24,6 @@ import net.bioclipse.cdk.domain.CDKMoleculePropertySource;
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.cdk.jchempaint.widgets.JChemPaintEditorWidget;
 import net.bioclipse.chemoinformatics.wizards.WizardHelper;
-import net.bioclipse.core.business.BioclipseException;
 import net.bioclipse.reaction.domain.CDKReactionPropertySource;
 import net.bioclipse.reaction.editpolicies.RComponentEditPolicy;
 import net.bioclipse.reaction.editpolicies.RDirectEditPolicy;
@@ -36,7 +34,6 @@ import net.bioclipse.reaction.model.CompoundObjectModel;
 import net.bioclipse.reaction.model.ReactionObjectModel;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.ChopboxAnchor;
@@ -284,19 +281,11 @@ public class RAbstractObjectEditPart extends EditPartWithListener implements Nod
 	}
 	
 	public void propertyChanged(Object source, int paramInt) {
-		try {
-			ICDKMolecule cdkMol = Activator.getDefault().getJavaCDKManager().loadMolecule(orignalFiles.get( source ) );
-			IAtomContainer ac = cdkMol.getAtomContainer();
-			CompoundObjectModel compoundObject = orignalChildren.get(source);
-			compoundObject.setIMolecule(ac);
-			JChemPaintEditorWidget jcp = compoundObject.getJCP();
-			jcp.setAtomContainer(ac);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (BioclipseException e) {
-			e.printStackTrace();
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
+		ICDKMolecule cdkMol = Activator.getDefault().getJavaCDKManager().loadMolecule(orignalFiles.get( source ) );
+		IAtomContainer ac = cdkMol.getAtomContainer();
+		CompoundObjectModel compoundObject = orignalChildren.get(source);
+		compoundObject.setIMolecule(ac);
+		JChemPaintEditorWidget jcp = compoundObject.getJCP();
+		jcp.setAtomContainer(ac);
 	}
 }
