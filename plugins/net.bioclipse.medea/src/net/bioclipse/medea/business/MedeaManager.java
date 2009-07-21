@@ -12,7 +12,6 @@ package net.bioclipse.medea.business;
 
 import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.domain.IMolecule;
-import net.bioclipse.core.domain.IReactionScheme;
 import net.bioclipse.core.domain.ISpectrum;
 import net.bioclipse.managers.business.IBioclipseManager;
 import net.bioclipse.medea.core.Medea;
@@ -20,6 +19,7 @@ import net.bioclipse.reaction.domain.ICDKReactionScheme;
 import net.bioclipse.spectrum.domain.JumboSpectrum;
 
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.xmlcml.cml.element.CMLSpectrum;
 
 public class MedeaManager implements IBioclipseManager {
 
@@ -65,6 +65,17 @@ public class MedeaManager implements IBioclipseManager {
         predictor.learningMS(container, ((JumboSpectrum)spectrum).getJumboObject(), nameFile);
         ICDKReactionScheme reactionScheme = predictor.getPredictedFragmentation();
         return reactionScheme;
+    }
+    /**
+     * Convert a ReactionScheme into a ISpectrum
+     * 
+     * @param rectionScheme The ICDKReactionSheme
+     * @return              Converted spectrum
+     */
+    public ISpectrum convertToSpectrum(ICDKReactionScheme rectionScheme){
+    	CMLSpectrum cmlSpectrum = predictor.convert(rectionScheme);
+        ISpectrum spectrum = new JumboSpectrum(cmlSpectrum);
+        return spectrum;
     }
 
 }

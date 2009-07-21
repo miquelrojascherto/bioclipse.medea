@@ -5,14 +5,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.bioclipse.core.domain.IReactionScheme;
 import net.bioclipse.medea.core.learning.ExtractorProbability;
 import net.bioclipse.medea.core.prediction.ExtractorAbundance;
 import net.bioclipse.reaction.domain.ICDKReactionScheme;
 
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.xmlcml.cml.base.CMLElement;
 import org.xmlcml.cml.element.CMLPeak;
@@ -233,5 +231,10 @@ public class Medea {
 
 	public ICDKReactionScheme getPredictedFragmentation() {
 		return chemFileReaction;
+	}
+
+	public CMLSpectrum convert(ICDKReactionScheme reactionScheme) {
+		CMLSpectrum spectrum = Converter.toSpectrum(reactionScheme);
+		return spectrum;
 	}
 }

@@ -38,4 +38,11 @@ public interface IMedeaManager extends IBioclipseManager {
     @TestMethods("testLearnMassSpectrum_IMolecule_ISpectrum_String")
 	public ICDKReactionScheme learnMassSpectrum(IMolecule molecule, ISpectrum spectrum, String nameFile);
 
+    @PublishedMethod(
+            params="ICDKReactionScheme rectionScheme",
+            methodSummary="Convert a ICDKRectionScheme into a ISpectrum"
+        )
+    @TestMethods("testConvertToSpectrum")
+	public ISpectrum convertToSpectrum(ICDKReactionScheme rectionScheme);
+
 }
