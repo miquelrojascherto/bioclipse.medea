@@ -44,7 +44,9 @@ public class ExtractorSetReactions {
 		al.add(fm);
 		int count = 0;
 		for(int i = 0 ; i < al.size(); i++){
-			
+			if(i == 10)
+				break;
+			System.out.println("i: "+i);
 			ArrayList<Position> children_D = al.get(i).getChildren();
 			for(int j = 0 ; j < children_D.size(); j++){
 				ReactionKp reaction = new ReactionKp();
@@ -52,8 +54,8 @@ public class ExtractorSetReactions {
 				reaction.addReactant(al.get(i));
 				reaction.addProduct(fragmentTree.getFragment(children_D.get(j)));
 				
-//				String smiles0 = (new SmilesGenerator()).createSMILES((IMolecule)al.get(i));
-//				System.out.print(count+", "+smiles0);
+				String smiles0 = (new SmilesGenerator()).createSMILES((IMolecule)al.get(i));
+				System.out.print(count+", "+smiles0);
 				count++;
 				if(al.get(i).getProcess().get(j).equals("Ionitzation")){
 					reaction.setProperty("IonizationEnergy",al.get(i).getChildrenProbabilities().get(j));
@@ -79,7 +81,7 @@ public class ExtractorSetReactions {
 				String smiles2 = null;
 //				if(al.get(i).getNeighbouring().get(j) != null)
 //					smiles2 = (new SmilesGenerator()).createSMILES((IMolecule)al.get(i).getNeighbouring().get(j));
-//				System.out.println(" "+al.get(i).getProcess().get(j)+" => s: "+smiles+", "+smiles2);
+				System.out.println(" "+al.get(i).getProcess().get(j)+" => s: "+smiles+", "+smiles2);
 			}
 		}
 //		System.out.println("end");
