@@ -1,3 +1,4 @@
+//gist: 151205
 //Demonstrates basic manipulation to predict a EI-MS in Bioclipse using
 //a sdf file containing a list of molecule. 
 //Requires medea data installed in default location
