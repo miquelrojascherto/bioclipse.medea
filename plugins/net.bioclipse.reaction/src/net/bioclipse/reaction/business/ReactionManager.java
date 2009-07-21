@@ -243,7 +243,8 @@ public class ReactionManager implements IBioclipseManager {
         }
 
         // OK, not overwriting, but unknown format: default to CML
-        if (format == null) format = (IChemFormat)CMLFormat.getInstance();
+//        if (format == null) 
+        	format = (IChemFormat)CMLFormat.getInstance();
 
         saveReaction(reaction, file, format, overwrite);
 	}

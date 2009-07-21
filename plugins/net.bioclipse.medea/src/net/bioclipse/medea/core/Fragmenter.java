@@ -87,6 +87,7 @@ public class Fragmenter {
 	    		lpcheck.saturate(molecule);
 
 	        } catch (CDKException e) {
+	        	
 	        }
 
 //			printInformation(molecule);/**********************************************************/
