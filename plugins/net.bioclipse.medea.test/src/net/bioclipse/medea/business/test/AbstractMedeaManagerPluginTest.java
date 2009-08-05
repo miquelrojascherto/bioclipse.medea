@@ -20,8 +20,8 @@ import net.bioclipse.cdk.domain.ICDKMolecule;
 import net.bioclipse.core.MockIFile;
 import net.bioclipse.core.domain.ISpectrum;
 import net.bioclipse.medea.business.IMedeaManager;
+import net.bioclipse.reaction.domain.ICDKReactionScheme;
 import net.bioclipse.spectrum.business.ISpectrumManager;
-import net.bioclipse.spectrum.domain.IJumboSpectrum;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.junit.Test;
@@ -38,8 +38,10 @@ public class AbstractMedeaManagerPluginTest {
         URL url = FileLocator.toFileURL(uri.toURL());
         String pathMolecule = url.getFile();
     	ICDKMolecule molecule = cdk.loadMolecule( new MockIFile(pathMolecule));
-    	ISpectrum spectrum = medeamanager.predictMassSpectrum(molecule);
-     	Assert.assertEquals(1,((IJumboSpectrum)spectrum).getJumboObject().getPeakListElements().size());
+    	ICDKReactionScheme scheme = medeamanager.predictMassSpectrum(molecule);
+        Assert.assertNotNull(scheme);
+        Assert.assertNotNull(scheme.getReactionScheme());
+     	Assert.assertNotSame(0,scheme.getReactionScheme().getReactionCount());
                
     }
     
@@ -56,8 +58,10 @@ public class AbstractMedeaManagerPluginTest {
         String pathMolecule = url.getFile();
     	ICDKMolecule molecule = cdk.loadMolecule(new MockIFile(pathMolecule));
 
-        ISpectrum spectrumL = medeamanager.learnMassSpectrum(molecule,spectrum,null);
-    	Assert.assertEquals(1,((IJumboSpectrum)spectrumL).getJumboObject().getPeakListElements().size());
+    	ICDKReactionScheme scheme = medeamanager.learnMassSpectrum(molecule,spectrum,null);
+        Assert.assertNotNull(scheme);
+        Assert.assertNotNull(scheme.getReactionScheme());
+        Assert.assertNotSame(0,scheme.getReactionScheme().getReactionCount());
     }
     
 }
