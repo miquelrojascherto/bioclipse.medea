@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="net/bioclipse/plugins/medea/core/ExtractorProbability.java|net/bioclipse/plugins/|net/bioclipse/plugins/actions/|net/bioclipse/plugins/medea/job/|net/bioclipse/plugins/model/|net/bioclipse/plugins/model/type/|net/bioclipse/plugins/perspective/|net/bioclipse/plugins/wizards/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry excluding="net/bioclipse/plugins/medea/core/ExtractorProbability.java|net/bioclipse/plugins/|net/bioclipse/plugins/actions/|net/bioclipse/plugins/medea/job/|net/bioclipse/plugins/model/|net/bioclipse/plugins/model/type/|net/bioclipse/plugins/perspective/|net/bioclipse/plugins/wizards/" kind="src" path="src"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
